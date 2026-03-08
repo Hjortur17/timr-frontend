@@ -17,9 +17,7 @@ export const api = axios.create({
 api.interceptors.response.use(
   (response) => response,
   (error: AxiosError<{ message?: string; errors?: Record<string, string[]> }>) => {
-    const apiError: ApiError = new Error(
-      error.response?.data?.message ?? error.message,
-    ) as ApiError;
+    const apiError: ApiError = new Error(error.response?.data?.message ?? error.message) as ApiError;
 
     apiError.status = error.response?.status;
     apiError.errors = error.response?.data?.errors;

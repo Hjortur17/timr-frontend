@@ -1,6 +1,6 @@
-import { loginFormSchema } from "@/types/forms";
-import { api, type ApiError } from "@/utils/api";
 import { NextResponse } from "next/server";
+import { loginFormSchema } from "@/types/forms";
+import { type ApiError, api } from "@/utils/api";
 
 export async function POST(request: Request) {
   const body = await request.json();

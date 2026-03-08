@@ -28,14 +28,10 @@ export const registerFormSchema = z
   .object({
     name: z.string().min(1),
     email: z.string().regex(/^[^\s@]+@[^\s@]+\.[^\s@]+$/),
-    password: z
-      .string()
-      .min(8, { message: "Lykilorð verður að vera að minnsta kosti 8 stafir" }),
-    password_confirmation: z
-      .string()
-      .min(8, {
-        message: "Staðfestar lykilorð verður að vera að minnsta kosti 8 stafir",
-      }),
+    password: z.string().min(8, { message: "Lykilorð verður að vera að minnsta kosti 8 stafir" }),
+    password_confirmation: z.string().min(8, {
+      message: "Staðfestar lykilorð verður að vera að minnsta kosti 8 stafir",
+    }),
   })
   .refine((data) => data.password === data.password_confirmation, {
     message: "Lykilorðin eru ekki eins",

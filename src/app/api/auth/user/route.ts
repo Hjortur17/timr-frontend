@@ -1,14 +1,11 @@
-import { api, type ApiError } from "@/utils/api";
 import { NextResponse } from "next/server";
+import { type ApiError, api } from "@/utils/api";
 
 export async function GET(request: Request) {
   const authorization = request.headers.get("Authorization");
 
   if (!authorization) {
-    return NextResponse.json(
-      { message: "Unauthenticated." },
-      { status: 401 },
-    );
+    return NextResponse.json({ message: "Unauthenticated." }, { status: 401 });
   }
 
   try {

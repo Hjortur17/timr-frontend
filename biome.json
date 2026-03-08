@@ -1,5 +1,5 @@
 {
-  "$schema": "https://biomejs.dev/schemas/2.3.8/schema.json",
+  "$schema": "https://biomejs.dev/schemas/2.4.6/schema.json",
   "vcs": {
     "enabled": true,
     "clientKind": "git",
@@ -20,7 +20,7 @@
     "bracketSameLine": false,
     "bracketSpacing": true,
     "expand": "auto",
-    "useEditorconfig": true,
+    "useEditorconfig": false,
     "includes": ["**/*.{ts,tsx,js,jsx,json,css}", "!dist/**/*"]
   },
   "linter": {
@@ -33,6 +33,11 @@
       "suspicious": { "noExplicitAny": "warn" }
     },
     "includes": ["**/*.{ts,tsx}", "!dist"]
+  },
+  "css": {
+    "parser": {
+      "tailwindDirectives": true
+    }
   },
   "assist": {
     "actions": {
