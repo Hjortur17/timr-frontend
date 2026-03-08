@@ -1,0 +1,26 @@
+import { registerFormSchema } from "@/types/forms";
+import { api, type ApiError } from "@/utils/api";
+import { NextResponse } from "next/server";
+
+export async function POST(request: Request) {
+  const body = await request.json();
+  const { name, email, password, password_confirmation } =
+    registerFormSchema.parse(body);
+
+  try {
+    const response = await api.post("/api/auth/register", {
+      name,
+      email,
+      password,
+      password_confirmation,
+    });
+
+    return NextResponse.json(response.data, { status: response.status });
+  } catch (error) {
+    const apiError = error as ApiError;
+    return NextResponse.json(
+      { message: apiError.message, errors: apiError.errors },
+      { status: apiError.status ?? 500 },
+    );
+  }
+}
