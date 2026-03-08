@@ -6,9 +6,29 @@ export interface User {
   name: string;
   email: string;
   is_active: boolean;
+  onboarding_step: number;
   roles: string[];
   created_at: string;
   updated_at: string;
+}
+
+export interface Shift {
+  id: number;
+  company_id: number;
+  title: string;
+  start_time: string;
+  end_time: string;
+  notes: string | null;
+  status: string;
+  employees: User[];
+  created_at: string;
+  updated_at: string;
+}
+
+export interface Employee {
+  id: number;
+  name: string;
+  email: string;
 }
 
 export const companyFormSchema = z.object({
@@ -39,3 +59,20 @@ export const registerFormSchema = z
   });
 
 export type RegisterForm = z.infer<typeof registerFormSchema>;
+
+export const shiftFormSchema = z.object({
+  title: z.string().min(1, { message: "Heiti vaktar er nauðsynlegt" }),
+  start_time: z.string().min(1, { message: "Upphafstími er nauðsynlegur" }),
+  end_time: z.string().min(1, { message: "Lokatími er nauðsynlegur" }),
+  notes: z.string().optional(),
+});
+
+export type ShiftForm = z.infer<typeof shiftFormSchema>;
+
+export const employeeFormSchema = z.object({
+  name: z.string().min(1, { message: "Nafn er nauðsynlegt" }),
+  email: z.string().regex(/^[^\s@]+@[^\s@]+\.[^\s@]+$/, { message: "Netfang er ekki gilt" }),
+  password: z.string().min(8, { message: "Lykilorð verður að vera að minnsta kosti 8 stafir" }),
+});
+
+export type EmployeeForm = z.infer<typeof employeeFormSchema>;

@@ -7,7 +7,7 @@
 
 :root {
   --background: #ffffff;
-  --foreground: rgb(46, 80, 70);
+  --foreground: oklch(14.5% 0 0);
 }
 
 @theme inline {
