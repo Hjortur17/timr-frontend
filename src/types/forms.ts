@@ -20,7 +20,7 @@ export interface Shift {
   end_time: string;
   notes: string | null;
   status: string;
-  employees: User[];
+  employees: Employee[];
   created_at: string;
   updated_at: string;
 }
@@ -28,7 +28,12 @@ export interface Shift {
 export interface Employee {
   id: number;
   name: string;
-  email: string;
+  email: string | null;
+  phone: string | null;
+  is_active: boolean;
+  has_account: boolean;
+  created_at: string;
+  updated_at: string;
 }
 
 export const companyFormSchema = z.object({
@@ -71,8 +76,8 @@ export type ShiftForm = z.infer<typeof shiftFormSchema>;
 
 export const employeeFormSchema = z.object({
   name: z.string().min(1, { message: "Nafn er nauðsynlegt" }),
-  email: z.string().regex(/^[^\s@]+@[^\s@]+\.[^\s@]+$/, { message: "Netfang er ekki gilt" }),
-  password: z.string().min(8, { message: "Lykilorð verður að vera að minnsta kosti 8 stafir" }),
+  email: z.string().email({ message: "Netfang er ekki gilt" }).optional().or(z.literal("")),
+  phone: z.string().optional().or(z.literal("")),
 });
 
 export type EmployeeForm = z.infer<typeof employeeFormSchema>;

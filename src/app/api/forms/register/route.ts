@@ -14,7 +14,14 @@ export async function POST(request: Request) {
       password_confirmation,
     });
 
-    return NextResponse.json(response.data, { status: response.status });
+    const res = NextResponse.json(response.data, { status: response.status });
+    res.cookies.set("auth_token", response.data.token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      path: "/",
+    });
+    return res;
   } catch (error) {
     const apiError = error as ApiError;
     return NextResponse.json(

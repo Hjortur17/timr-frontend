@@ -6,21 +6,21 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import Button from "@/components/Button";
 import Input from "@/components/Input";
-import type { Employee, EmployeeForm, User } from "@/types/forms";
+import type { Employee, EmployeeForm as EmployeeFormData, User } from "@/types/forms";
 import { employeeFormSchema } from "@/types/forms";
 import { authHeaders } from "@/utils/auth";
 
-function EmployeeForm({
+function CreateEmployeeForm({
 	onCreated,
 }: {
 	onCreated: (employee: Employee) => void;
 }) {
-	const { register, handleSubmit } = useForm<EmployeeForm>({
+	const { register, handleSubmit } = useForm<EmployeeFormData>({
 		resolver: zodResolver(employeeFormSchema),
-		defaultValues: { name: "", email: "", password: "" },
+		defaultValues: { name: "", email: "", phone: "" },
 	});
 
-	const onSubmit = async (data: EmployeeForm) => {
+	const onSubmit = async (data: EmployeeFormData) => {
 		const response = await axios.post("/api/manager/employees", data, {
 			headers: authHeaders(),
 		});
@@ -37,17 +37,17 @@ function EmployeeForm({
 				register={register}
 			/>
 			<Input
-				label="Netfang"
+				label="Netfang (valfrjálst)"
 				name="email"
 				type="email"
-				placeholder="netfang@dæmi.is"
+				placeholder="netfang@timr.is"
 				register={register}
 			/>
 			<Input
-				label="Lykilorð"
-				name="password"
-				type="password"
-				placeholder="Að minnsta kosti 8 stafir"
+				label="Sími (valfrjálst)"
+				name="phone"
+				type="tel"
+				placeholder="000 0000"
 				register={register}
 			/>
 			<Button type="submit">Bæta við starfsmanni</Button>
@@ -91,7 +91,7 @@ export default function StaffStep({
 
 			<div className="sm:mx-auto sm:w-full sm:max-w-[480px]">
 				<div className="px-6 py-12">
-					<EmployeeForm key={formKey} onCreated={onCreated} />
+					<CreateEmployeeForm key={formKey} onCreated={onCreated} />
 
 					{employees.length > 0 && (
 						<ul className="mt-8 divide-y divide-neutral-200 rounded-lg border border-neutral-200">
@@ -104,7 +104,9 @@ export default function StaffStep({
 										<p className="text-sm font-semibold text-neutral-900">
 											{emp.name}
 										</p>
+										{emp.email && (
 										<p className="text-xs text-neutral-500">{emp.email}</p>
+									)}
 									</div>
 								</li>
 							))}

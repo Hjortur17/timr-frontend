@@ -9,7 +9,14 @@ export async function POST(request: Request) {
   try {
     const response = await api.post("/api/auth/login", { email, password });
 
-    return NextResponse.json(response.data, { status: response.status });
+    const res = NextResponse.json(response.data, { status: response.status });
+    res.cookies.set("auth_token", response.data.token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      path: "/",
+    });
+    return res;
   } catch (error) {
     const apiError = error as ApiError;
     return NextResponse.json(

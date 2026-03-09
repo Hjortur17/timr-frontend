@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/utils/classname";
+import { Toaster } from "@/components/Sonnar";
 
 const plusJakartaSans = Plus_Jakarta_Sans({
   weight: ["400", "500", "600", "700", "800"],
@@ -20,7 +21,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={cn(plusJakartaSans.className, "antialiased")}>{children}</body>
+      <body className={cn(plusJakartaSans.className, "antialiased")}>
+        {children}
+        <Toaster />
+      </body>
     </html>
   );
 }

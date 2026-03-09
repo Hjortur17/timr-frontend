@@ -1,15 +1,21 @@
 import { NextResponse } from "next/server";
 import { type ApiError, api } from "@/utils/api";
 
-export async function GET(request: Request) {
+export async function PUT(
+  request: Request,
+  { params }: { params: Promise<{ id: string }> },
+) {
   const authorization = request.headers.get("Authorization");
 
   if (!authorization) {
     return NextResponse.json({ message: "Unauthenticated." }, { status: 401 });
   }
 
+  const { id } = await params;
+  const body = await request.json();
+
   try {
-    const response = await api.get("/api/manager/employees", {
+    const response = await api.put(`/api/manager/employees/${id}`, body, {
       headers: { Authorization: authorization },
     });
 
@@ -23,17 +29,20 @@ export async function GET(request: Request) {
   }
 }
 
-export async function POST(request: Request) {
+export async function DELETE(
+  request: Request,
+  { params }: { params: Promise<{ id: string }> },
+) {
   const authorization = request.headers.get("Authorization");
 
   if (!authorization) {
     return NextResponse.json({ message: "Unauthenticated." }, { status: 401 });
   }
 
-  const body = await request.json();
+  const { id } = await params;
 
   try {
-    const response = await api.post("/api/manager/employees", body, {
+    const response = await api.delete(`/api/manager/employees/${id}`, {
       headers: { Authorization: authorization },
     });
 
