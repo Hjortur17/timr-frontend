@@ -1,13 +1,21 @@
 import { z } from "zod";
 
+export type CompanyRole = "owner" | "admin" | "accountant";
+
+export interface Company {
+  id: number;
+  name: string;
+  role: CompanyRole;
+}
+
 export interface User {
   id: number;
   company_id: number | null;
+  companies: Company[];
   name: string;
   email: string;
   is_active: boolean;
   onboarding_step: number;
-  roles: string[];
   created_at: string;
   updated_at: string;
 }

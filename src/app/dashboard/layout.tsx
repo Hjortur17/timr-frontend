@@ -39,12 +39,6 @@ const navigation = [
 	{ name: "Stillingar", href: "/dashboard/settings", icon: Cog6ToothIcon },
 ];
 
-const teams = [
-	{ id: 1, name: "Fyrirtæki 1", href: "#", initial: "F", current: false },
-	{ id: 2, name: "Fyrirtæki 2", href: "#", initial: "F", current: false },
-	{ id: 3, name: "Fyrirtæki 3", href: "#", initial: "F", current: false },
-];
-
 const ONBOARDING_COMPLETE = 6;
 
 export default function DashboardLayout({ children }: { children: ReactNode }) {
@@ -154,31 +148,37 @@ function DashboardShell({ children }: { children: ReactNode }) {
 											Vinnustaðir
 										</div>
 										<ul className="-mx-2 mt-2 space-y-1">
-											{teams.map((team) => (
-												<li key={team.name}>
-													<a
-														href={team.href}
-														className={cn(
-															team.current
-																? "bg-neutral-50 text-primary"
-																: "text-neutral-700 hover:bg-neutral-50 hover:text-primary",
-															"group flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold",
-														)}
-													>
-														<span
+											{/* TODO: Login with a click on the company */}
+											{user.companies.map((company) => {
+												const isCurrentCompany = pathname.startsWith(
+													`/dashboard/companies/${company.id}`,
+												);
+												return (
+													<li key={company.id}>
+														<Link
+															href={`/dashboard/companies/${company.id}`}
 															className={cn(
-																team.current
-																	? "border-primary text-primary"
-																	: "border-neutral-200 text-neutral-400 group-hover:border-primary group-hover:text-primary",
-																"flex size-6 shrink-0 items-center justify-center rounded-lg border bg-white text-[0.625rem] font-medium",
+																isCurrentCompany
+																	? "bg-neutral-50 text-primary"
+																	: "text-neutral-700 hover:bg-neutral-50 hover:text-primary",
+																"group flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold",
 															)}
 														>
-															{team.initial}
-														</span>
-														<span className="truncate">{team.name}</span>
-													</a>
-												</li>
-											))}
+															<span
+																className={cn(
+																	isCurrentCompany
+																		? "border-primary text-primary"
+																		: "border-neutral-200 text-neutral-400 group-hover:border-primary group-hover:text-primary",
+																	"flex size-6 shrink-0 items-center justify-center rounded-lg border bg-white text-[0.625rem] font-medium",
+																)}
+															>
+																{company.name.charAt(0)}
+															</span>
+															<span className="truncate">{company.name}</span>
+														</Link>
+													</li>
+												);
+											})}
 										</ul>
 									</li>
 								</ul>
@@ -245,31 +245,37 @@ function DashboardShell({ children }: { children: ReactNode }) {
 									Vinnustaðir
 								</div>
 								<ul className="-mx-2 mt-2 space-y-1">
-									{teams.map((team) => (
-										<li key={team.name}>
-											<a
-												href={team.href}
-												className={cn(
-													team.current
-														? "bg-neutral-50 text-primary"
-														: "text-neutral-700 hover:bg-neutral-50 hover:text-primary",
-													"group flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold",
-												)}
-											>
-												<span
+									{/* TODO: Login with a click on the company */}
+									{user.companies.map((company) => {
+										const isCurrentCompany = pathname.startsWith(
+											`/dashboard/companies/${company.id}`,
+										);
+										return (
+											<li key={company.id}>
+												<Link
+													href={`/dashboard/companies/${company.id}`}
 													className={cn(
-														team.current
-															? "border-primary text-primary"
-															: "border-neutral-200 text-neutral-400 group-hover:border-primary group-hover:text-primary",
-														"flex size-6 shrink-0 items-center justify-center rounded-lg border bg-white text-[0.625rem] font-medium",
+														isCurrentCompany
+															? "bg-neutral-50 text-primary"
+															: "text-neutral-700 hover:bg-neutral-50 hover:text-primary",
+														"group flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold",
 													)}
 												>
-													{team.initial}
-												</span>
-												<span className="truncate">{team.name}</span>
-											</a>
-										</li>
-									))}
+													<span
+														className={cn(
+															isCurrentCompany
+																? "border-primary text-primary"
+																: "border-neutral-200 text-neutral-400 group-hover:border-primary group-hover:text-primary",
+															"flex size-6 shrink-0 items-center justify-center rounded-lg border bg-white text-[0.625rem] font-medium",
+														)}
+													>
+														{company.name.charAt(0)}
+													</span>
+													<span className="truncate">{company.name}</span>
+												</Link>
+											</li>
+										);
+									})}
 								</ul>
 							</li>
 							<li className="-mx-6 mt-auto">
