@@ -145,6 +145,19 @@ export default function WeeklyCalendar() {
     return map;
   }, [assignments]);
 
+  const maxShiftsPerCell = useMemo(() => {
+    let max = 0;
+    for (const [, empMap] of assignmentsByEmployeeAndDay) {
+      for (const [, dayAssignments] of empMap) {
+        if (dayAssignments.length > max) max = dayAssignments.length;
+      }
+    }
+    return max;
+  }, [assignmentsByEmployeeAndDay]);
+
+  // ~50px per shift block (44px height + 6px gap) + 48px for add button and padding
+  const rowMinHeight = Math.max(128, maxShiftsPerCell * 50 + 48);
+
   const getEmployeeWeekMinutes = useCallback(
     (employeeId: number): number => {
       const empMap = assignmentsByEmployeeAndDay.get(employeeId);
@@ -386,6 +399,7 @@ export default function WeeklyCalendar() {
                   <div
                     key={employee.id}
                     className="grid grid-cols-[180px_repeat(7,1fr)] border-b border-neutral-100 last:border-b-0 hover:bg-neutral-50/40 transition-colors"
+                    style={{ minHeight: rowMinHeight }}
                   >
                     {/* Employee Info */}
                     <div className="flex flex-col justify-center p-3">
@@ -512,7 +526,7 @@ function DroppableCell({
     <div
       ref={setNodeRef}
       className={cn(
-        "min-h-32 max-h-32 min-w-0 overflow-hidden border-l border-neutral-100 p-2 transition-colors",
+        "min-w-0 border-l border-neutral-100 p-2 transition-colors",
         isToday && "bg-primary/5",
         isOver && "bg-primary/10 ring-1 ring-inset ring-primary/30",
       )}
