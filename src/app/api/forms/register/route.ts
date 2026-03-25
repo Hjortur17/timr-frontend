@@ -4,7 +4,7 @@ import { type ApiError, api } from "@/utils/api";
 
 export async function POST(request: Request) {
   const body = await request.json();
-  const { name, email, password, password_confirmation } = registerFormSchema.parse(body);
+  const { name, email, password, password_confirmation, invite_token } = registerFormSchema.parse(body);
 
   try {
     const response = await api.post("/api/auth/register", {
@@ -12,6 +12,7 @@ export async function POST(request: Request) {
       email,
       password,
       password_confirmation,
+      ...(invite_token ? { invite_token } : {}),
     });
 
     const res = NextResponse.json(response.data, { status: response.status });

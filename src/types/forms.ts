@@ -77,6 +77,7 @@ export const registerFormSchema = z
     password_confirmation: z.string().min(8, {
       message: "Staðfestar lykilorð verður að vera að minnsta kosti 8 stafir",
     }),
+    invite_token: z.string().optional(),
   })
   .refine((data) => data.password === data.password_confirmation, {
     message: "Lykilorðin eru ekki eins",

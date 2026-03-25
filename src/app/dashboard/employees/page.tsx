@@ -10,6 +10,7 @@ import Dialog from "@/components/Dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
+import { Spinner } from "@/components/ui/spinner";
 import type { Employee, EmployeeForm } from "@/types/forms";
 import { employeeFormSchema } from "@/types/forms";
 import { authHeaders } from "@/utils/auth";
@@ -24,6 +25,7 @@ export default function EmployeesPage() {
   const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(null);
 
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [sendingInvite, setSendingInvite] = useState<Set<number>>(new Set());
 
   useEffect(() => {
     axios
@@ -48,6 +50,21 @@ export default function EmployeesPage() {
   const onOpenEditDrawer = (employee: Employee) => {
     setSelectedEmployee(employee);
     setOpenEditDrawer(true);
+  };
+
+  const sendInvite = (employee: Employee) => {
+    setSendingInvite((prev) => new Set(prev).add(employee.id));
+    axios
+      .post(`/api/manager/employees/${employee.id}/invite`, {}, { headers: authHeaders() })
+      .then((res) => toast.success(res.data.message))
+      .catch((err) => toast.error(err.response?.data?.message ?? "Villa við að senda hlekk."))
+      .finally(() =>
+        setSendingInvite((prev) => {
+          const next = new Set(prev);
+          next.delete(employee.id);
+          return next;
+        }),
+      );
   };
 
   const deleteEmployee = (employee: Employee) => {
@@ -118,9 +135,25 @@ export default function EmployeesPage() {
                             Virkur
                           </span>
                         ) : (
-                          <span className="inline-flex items-center rounded-full bg-gray-50 px-2 py-1 text-xs font-medium text-gray-600 ring-1 ring-gray-500/10 ring-inset">
-                            Óskráður
-                          </span>
+                          <div className="space-x-1">
+                            <span className="inline-flex items-center rounded-full bg-gray-50 px-2 py-1 text-xs font-medium text-gray-600 ring-1 ring-gray-500/10 ring-inset">
+                              Óskráður
+                            </span>
+
+                            <button
+                              type="button"
+                              onClick={() => sendInvite(employee)}
+                              disabled={sendingInvite.has(employee.id)}
+                              className="relative cursor-pointer inline-flex items-center justify-center rounded-full bg-primary px-2 py-1 text-xs font-medium text-primary-foreground ring-1 ring-gray-500/10 ring-inset disabled:opacity-60 disabled:cursor-not-allowed"
+                            >
+                              {sendingInvite.has(employee.id) && (
+                                <span className="absolute inset-0 flex items-center justify-center">
+                                  <Spinner className="size-3" />
+                                </span>
+                              )}
+                              <span className={sendingInvite.has(employee.id) ? "invisible" : ""}>Senda hlekk</span>
+                            </button>
+                          </div>
                         )}
                       </td>
                       <td className="py-4 pr-4 pl-3 text-right text-sm font-medium whitespace-nowrap sm:pr-3 flex justify-end gap-2">
