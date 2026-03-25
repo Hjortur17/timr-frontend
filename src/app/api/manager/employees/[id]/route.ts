@@ -1,10 +1,7 @@
 import { NextResponse } from "next/server";
 import { type ApiError, api } from "@/utils/api";
 
-export async function PUT(
-  request: Request,
-  { params }: { params: Promise<{ id: string }> },
-) {
+export async function PUT(request: Request, { params }: { params: Promise<{ id: string }> }) {
   const authorization = request.headers.get("Authorization");
 
   if (!authorization) {
@@ -29,10 +26,7 @@ export async function PUT(
   }
 }
 
-export async function DELETE(
-  request: Request,
-  { params }: { params: Promise<{ id: string }> },
-) {
+export async function DELETE(request: Request, { params }: { params: Promise<{ id: string }> }) {
   const authorization = request.headers.get("Authorization");
 
   if (!authorization) {

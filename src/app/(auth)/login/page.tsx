@@ -4,8 +4,8 @@ import axios from "axios";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
-import Button from "@/components/Button";
-import Input from "@/components/Input";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import type { LoginForm } from "@/types/forms";
 import { setToken } from "@/utils/auth";
 
@@ -37,9 +37,23 @@ export default function Login() {
       <div className="sm:mx-auto sm:w-full sm:max-w-[480px]">
         <div className="px-6 py-12 ">
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-            <Input label="Netfang" name="email" type="email" register={register} />
+            <div>
+              <label htmlFor="email" className="block text-base/7 font-semibold text-neutral-950">
+                Netfang
+              </label>
+              <div className="mt-2">
+                <Input id="email" type="email" {...register("email")} />
+              </div>
+            </div>
 
-            <Input label="Lykilorð" name="password" type="password" register={register} />
+            <div>
+              <label htmlFor="password" className="block text-base/7 font-semibold text-neutral-950">
+                Lykilorð
+              </label>
+              <div className="mt-2">
+                <Input id="password" type="password" {...register("password")} />
+              </div>
+            </div>
 
             <div className="flex items-center justify-between">
               <div className="flex gap-3">
@@ -86,7 +100,9 @@ export default function Login() {
             </div>
 
             <div>
-              <Button type="submit">Innskrá</Button>
+              <Button type="submit" size="lg" className="w-full">
+                Innskrá
+              </Button>
             </div>
           </form>
 

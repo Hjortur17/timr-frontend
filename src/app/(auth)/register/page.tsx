@@ -4,8 +4,8 @@ import axios from "axios";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
-import Button from "@/components/Button";
-import Input from "@/components/Input";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import type { RegisterForm } from "@/types/forms";
 import { setToken } from "@/utils/auth";
 
@@ -39,15 +39,45 @@ export default function Register() {
       <div className="sm:mx-auto sm:w-full sm:max-w-[480px]">
         <div className="px-6 py-12 ">
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-            <Input label="Nafn" name="name" type="text" register={register} />
+            <div>
+              <label htmlFor="name" className="block text-base/7 font-semibold text-neutral-950">
+                Nafn
+              </label>
+              <div className="mt-2">
+                <Input id="name" type="text" {...register("name")} />
+              </div>
+            </div>
 
-            <Input label="Netfang" name="email" type="email" register={register} />
+            <div>
+              <label htmlFor="email" className="block text-base/7 font-semibold text-neutral-950">
+                Netfang
+              </label>
+              <div className="mt-2">
+                <Input id="email" type="email" {...register("email")} />
+              </div>
+            </div>
 
-            <Input label="Lykilorð" name="password" type="password" register={register} />
+            <div>
+              <label htmlFor="password" className="block text-base/7 font-semibold text-neutral-950">
+                Lykilorð
+              </label>
+              <div className="mt-2">
+                <Input id="password" type="password" {...register("password")} />
+              </div>
+            </div>
 
-            <Input label="Staðfesta lykilorð" name="password_confirmation" type="password" register={register} />
+            <div>
+              <label htmlFor="password_confirmation" className="block text-base/7 font-semibold text-neutral-950">
+                Staðfesta lykilorð
+              </label>
+              <div className="mt-2">
+                <Input id="password_confirmation" type="password" {...register("password_confirmation")} />
+              </div>
+            </div>
 
-            <Button type="submit">Nýskrá</Button>
+            <Button type="submit" size="lg" className="w-full">
+              Nýskrá
+            </Button>
           </form>
         </div>
 
