@@ -4,7 +4,7 @@ const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
       { hostname: "tailwindcss.com", pathname: "/plus-assets/**" },
-      { hostname: "images.unsplash.com", pathname: "/**" },
+      { hostname: "ui-avatars.com", pathname: "/**" },
     ],
   },
   redirects: () => [

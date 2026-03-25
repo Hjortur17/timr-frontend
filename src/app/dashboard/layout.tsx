@@ -1,6 +1,14 @@
 "use client";
 
-import { Banknote, Calendar, Home, Menu, Settings, Users, X } from "lucide-react";
+import {
+  Banknote,
+  Calendar,
+  Home,
+  Menu,
+  Settings,
+  Users,
+  X,
+} from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -17,12 +25,22 @@ import { UserProvider, useUser } from "@/context/UserContext";
 import type { User } from "@/types/forms";
 import { cn } from "@/utils/classname";
 
-const navigation = [
-  { name: "Stjórnborð", href: "/dashboard", icon: Home },
-  { name: "Vaktir", href: "/dashboard/shifts", icon: Calendar },
-  { name: "Starfsmenn", href: "/dashboard/employees", icon: Users },
-  // { name: "Launakerfi", href: "/dashboard/payroll", icon: Banknote },
-  { name: "Stillingar", href: "/dashboard/settings", icon: Settings },
+const allNavigation = [
+  { name: "Stjórnborð", href: "/dashboard", icon: Home, managerOnly: false },
+  {
+    name: "Vaktir",
+    href: "/dashboard/shifts",
+    icon: Calendar,
+    managerOnly: false,
+  },
+  {
+    name: "Starfsmenn",
+    href: "/dashboard/employees",
+    icon: Users,
+    managerOnly: true,
+  },
+  // { name: "Launakerfi", href: "/dashboard/payroll", icon: Banknote, managerOnly: true },
+  // { name: "Stillingar", href: "/dashboard/settings", icon: Settings, managerOnly: false },
 ];
 
 const ONBOARDING_COMPLETE = 6;
@@ -36,11 +54,17 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
 }
 
 function DashboardShell({ children }: { children: ReactNode }) {
-  const { user, setUser } = useUser();
+  const { user, setUser, isManager } = useUser();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const pathname = usePathname();
+  const navigation = allNavigation.filter(
+    (item) => !item.managerOnly || isManager,
+  );
 
-  const isCurrent = (href: string) => (href === "/dashboard" ? pathname === "/dashboard" : pathname.startsWith(href));
+  const isCurrent = (href: string) =>
+    href === "/dashboard"
+      ? pathname === "/dashboard"
+      : pathname.startsWith(href);
 
   if (user.onboarding_step < ONBOARDING_COMPLETE) {
     return <OnboardingWizard user={user} setUser={setUser} />;
@@ -48,8 +72,15 @@ function DashboardShell({ children }: { children: ReactNode }) {
 
   return (
     <div>
-      <Sheet open={sidebarOpen} onOpenChange={(value) => !value && setSidebarOpen(false)}>
-        <SheetContent side="left" showCloseButton={false} className="w-full max-w-xs p-0 lg:hidden">
+      <Sheet
+        open={sidebarOpen}
+        onOpenChange={(value) => !value && setSidebarOpen(false)}
+      >
+        <SheetContent
+          side="left"
+          showCloseButton={false}
+          className="w-full max-w-xs p-0 lg:hidden"
+        >
           <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-white px-6 pb-2">
             <div className="relative flex h-16 shrink-0 items-center">
               <Image
@@ -87,7 +118,9 @@ function DashboardShell({ children }: { children: ReactNode }) {
                             <item.icon
                               aria-hidden
                               className={cn(
-                                current ? "text-primary" : "text-neutral-400 group-hover:text-primary",
+                                current
+                                  ? "text-primary"
+                                  : "text-neutral-400 group-hover:text-primary",
                                 "size-6 shrink-0",
                               )}
                             />
@@ -101,11 +134,15 @@ function DashboardShell({ children }: { children: ReactNode }) {
 
                 {user.companies.length > 1 && (
                   <li>
-                    <div className="text-xs/6 font-semibold text-neutral-400">Vinnustaðir</div>
+                    <div className="text-xs/6 font-semibold text-neutral-400">
+                      Vinnustaðir
+                    </div>
                     <ul className="-mx-2 mt-2 space-y-1">
                       {/* TODO: Login with a click on the company */}
                       {user.companies.map((company) => {
-                        const isCurrentCompany = pathname.startsWith(`/dashboard/companies/${company.id}`);
+                        const isCurrentCompany = pathname.startsWith(
+                          `/dashboard/companies/${company.id}`,
+                        );
                         return (
                           <li key={company.id}>
                             <Link
@@ -180,7 +217,9 @@ function DashboardShell({ children }: { children: ReactNode }) {
                           <item.icon
                             aria-hidden
                             className={cn(
-                              current ? "text-primary" : "text-neutral-400 group-hover:text-primary",
+                              current
+                                ? "text-primary"
+                                : "text-neutral-400 group-hover:text-primary",
                               "size-6 shrink-0",
                             )}
                           />
@@ -193,11 +232,15 @@ function DashboardShell({ children }: { children: ReactNode }) {
               </li>
               {user.companies.length > 1 && (
                 <li>
-                  <div className="text-xs/6 font-semibold text-neutral-400">Vinnustaðir</div>
+                  <div className="text-xs/6 font-semibold text-neutral-400">
+                    Vinnustaðir
+                  </div>
                   <ul className="-mx-2 mt-2 space-y-1">
                     {/* TODO: Login with a click on the company */}
                     {user.companies.map((company) => {
-                      const isCurrentCompany = pathname.startsWith(`/dashboard/companies/${company.id}`);
+                      const isCurrentCompany = pathname.startsWith(
+                        `/dashboard/companies/${company.id}`,
+                      );
                       return (
                         <li key={company.id}>
                           <Link
@@ -234,7 +277,7 @@ function DashboardShell({ children }: { children: ReactNode }) {
                 >
                   <Image
                     alt=""
-                    src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+                    src="https://ui-avatars.com/api/?name=U"
                     className="size-8 rounded-full bg-neutral-50 outline -outline-offset-1 outline-black/5"
                     width={32}
                     height={32}
@@ -257,12 +300,14 @@ function DashboardShell({ children }: { children: ReactNode }) {
           <span className="sr-only">Open sidebar</span>
           <Menu aria-hidden className="size-6" />
         </button>
-        <div className="flex-1 text-sm/6 font-semibold text-neutral-900">Dashboard</div>
+        <div className="flex-1 text-sm/6 font-semibold text-neutral-900">
+          Dashboard
+        </div>
         <a href="/dashboard">
           <span className="sr-only">Your profile</span>
           <Image
             alt=""
-            src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+            src="https://ui-avatars.com/api/?name=U"
             className="size-8 rounded-full bg-neutral-50 outline -outline-offset-1 outline-black/5"
             width={32}
             height={32}
@@ -279,13 +324,22 @@ function DashboardShell({ children }: { children: ReactNode }) {
 
 const STEP_NAMES = ["Fyrirtæki", "Vaktir", "Starfsfólk", "Lokið"]; //  "Launakerfi"
 
-function stepStatus(index: number, currentStep: number): "complete" | "current" | "upcoming" {
+function stepStatus(
+  index: number,
+  currentStep: number,
+): "complete" | "current" | "upcoming" {
   if (index + 1 < currentStep) return "complete";
   if (index + 1 === currentStep) return "current";
   return "upcoming";
 }
 
-function OnboardingWizard({ user, setUser }: { user: User; setUser: (user: User) => void }) {
+function OnboardingWizard({
+  user,
+  setUser,
+}: {
+  user: User;
+  setUser: (user: User) => void;
+}) {
   const currentStep = user.onboarding_step;
 
   const steps = STEP_NAMES.map((name, i) => ({

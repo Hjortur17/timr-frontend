@@ -9,6 +9,7 @@ import { authHeaders, clearToken, getToken } from "@/utils/auth";
 interface UserContextValue {
   user: User;
   setUser: (user: User) => void;
+  isManager: boolean;
 }
 
 const UserContext = createContext<UserContextValue | null>(null);
@@ -51,5 +52,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
 
   if (!user) return null;
 
-  return <UserContext.Provider value={{ user, setUser }}>{children}</UserContext.Provider>;
+  const isManager = user.companies.some((c) => c.id === user.company_id);
+
+  return <UserContext.Provider value={{ user, setUser, isManager }}>{children}</UserContext.Provider>;
 }
