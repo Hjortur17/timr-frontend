@@ -44,6 +44,18 @@ export interface Employee {
   updated_at: string;
 }
 
+export interface ShiftAssignment {
+  id: number;
+  shift_id: number;
+  employee_id: number;
+  date: string;
+  published: boolean;
+  shift: Shift;
+  employee: Employee;
+  created_at: string;
+  updated_at: string;
+}
+
 export const companyFormSchema = z.object({
   name: z.string().min(1, { message: "Nafn fyrirtækis er nauðsynlegt" }),
 });
