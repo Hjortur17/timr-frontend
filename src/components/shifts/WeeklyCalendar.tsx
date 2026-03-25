@@ -564,7 +564,7 @@ function ShiftBlock({
   return (
     <div
       className={cn(
-        "w-full gap-2 rounded-full flex items-center text-xs bg-neutral-200/50 py-2 px-3",
+        "w-full gap-2 rounded-lg flex items-center text-xs bg-neutral-200/50 py-2 px-3",
         dragging && "shadow-lg rotate-1",
       )}
     >
