@@ -1,6 +1,6 @@
 "use client";
 
-import { Banknote, Calendar, Home, Menu, Settings, Users, X } from "lucide-react";
+import { Banknote, Calendar, Clock, Home, Menu, Settings, Users } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -17,22 +17,25 @@ import { UserProvider, useUser } from "@/context/UserContext";
 import type { User } from "@/types/forms";
 import { cn } from "@/utils/classname";
 
-const allNavigation = [
-  { name: "Stjórnborð", href: "/dashboard", icon: Home, managerOnly: false },
-  {
-    name: "Vaktir",
-    href: "/dashboard/shifts",
-    icon: Calendar,
-    managerOnly: false,
-  },
-  {
-    name: "Starfsmenn",
-    href: "/dashboard/employees",
-    icon: Users,
-    managerOnly: true,
-  },
-  // { name: "Launakerfi", href: "/dashboard/payroll", icon: Banknote, managerOnly: true },
-  // { name: "Stillingar", href: "/dashboard/settings", icon: Settings, managerOnly: false },
+interface NavItem {
+  name: string;
+  href: string;
+  icon: typeof Home;
+}
+
+const managerNavigation: NavItem[] = [
+  { name: "Stjórnborð", href: "/dashboard", icon: Home },
+  { name: "Vaktir", href: "/dashboard/shifts", icon: Calendar },
+  { name: "Starfsmenn", href: "/dashboard/employees", icon: Users },
+  // { name: "Launakerfi", href: "/dashboard/payroll", icon: Banknote },
+  // { name: "Stillingar", href: "/dashboard/settings", icon: Settings },
+];
+
+const employeeNavigation: NavItem[] = [
+  { name: "Stjórnborð", href: "/dashboard", icon: Home },
+  { name: "Vaktirnar mínar", href: "/dashboard/my-shifts", icon: Calendar },
+  // { name: "Stimpla", href: "/dashboard/clock", icon: Clock },
+  // { name: "Stillingar", href: "/dashboard/settings", icon: Settings },
 ];
 
 const ONBOARDING_COMPLETE = 6;
@@ -49,7 +52,7 @@ function DashboardShell({ children }: { children: ReactNode }) {
   const { user, setUser, isManager } = useUser();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const pathname = usePathname();
-  const navigation = allNavigation.filter((item) => !item.managerOnly || isManager);
+  const navigation = isManager ? managerNavigation : employeeNavigation;
 
   const isCurrent = (href: string) => (href === "/dashboard" ? pathname === "/dashboard" : pathname.startsWith(href));
 

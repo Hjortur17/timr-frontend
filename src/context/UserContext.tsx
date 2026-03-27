@@ -10,6 +10,7 @@ interface UserContextValue {
   user: User;
   setUser: (user: User) => void;
   isManager: boolean;
+  isEmployee: boolean;
 }
 
 const UserContext = createContext<UserContextValue | null>(null);
@@ -52,7 +53,10 @@ export function UserProvider({ children }: { children: ReactNode }) {
 
   if (!user) return null;
 
-  const isManager = (user.companies ?? []).some((c) => c.id === user.company_id);
+  const isManager = (user.companies ?? []).some(
+    (c) => c.id === user.company_id && (c.role === "owner" || c.role === "admin"),
+  );
+  const isEmployee = !isManager;
 
-  return <UserContext.Provider value={{ user, setUser, isManager }}>{children}</UserContext.Provider>;
+  return <UserContext.Provider value={{ user, setUser, isManager, isEmployee }}>{children}</UserContext.Provider>;
 }
