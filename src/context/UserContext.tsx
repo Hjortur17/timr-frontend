@@ -52,7 +52,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
 
   if (!user) return null;
 
-  const isManager = user.companies.some((c) => c.id === user.company_id);
+  const isManager = (user.companies ?? []).some((c) => c.id === user.company_id);
 
   return <UserContext.Provider value={{ user, setUser, isManager }}>{children}</UserContext.Provider>;
 }

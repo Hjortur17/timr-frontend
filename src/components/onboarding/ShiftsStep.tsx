@@ -6,6 +6,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { TimeInput } from "@/components/ui/time-input";
 import type { Shift, ShiftForm, User } from "@/types/forms";
 import { shiftFormSchema } from "@/types/forms";
 import { authHeaders } from "@/utils/auth";
@@ -17,7 +18,7 @@ function ShiftForm({ onCreated }: { onCreated: (shift: Shift) => void }) {
   });
 
   const onSubmit = async (data: ShiftForm) => {
-    const response = await axios.post("/api/manager/shifts", { ...data, status: "draft" }, { headers: authHeaders() });
+    const response = await axios.post("/api/manager/shifts", data, { headers: authHeaders() });
     onCreated(response.data.data);
   };
 
@@ -36,7 +37,7 @@ function ShiftForm({ onCreated }: { onCreated: (shift: Shift) => void }) {
           Upphafstími
         </label>
         <div className="mt-2">
-          <Input id="start_time" type="time" {...register("start_time")} />
+          <TimeInput id="start_time" placeholder="HH:MM" {...register("start_time")} />
         </div>
       </div>
       <div>
@@ -44,7 +45,7 @@ function ShiftForm({ onCreated }: { onCreated: (shift: Shift) => void }) {
           Lokatími
         </label>
         <div className="mt-2">
-          <Input id="end_time" type="time" {...register("end_time")} />
+          <TimeInput id="end_time" placeholder="HH:MM" {...register("end_time")} />
         </div>
       </div>
       <div>
