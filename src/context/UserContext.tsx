@@ -2,7 +2,13 @@
 
 import axios from "axios";
 import { useRouter } from "next/navigation";
-import { createContext, type ReactNode, useContext, useEffect, useState } from "react";
+import {
+  createContext,
+  type ReactNode,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import type { User } from "@/types/forms";
 import { authHeaders, clearToken, getToken } from "@/utils/auth";
 
@@ -11,6 +17,7 @@ interface UserContextValue {
   setUser: (user: User) => void;
   isManager: boolean;
   isEmployee: boolean;
+  logout: () => Promise<void>;
 }
 
 const UserContext = createContext<UserContextValue | null>(null);
@@ -30,17 +37,20 @@ export function UserProvider({ children }: { children: ReactNode }) {
     const token = getToken();
     if (!token) {
       router.replace("/login");
+      setLoading(false);
       return;
     }
 
     axios
       .get("/api/auth/user", { headers: authHeaders() })
-      .then((res) => setUser(res.data.data))
+      .then((res) => {
+        setUser(res.data.data);
+        setLoading(false);
+      })
       .catch(() => {
         clearToken();
         router.replace("/login");
-      })
-      .finally(() => setLoading(false));
+      });
   }, [router]);
 
   if (loading) {
@@ -54,9 +64,22 @@ export function UserProvider({ children }: { children: ReactNode }) {
   if (!user) return null;
 
   const isManager = (user.companies ?? []).some(
-    (c) => c.id === user.company_id && (c.role === "owner" || c.role === "admin"),
+    (c) =>
+      c.id === user.company_id && (c.role === "owner" || c.role === "admin"),
   );
   const isEmployee = !isManager;
 
-  return <UserContext.Provider value={{ user, setUser, isManager, isEmployee }}>{children}</UserContext.Provider>;
+  async function logout() {
+    await axios.post("/api/auth/logout", null, { headers: authHeaders() });
+    clearToken();
+    router.replace("/login");
+  }
+
+  return (
+    <UserContext.Provider
+      value={{ user, setUser, isManager, isEmployee, logout }}
+    >
+      {children}
+    </UserContext.Provider>
+  );
 }

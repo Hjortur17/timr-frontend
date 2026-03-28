@@ -237,24 +237,29 @@ export default function WeeklyCalendar() {
     const dropData = over.data.current as { employeeId: number; dayIndex: number; day: dayjs.Dayjs } | undefined;
 
     if (!dragData || !dropData) return;
-    if (dragData.employeeId !== dropData.employeeId) return;
-    if (dragData.dayIndex === dropData.dayIndex) return;
+    if (dragData.employeeId === dropData.employeeId && dragData.dayIndex === dropData.dayIndex) return;
 
     const assignment = dragData.assignment;
     const newDate = dropData.day.format("YYYY-MM-DD");
+    const newEmployeeId = dropData.employeeId;
 
     // Optimistic update
-    const updated: ShiftAssignment = { ...assignment, date: newDate };
+    const updated: ShiftAssignment = { ...assignment, date: newDate, employee_id: newEmployeeId };
     setAssignments((prev) => prev.map((a) => (a.id === assignment.id ? updated : a)));
 
     try {
+      const body: Record<string, unknown> = { date: newDate };
+      if (dragData.employeeId !== dropData.employeeId) {
+        body.employee_id = newEmployeeId;
+      }
       const response = await axios.put(
         `/api/manager/shift-assignments/${assignment.id}`,
-        { date: newDate },
+        body,
         { headers: authHeaders() },
       );
       const serverAssignment = response.data.data as ShiftAssignment;
       setAssignments((prev) => prev.map((a) => (a.id === assignment.id ? serverAssignment : a)));
+      toast.success("Vakt færð");
     } catch (err: unknown) {
       setAssignments((prev) => prev.map((a) => (a.id === assignment.id ? assignment : a)));
       const message =

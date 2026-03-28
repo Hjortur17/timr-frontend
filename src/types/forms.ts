@@ -102,3 +102,39 @@ export const employeeFormSchema = z.object({
 });
 
 export type EmployeeForm = z.infer<typeof employeeFormSchema>;
+
+export interface ShiftTemplateEntry {
+  id: number;
+  shift_template_id: number;
+  shift_id: number;
+  employee_id: number | null;
+  day_offset: number;
+  shift: Shift;
+  employee: Employee | null;
+}
+
+export interface ShiftTemplate {
+  id: number;
+  company_id: number;
+  name: string;
+  description: string | null;
+  cycle_length_days: number;
+  entries: ShiftTemplateEntry[];
+  created_at: string;
+  updated_at: string;
+}
+
+export const shiftTemplateFormSchema = z.object({
+  name: z.string().min(1, { message: "Nafn er nauðsynlegt" }),
+  description: z.string().optional().or(z.literal("")),
+  cycle_length_days: z.number().int().min(1, { message: "Hringrás verður að vera a.m.k. 1 dagur" }),
+});
+
+export type ShiftTemplateForm = z.infer<typeof shiftTemplateFormSchema>;
+
+export const generateScheduleFormSchema = z.object({
+  start_date: z.string().min(1, { message: "Upphafsdagur er nauðsynlegur" }),
+  end_date: z.string().min(1, { message: "Lokadagur er nauðsynlegur" }),
+});
+
+export type GenerateScheduleForm = z.infer<typeof generateScheduleFormSchema>;

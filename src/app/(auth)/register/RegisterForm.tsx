@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
+import { SocialLoginButtons } from "@/components/SocialLoginButtons";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import type { RegisterForm } from "@/types/forms";
@@ -98,6 +99,8 @@ export default function RegisterForm() {
               {isInvite ? "Klára skráningu" : "Nýskrá"}
             </Button>
           </form>
+
+          {!isInvite && <SocialLoginButtons />}
         </div>
 
         {!isInvite && (

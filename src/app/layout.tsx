@@ -13,7 +13,8 @@ const plusJakartaSans = Plus_Jakarta_Sans({
 
 export const metadata: Metadata = {
   title: "Timr | Skipulagðu vaktir á öruggan hátt",
-  description: "Skipulagðu vaktir, stjórnaðu starfsmönnum og fylgstu með mætingu — á einum stað.",
+  description:
+    "Skipulagðu vaktir, stjórnaðu starfsmönnum og fylgstu með mætingu — á einum stað.",
 };
 
 export default function RootLayout({
