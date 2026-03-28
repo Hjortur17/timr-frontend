@@ -1,4 +1,5 @@
 import { ChevronDownIcon } from "lucide-react";
+import { LinkedAccounts } from "@/components/LinkedAccounts";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
@@ -224,6 +225,14 @@ export default function ShiftsPage() {
           <Button type="submit">Save</Button>
         </div>
       </form>
+
+      <div className="mt-12 border-t border-border pt-12">
+        <div className="grid grid-cols-1 gap-x-8 gap-y-10 md:grid-cols-3">
+          <div>
+            <LinkedAccounts />
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
