@@ -3,6 +3,7 @@ import { Inter, Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
 import { cn } from "@/utils/classname";
+import { UserProvider } from "@/context/UserContext";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 
@@ -13,7 +14,8 @@ const plusJakartaSans = Plus_Jakarta_Sans({
 
 export const metadata: Metadata = {
   title: "Timr | Skipulagðu vaktir á öruggan hátt",
-  description: "Skipulagðu vaktir, stjórnaðu starfsmönnum og fylgstu með mætingu — á einum stað.",
+  description:
+    "Skipulagðu vaktir, stjórnaðu starfsmönnum og fylgstu með mætingu — á einum stað.",
 };
 
 export default function RootLayout({
@@ -24,8 +26,10 @@ export default function RootLayout({
   return (
     <html lang="is" className={cn("font-sans", inter.variable)}>
       <body className={cn(plusJakartaSans.className, "antialiased")}>
-        {children}
-        <Toaster />
+        <UserProvider>
+          {children}
+          <Toaster />
+        </UserProvider>
       </body>
     </html>
   );

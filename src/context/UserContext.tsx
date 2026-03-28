@@ -11,6 +11,7 @@ interface UserContextValue {
   setUser: (user: User) => void;
   isManager: boolean;
   isEmployee: boolean;
+  logout: () => Promise<void>;
 }
 
 const UserContext = createContext<UserContextValue | null>(null);
@@ -58,5 +59,11 @@ export function UserProvider({ children }: { children: ReactNode }) {
   );
   const isEmployee = !isManager;
 
-  return <UserContext.Provider value={{ user, setUser, isManager, isEmployee }}>{children}</UserContext.Provider>;
+  async function logout() {
+    await axios.post("/api/auth/logout", null, { headers: authHeaders() });
+    clearToken();
+    router.replace("/login");
+  }
+
+  return <UserContext.Provider value={{ user, setUser, isManager, isEmployee, logout }}>{children}</UserContext.Provider>;
 }
