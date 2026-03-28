@@ -54,10 +54,7 @@ export default function RegisterForm() {
             <input type="hidden" {...register("invite_token")} />
 
             <div>
-              <label
-                htmlFor="name"
-                className="block text-base/7 font-semibold text-neutral-950"
-              >
+              <label htmlFor="name" className="block text-base/7 font-semibold text-neutral-950">
                 Nafn
               </label>
               <div className="mt-2">
@@ -66,10 +63,7 @@ export default function RegisterForm() {
             </div>
 
             <div>
-              <label
-                htmlFor="email"
-                className="block text-base/7 font-semibold text-neutral-950"
-              >
+              <label htmlFor="email" className="block text-base/7 font-semibold text-neutral-950">
                 Netfang
               </label>
               <div className="mt-2">
@@ -84,34 +78,20 @@ export default function RegisterForm() {
             </div>
 
             <div>
-              <label
-                htmlFor="password"
-                className="block text-base/7 font-semibold text-neutral-950"
-              >
+              <label htmlFor="password" className="block text-base/7 font-semibold text-neutral-950">
                 Lykilorð
               </label>
               <div className="mt-2">
-                <Input
-                  id="password"
-                  type="password"
-                  {...register("password")}
-                />
+                <Input id="password" type="password" {...register("password")} />
               </div>
             </div>
 
             <div>
-              <label
-                htmlFor="password_confirmation"
-                className="block text-base/7 font-semibold text-neutral-950"
-              >
+              <label htmlFor="password_confirmation" className="block text-base/7 font-semibold text-neutral-950">
                 Staðfesta lykilorð
               </label>
               <div className="mt-2">
-                <Input
-                  id="password_confirmation"
-                  type="password"
-                  {...register("password_confirmation")}
-                />
+                <Input id="password_confirmation" type="password" {...register("password_confirmation")} />
               </div>
             </div>
 
@@ -126,10 +106,7 @@ export default function RegisterForm() {
         {!isInvite && (
           <p className="mt-10 text-center text-sm/6 text-neutral-500">
             Nú þegar með aðgang?{" "}
-            <Link
-              href="/login"
-              className="font-semibold text-primary hover:text-primary/90"
-            >
+            <Link href="/login" className="font-semibold text-primary hover:text-primary/90">
               Innskrá
             </Link>
           </p>

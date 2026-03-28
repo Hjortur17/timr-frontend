@@ -72,7 +72,9 @@ export function LinkedAccounts() {
   return (
     <div>
       <h2 className="text-base/7 font-semibold">Tengdir reikningar</h2>
-      <p className="mt-1 text-sm/6 text-muted-foreground">Tengdu Google eða Apple reikninginn þinn til að skrá þig inn hraðar.</p>
+      <p className="mt-1 text-sm/6 text-muted-foreground">
+        Tengdu Google eða Apple reikninginn þinn til að skrá þig inn hraðar.
+      </p>
 
       <div className="mt-6 space-y-4">
         {loading && <p className="text-sm text-muted-foreground">Hleð...</p>}
@@ -86,9 +88,7 @@ export function LinkedAccounts() {
         {accounts.map((account) => (
           <div key={account.id} className="flex items-center justify-between rounded-lg border border-border p-4">
             <div className="flex items-center gap-3">
-              {account.avatar_url && (
-                <img src={account.avatar_url} alt="" className="size-8 rounded-full" />
-              )}
+              {account.avatar_url && <img src={account.avatar_url} alt="" className="size-8 rounded-full" />}
               <div>
                 <p className="text-sm font-medium">{providerLabel(account.provider)}</p>
                 <p className="text-sm text-muted-foreground">{account.provider_email}</p>

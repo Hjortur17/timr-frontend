@@ -1,6 +1,17 @@
 "use client";
 
 import {
+  ArrowRightIcon,
+  Building2Icon,
+  CalendarRangeIcon,
+  CalendarSyncIcon,
+  FolderIcon,
+  MoreHorizontalIcon,
+  Trash2Icon,
+  UsersIcon,
+} from "lucide-react";
+import Link from "next/link";
+import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
@@ -16,17 +27,6 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-import {
-  MoreHorizontalIcon,
-  FolderIcon,
-  ArrowRightIcon,
-  Trash2Icon,
-  Building2Icon,
-  UsersIcon,
-  CalendarRangeIcon,
-  CalendarSyncIcon,
-} from "lucide-react";
-import Link from "next/link";
 
 const navigation = [
   { title: "Fyrirtækið", url: "/dashboard/employees", icon: Building2Icon },
