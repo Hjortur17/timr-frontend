@@ -1,38 +1,37 @@
 "use client";
 
 import {
-  ArrowRightIcon,
   Building2Icon,
   CalendarRangeIcon,
   CalendarSyncIcon,
-  FolderIcon,
-  MoreHorizontalIcon,
-  Trash2Icon,
   UsersIcon,
 } from "lucide-react";
 import Link from "next/link";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import {
   SidebarGroup,
   SidebarGroupLabel,
   SidebarMenu,
-  SidebarMenuAction,
   SidebarMenuButton,
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
 
 const navigation = [
-  { title: "Fyrirtækið", url: "/dashboard/employees", icon: Building2Icon },
-  { title: "Starfsfólk", url: "/dashboard", icon: UsersIcon },
-  { title: "Vaktir", url: "/dashboard", icon: CalendarRangeIcon },
-  { title: "Vaktarplan", url: "/dashboard", icon: CalendarSyncIcon },
+  {
+    title: "Fyrirtækið",
+    url: "/dashboard/settings/company",
+    icon: Building2Icon,
+  },
+  {
+    title: "Vaktir",
+    url: "/dashboard/settings/shifts",
+    icon: CalendarRangeIcon,
+  },
+  {
+    title: "Vaktarplan",
+    url: "/dashboard/settings/shifts-templates",
+    icon: CalendarSyncIcon,
+  },
 ];
 
 export function NavSettings() {
