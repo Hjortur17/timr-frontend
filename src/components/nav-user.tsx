@@ -22,7 +22,12 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar } from "@/components/ui/sidebar";
+import {
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  useSidebar,
+} from "@/components/ui/sidebar";
 import { useUser } from "@/context/UserContext";
 
 const navigation = [
@@ -46,7 +51,11 @@ export function NavUser() {
     <SidebarMenu>
       <SidebarMenuItem>
         <DropdownMenu>
-          <DropdownMenuTrigger render={<SidebarMenuButton size="lg" className="aria-expanded:bg-muted" />}>
+          <DropdownMenuTrigger
+            render={
+              <SidebarMenuButton size="lg" className="aria-expanded:bg-muted" />
+            }
+          >
             <Avatar>
               <AvatarImage src={user.avatar} alt={user.name} />
               <AvatarFallback>{avatarFallback}</AvatarFallback>
@@ -81,7 +90,7 @@ export function NavUser() {
             <DropdownMenuGroup>
               {navigation.map((item) => (
                 <Link href={item.url} key={item.title}>
-                  <DropdownMenuItem>
+                  <DropdownMenuItem disabled>
                     <item.icon />
                     {item.title}
                   </DropdownMenuItem>
