@@ -1,11 +1,6 @@
 "use client";
 
-import {
-  Building2Icon,
-  CalendarRangeIcon,
-  CalendarSyncIcon,
-  UsersIcon,
-} from "lucide-react";
+import { Building2Icon, CalendarRangeIcon, CalendarSyncIcon, UsersIcon } from "lucide-react";
 import Link from "next/link";
 import {
   SidebarGroup,

@@ -18,16 +18,11 @@ const TABS = [
   },
 ];
 
-export default function SettingsLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function SettingsLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
 
-  const activeTab =
-    TABS.find((t) => pathname === t.path || pathname.startsWith(t.path + "/"))?.value ?? TABS[0].value;
+  const activeTab = TABS.find((t) => pathname === t.path || pathname.startsWith(t.path + "/"))?.value ?? TABS[0].value;
 
   return (
     <div className="px-4 sm:px-6 lg:px-8">

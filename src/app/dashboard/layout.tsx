@@ -8,8 +8,7 @@ import ShiftsStep from "@/components/onboarding/ShiftsStep";
 import StaffStep from "@/components/onboarding/StaffStep";
 import ProgressBar from "@/components/ProgressBar";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
-import { useUser } from "@/context/UserContext";
-import { UserProvider } from "@/context/UserContext";
+import { UserProvider, useUser } from "@/context/UserContext";
 import type { User } from "@/types/forms";
 
 const ONBOARDING_COMPLETE = 6;
@@ -65,22 +64,13 @@ function DashboardInner({ children }: { children: ReactNode }) {
 
 const STEP_NAMES = ["Fyrirtæki", "Vaktir", "Starfsfólk", "Lokið"]; //  "Launakerfi"
 
-function stepStatus(
-  index: number,
-  currentStep: number,
-): "complete" | "current" | "upcoming" {
+function stepStatus(index: number, currentStep: number): "complete" | "current" | "upcoming" {
   if (index + 1 < currentStep) return "complete";
   if (index + 1 === currentStep) return "current";
   return "upcoming";
 }
 
-function OnboardingWizard({
-  user,
-  setUser,
-}: {
-  user: User;
-  setUser: (user: User) => void;
-}) {
+function OnboardingWizard({ user, setUser }: { user: User; setUser: (user: User) => void }) {
   const currentStep = user.onboarding_step;
 
   const steps = STEP_NAMES.map((name, i) => ({

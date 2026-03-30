@@ -50,6 +50,9 @@ export interface ShiftAssignment {
   employee_id: number;
   date: string;
   published: boolean;
+  published_date: string | null;
+  published_employee_id: number | null;
+  has_unpublished_changes: boolean;
   shift: Shift;
   employee: Employee;
   created_at: string;
@@ -103,23 +106,19 @@ export const employeeFormSchema = z.object({
 
 export type EmployeeForm = z.infer<typeof employeeFormSchema>;
 
-export interface ShiftTemplateEntry {
-  id: number;
-  shift_template_id: number;
-  shift_id: number;
-  employee_id: number | null;
-  day_offset: number;
-  shift: Shift;
-  employee: Employee | null;
-}
+export type PatternType = "2-2-3" | "5-5-4" | "5-2" | "4-3" | "custom";
 
 export interface ShiftTemplate {
   id: number;
   company_id: number;
   name: string;
   description: string | null;
+  shift_id: number;
+  pattern: PatternType;
+  blocks: number[];
   cycle_length_days: number;
-  entries: ShiftTemplateEntry[];
+  shift: Shift;
+  employees: Employee[];
   created_at: string;
   updated_at: string;
 }
@@ -127,7 +126,10 @@ export interface ShiftTemplate {
 export const shiftTemplateFormSchema = z.object({
   name: z.string().min(1, { message: "Nafn er nauðsynlegt" }),
   description: z.string().optional().or(z.literal("")),
-  cycle_length_days: z.number().int().min(1, { message: "Hringrás verður að vera a.m.k. 1 dagur" }),
+  shift_id: z.number().int().min(1, { message: "Vakt er nauðsynleg" }),
+  pattern: z.enum(["2-2-3", "5-5-4", "5-2", "4-3", "custom"]),
+  blocks: z.array(z.number().int().min(1)).min(1),
+  employee_ids: z.array(z.number().int()).min(1, { message: "Velja þarf a.m.k. einn starfsmann" }),
 });
 
 export type ShiftTemplateForm = z.infer<typeof shiftTemplateFormSchema>;
@@ -138,3 +140,11 @@ export const generateScheduleFormSchema = z.object({
 });
 
 export type GenerateScheduleForm = z.infer<typeof generateScheduleFormSchema>;
+
+export interface ShiftDeletionPreview {
+  total_assignments: number;
+  total_employees: number;
+  future_assignments: number;
+  future_employees: number;
+  replacement_shifts: Array<{ id: number; title: string; start_time: string; end_time: string }>;
+}
