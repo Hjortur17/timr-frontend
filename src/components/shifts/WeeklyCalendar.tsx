@@ -68,8 +68,8 @@ function durationMinutes(startTime: string, endTime: string): number {
 function formatDuration(minutes: number): string {
   const h = Math.floor(minutes / 60);
   const m = minutes % 60;
-  if (m === 0) return `${h}h`;
-  return `${h}h ${m}min`;
+  if (m === 0) return `${h}klst`;
+  return `${h}klst ${m}min`;
 }
 
 function getWeekDays(weekStart: dayjs.Dayjs): dayjs.Dayjs[] {

@@ -51,8 +51,8 @@ function durationMinutes(startTime: string, endTime: string): number {
 function formatDuration(minutes: number): string {
   const h = Math.floor(minutes / 60);
   const m = minutes % 60;
-  if (m === 0) return `${h}h`;
-  return `${h}h ${m}min`;
+  if (m === 0) return `${h}klst`;
+  return `${h}klst ${m}min`;
 }
 
 function getWeekDays(weekStart: dayjs.Dayjs): dayjs.Dayjs[] {
@@ -72,7 +72,9 @@ export default function EmployeeWeeklyCalendar() {
     const from = weekStart.format("YYYY-MM-DD");
     const to = weekEnd.format("YYYY-MM-DD");
     axios
-      .get(`/api/employee/shifts?from=${from}&to=${to}`, { headers: authHeaders() })
+      .get(`/api/employee/shifts?from=${from}&to=${to}`, {
+        headers: authHeaders(),
+      })
       .then((res) => setAssignments(res.data.data ?? []))
       .catch(console.error)
       .finally(() => setLoading(false));
@@ -91,11 +93,16 @@ export default function EmployeeWeeklyCalendar() {
   }, [assignments]);
 
   const totalWeekMinutes = useMemo(() => {
-    return assignments.reduce((sum, a) => sum + durationMinutes(a.shift.start_time, a.shift.end_time), 0);
+    return assignments.reduce(
+      (sum, a) => sum + durationMinutes(a.shift.start_time, a.shift.end_time),
+      0,
+    );
   }, [assignments]);
 
   const today = dayjs();
-  const isCurrentWeek = today.isoWeek() === weekStart.isoWeek() && today.year() === weekStart.year();
+  const isCurrentWeek =
+    today.isoWeek() === weekStart.isoWeek() &&
+    today.year() === weekStart.year();
 
   const prevWeek = () => setWeekStart((w) => w.subtract(1, "week"));
   const nextWeek = () => setWeekStart((w) => w.add(1, "week"));
@@ -142,7 +149,9 @@ export default function EmployeeWeeklyCalendar() {
           {weekStart.format("D. MMM")} – {weekEnd.format("D. MMM YYYY")}
         </h2>
         {totalWeekMinutes > 0 && (
-          <span className="ml-auto text-sm text-neutral-500">{formatDuration(totalWeekMinutes)} þessi vika</span>
+          <span className="ml-auto text-sm text-neutral-500">
+            {formatDuration(totalWeekMinutes)} þessi vika
+          </span>
         )}
       </div>
 
@@ -164,7 +173,12 @@ export default function EmployeeWeeklyCalendar() {
                   <div className="text-[11px] font-semibold uppercase tracking-wider text-neutral-400">
                     {DAY_LABELS[i]}
                   </div>
-                  <div className={cn("mt-0.5 text-xl font-bold", isToday ? "text-primary" : "text-neutral-900")}>
+                  <div
+                    className={cn(
+                      "mt-0.5 text-xl font-bold",
+                      isToday ? "text-primary" : "text-neutral-900",
+                    )}
+                  >
                     {day.date()}
                   </div>
                 </div>
@@ -198,9 +212,16 @@ export default function EmployeeWeeklyCalendar() {
                           key={assignment.id}
                           className="w-full gap-2 rounded-lg flex items-center text-xs bg-neutral-200/50 py-2 px-3"
                         >
-                          <div className={cn("h-3 w-3 rounded-full shrink-0", color.bg)} />
+                          <div
+                            className={cn(
+                              "h-3 w-3 rounded-full shrink-0",
+                              color.bg,
+                            )}
+                          />
                           <div className="flex-1 flex flex-col items-start gap-0.5 min-w-0">
-                            <div className="font-semibold truncate">{assignment.shift.title}</div>
+                            <div className="font-semibold truncate">
+                              {assignment.shift.title}
+                            </div>
                             <div className="font-medium opacity-90 shrink-0">
                               {formatShiftTime(assignment.shift.start_time)}–
                               {formatShiftTime(assignment.shift.end_time)}
