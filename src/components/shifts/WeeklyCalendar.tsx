@@ -431,36 +431,12 @@ export default function WeeklyCalendar({
     const actions = (
       <>
         {justPublishedIds && (
-          // <button
-          //   type="button"
-          //   onClick={undoPublish}
-          //   className="rounded-lg border border-neutral-300 px-3 py-1.5 text-sm font-medium text-neutral-700 hover:bg-neutral-50 transition-colors"
-          // >
-          //   Afturkalla birtingu
-          // </button>
           <Button type="button" variant="ghost" size="lg" onClick={undoPublish}>
             Afturkalla birtingu
           </Button>
         )}
         {hasUnpublishedAssignments && !justPublishedIds && (
           <>
-            {/*<button
-              type="button"
-              onClick={publishWeek}
-              disabled={isPublishingWeek}
-              className="rounded-lg bg-secondary text-primary border border-secondary px-3 py-1.5 text-sm font-medium hover:bg-secondary/80 transition-colors disabled:opacity-50 disabled:pointer-events-none"
-            >
-              {isPublishing ? "Birti..." : "Birta viku"}
-            </button>*/}
-            {/*<button
-              type="button"
-              onClick={publishAll}
-              disabled={isPublishing}
-              className="rounded-lg bg-secondary text-primary border border-secondary px-3 py-1.5 text-sm font-medium hover:bg-secondary/80 transition-colors disabled:opacity-50 disabled:pointer-events-none"
-            >
-              {isPublishing ? "Birti..." : "Birta allt"}
-            </button>*/}
-
             <Button
               type="button"
               variant="outline"
