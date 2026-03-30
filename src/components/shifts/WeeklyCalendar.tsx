@@ -427,41 +427,17 @@ export default function WeeklyCalendar({
 
   useEffect(() => {
     if (!onActionsChange) return;
-
-    const actions = (
-      <>
-        {justPublishedIds && (
-          <Button type="button" variant="ghost" size="lg" onClick={undoPublish}>
-            Afturkalla birtingu
-          </Button>
-        )}
-        {hasUnpublishedAssignments && !justPublishedIds && (
-          <>
-            <Button
-              type="button"
-              variant="outline"
-              size="lg"
-              onClick={publishWeek}
-              disabled={isPublishingWeek}
-            >
-              {isPublishingWeek && <Spinner className="size-4 animate-spin" />}
-              Birta viku
-            </Button>
-            <Button
-              type="button"
-              size="lg"
-              onClick={publishAll}
-              disabled={isPublishingAll}
-            >
-              {isPublishingAll && <Spinner className="size-4 animate-spin" />}
-              Birta allt
-            </Button>
-          </>
-        )}
-      </>
+    onActionsChange(
+      <RenderActions
+        justPublishedIds={justPublishedIds}
+        hasUnpublishedAssignments={hasUnpublishedAssignments}
+        isPublishingWeek={isPublishingWeek}
+        isPublishingAll={isPublishingAll}
+        undoPublish={undoPublish}
+        publishWeek={publishWeek}
+        publishAll={publishAll}
+      />,
     );
-
-    onActionsChange(actions);
   }, [
     onActionsChange,
     justPublishedIds,
@@ -520,35 +496,15 @@ export default function WeeklyCalendar({
           </h2>
           {!onActionsChange && (
             <div className="ml-auto flex items-center gap-2">
-              {justPublishedIds && (
-                <button
-                  type="button"
-                  onClick={undoPublish}
-                  className="rounded-lg border border-neutral-300 px-3 py-1.5 text-sm font-medium text-neutral-700 hover:bg-neutral-50 transition-colors"
-                >
-                  Afturkalla birtingu
-                </button>
-              )}
-              {hasUnpublishedAssignments && !justPublishedIds && (
-                <>
-                  <button
-                    type="button"
-                    onClick={publishWeek}
-                    disabled={isPublishing}
-                    className="rounded-lg bg-secondary text-primary border border-secondary px-3 py-1.5 text-sm font-medium hover:bg-secondary/80 transition-colors disabled:opacity-50 disabled:pointer-events-none"
-                  >
-                    {isPublishing ? "Birti..." : "Birta viku"}
-                  </button>
-                  <button
-                    type="button"
-                    onClick={publishAll}
-                    disabled={isPublishing}
-                    className="rounded-lg bg-secondary text-primary border border-secondary px-3 py-1.5 text-sm font-medium hover:bg-secondary/80 transition-colors disabled:opacity-50 disabled:pointer-events-none"
-                  >
-                    {isPublishing ? "Birti..." : "Birta allt"}
-                  </button>
-                </>
-              )}
+              <RenderActions
+                justPublishedIds={justPublishedIds}
+                hasUnpublishedAssignments={hasUnpublishedAssignments}
+                isPublishingWeek={isPublishingWeek}
+                isPublishingAll={isPublishingAll}
+                undoPublish={undoPublish}
+                publishWeek={publishWeek}
+                publishAll={publishAll}
+              />
             </div>
           )}
         </div>
@@ -827,4 +783,58 @@ function ShiftBlock({
       )}
     </div>
   );
+}
+
+function RenderActions({
+  justPublishedIds,
+  hasUnpublishedAssignments,
+  isPublishingWeek,
+  isPublishingAll,
+  undoPublish,
+  publishWeek,
+  publishAll,
+}: {
+  justPublishedIds: number[] | null;
+  hasUnpublishedAssignments: boolean;
+  isPublishingWeek: boolean;
+  isPublishingAll: boolean;
+  undoPublish: () => void;
+  publishWeek: () => void;
+  publishAll: () => void;
+}) {
+  if (justPublishedIds) {
+    return (
+      <Button type="button" variant="ghost" size="lg" onClick={undoPublish}>
+        Afturkalla birtingu
+      </Button>
+    );
+  }
+
+  if (hasUnpublishedAssignments && !justPublishedIds) {
+    return (
+      <>
+        <Button
+          type="button"
+          variant="outline"
+          size="lg"
+          onClick={publishWeek}
+          disabled={isPublishingWeek}
+        >
+          {isPublishingWeek && <Spinner className="size-4 animate-spin" />}
+          Birta viku
+        </Button>
+        <Button
+          type="button"
+          size="lg"
+          onClick={publishAll}
+          disabled={isPublishingAll}
+        >
+          {isPublishingAll && <Spinner className="size-4 animate-spin" />}
+          Birta allt
+        </Button>
+      </>
+    );
+  }
+
+  return null;
 }
