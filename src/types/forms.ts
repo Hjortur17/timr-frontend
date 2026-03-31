@@ -35,6 +35,7 @@ export interface Shift {
 
 export interface Employee {
   id: number;
+  ssn: string | null;
   name: string;
   email: string | null;
   phone: string | null;
@@ -114,6 +115,7 @@ export type ShiftForm = z.infer<typeof shiftFormSchema>;
 
 export const employeeFormSchema = z.object({
   name: z.string().min(1, { message: "Nafn er nauðsynlegt" }),
+  ssn: z.string().max(10).optional().or(z.literal("")),
   email: z.string().email({ message: "Netfang er ekki gilt" }).optional().or(z.literal("")),
   phone: z.string().optional().or(z.literal("")),
 });

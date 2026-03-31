@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { Spinner } from "@/components/ui/spinner";
+import { formatPhone, formatSsn } from "@/lib/utils";
 import type { Employee, EmployeeForm } from "@/types/forms";
 import { employeeFormSchema } from "@/types/forms";
 import { authHeaders } from "@/utils/auth";
@@ -101,19 +102,25 @@ export default function EmployeesPage() {
         <div className="mt-8 flow-root">
           <div className="-my-2 overflow-x-auto">
             <div className="inline-block min-w-full py-2 align-middle">
-              <table className="relative min-w-full divide-y divide-gray-300">
+              <table className="relative min-w-full divide-y divide-neutral-300">
                 <thead>
                   <tr>
-                    <th scope="col" className="py-3.5 pr-3 pl-4 text-left text-sm font-semibold text-gray-900 sm:pl-3">
+                    <th
+                      scope="col"
+                      className="py-3.5 pr-3 pl-4 text-left text-sm font-semibold text-neutral-900 sm:pl-3"
+                    >
                       Nafn
                     </th>
-                    <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+                    <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-neutral-900">
+                      Kennitala
+                    </th>
+                    <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-neutral-900">
                       Netfang
                     </th>
-                    <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+                    <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-neutral-900">
                       Sími
                     </th>
-                    <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+                    <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-neutral-900">
                       Aðgangur
                     </th>
                     <th scope="col" className="py-3.5 pr-4 pl-3 sm:pr-3">
@@ -124,11 +131,16 @@ export default function EmployeesPage() {
                 <tbody className="bg-white">
                   {employees.map((employee) => (
                     <tr key={employee.id} className="even:bg-foreground-light">
-                      <td className="py-4 pr-3 pl-4 text-sm font-medium whitespace-nowrap text-gray-900 sm:pl-3">
+                      <td className="py-4 pr-3 pl-4 text-sm font-medium whitespace-nowrap text-neutral-900 sm:pl-3">
                         {employee.name}
                       </td>
-                      <td className="px-3 py-4 text-sm whitespace-nowrap text-gray-500">{employee.email ?? "–"}</td>
-                      <td className="px-3 py-4 text-sm whitespace-nowrap text-gray-500">{employee.phone ?? "–"}</td>
+                      <td className="px-3 py-4 text-sm whitespace-nowrap text-neutral-500">
+                        {employee.ssn ? formatSsn(employee.ssn) : "–"}
+                      </td>
+                      <td className="px-3 py-4 text-sm whitespace-nowrap text-neutral-500">{employee.email ?? "–"}</td>
+                      <td className="px-3 py-4 text-sm whitespace-nowrap text-neutral-500">
+                        {employee.phone ? formatPhone(employee.phone) : "–"}
+                      </td>
                       <td className="px-3 py-4 text-sm whitespace-nowrap">
                         {employee.has_account ? (
                           <span className="inline-flex items-center rounded-full bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-green-600/20 ring-inset">
@@ -136,7 +148,7 @@ export default function EmployeesPage() {
                           </span>
                         ) : (
                           <div className="space-x-1">
-                            <span className="inline-flex items-center rounded-full bg-gray-50 px-2 py-1 text-xs font-medium text-gray-600 ring-1 ring-gray-500/10 ring-inset">
+                            <span className="inline-flex items-center rounded-full bg-neutral-50 px-2 py-1 text-xs font-medium text-neutral-600 ring-1 ring-neutral-500/10 ring-inset">
                               Óskráður
                             </span>
 
@@ -145,7 +157,7 @@ export default function EmployeesPage() {
                                 type="button"
                                 onClick={() => sendInvite(employee)}
                                 disabled={sendingInvite.has(employee.id)}
-                                className="relative cursor-pointer inline-flex items-center justify-center rounded-full bg-primary px-2 py-1 text-xs font-medium text-primary-foreground ring-1 ring-gray-500/10 ring-inset disabled:opacity-60 disabled:cursor-not-allowed"
+                                className="relative cursor-pointer inline-flex items-center justify-center rounded-full bg-primary px-2 py-1 text-xs font-medium text-primary-foreground ring-1 ring-neutral-500/10 ring-inset disabled:opacity-60 disabled:cursor-not-allowed"
                               >
                                 {sendingInvite.has(employee.id) && (
                                   <span className="absolute inset-0 flex items-center justify-center">
@@ -225,19 +237,19 @@ export default function EmployeesPage() {
 }
 
 function EditEmployeeForm({ employee, onUpdated }: { employee: Employee; onUpdated: (employee: Employee) => void }) {
-  const { register, handleSubmit } = useForm<EmployeeForm>({
+  const { register, handleSubmit, setValue } = useForm<EmployeeForm>({
     resolver: zodResolver(employeeFormSchema),
     defaultValues: {
       name: employee.name,
+      ssn: formatSsn(employee.ssn),
       email: employee.email ?? "",
-      phone: employee.phone ?? "",
+      phone: formatPhone(employee.phone),
     },
   });
 
   const onSubmit = async (data: EmployeeForm) => {
-    const response = await axios.put(`/api/manager/employees/${employee.id}`, data, {
-      headers: authHeaders(),
-    });
+    const cleaned = { ...data, ssn: data.ssn?.replace(/\D/g, "") || "", phone: data.phone?.replace(/\D/g, "") || "" };
+    const response = await axios.put(`/api/manager/employees/${employee.id}`, cleaned, { headers: authHeaders() });
     onUpdated(response.data.data);
   };
 
@@ -258,6 +270,22 @@ function EditEmployeeForm({ employee, onUpdated }: { employee: Employee; onUpdat
         </div>
       </div>
       <div>
+        <label htmlFor="edit-ssn" className="block text-base/7 font-semibold text-neutral-950">
+          Kennitala (valfrjálst)
+        </label>
+        <div className="mt-2">
+          <Input
+            id="edit-ssn"
+            type="text"
+            placeholder="123456-7890"
+            maxLength={11}
+            {...register("ssn", {
+              onChange: (e) => setValue("ssn", formatSsn(e.target.value)),
+            })}
+          />
+        </div>
+      </div>
+      <div>
         <label htmlFor="edit-email" className="block text-base/7 font-semibold text-neutral-950">
           Netfang (valfrjálst)
         </label>
@@ -270,7 +298,15 @@ function EditEmployeeForm({ employee, onUpdated }: { employee: Employee; onUpdat
           Sími (valfrjálst)
         </label>
         <div className="mt-2">
-          <Input id="edit-phone" type="tel" placeholder="000 0000" {...register("phone")} />
+          <Input
+            id="edit-phone"
+            type="tel"
+            placeholder="000 0000"
+            maxLength={8}
+            {...register("phone", {
+              onChange: (e) => setValue("phone", formatPhone(e.target.value)),
+            })}
+          />
         </div>
       </div>
 
@@ -282,15 +318,14 @@ function EditEmployeeForm({ employee, onUpdated }: { employee: Employee; onUpdat
 }
 
 function CreateEmployeeForm({ onCreated }: { onCreated: (employee: Employee) => void }) {
-  const { register, handleSubmit } = useForm<EmployeeForm>({
+  const { register, handleSubmit, setValue } = useForm<EmployeeForm>({
     resolver: zodResolver(employeeFormSchema),
-    defaultValues: { name: "", email: "", phone: "" },
+    defaultValues: { name: "", ssn: "", email: "", phone: "" },
   });
 
   const onSubmit = async (data: EmployeeForm) => {
-    const response = await axios.post("/api/manager/employees", data, {
-      headers: authHeaders(),
-    });
+    const cleaned = { ...data, ssn: data.ssn?.replace(/\D/g, "") || "", phone: data.phone?.replace(/\D/g, "") || "" };
+    const response = await axios.post("/api/manager/employees", cleaned, { headers: authHeaders() });
     onCreated(response.data.data);
   };
 
@@ -311,6 +346,22 @@ function CreateEmployeeForm({ onCreated }: { onCreated: (employee: Employee) => 
         </div>
       </div>
       <div>
+        <label htmlFor="create-ssn" className="block text-base/7 font-semibold text-neutral-950">
+          Kennitala (valfrjálst)
+        </label>
+        <div className="mt-2">
+          <Input
+            id="create-ssn"
+            type="text"
+            placeholder="123456-7890"
+            maxLength={11}
+            {...register("ssn", {
+              onChange: (e) => setValue("ssn", formatSsn(e.target.value)),
+            })}
+          />
+        </div>
+      </div>
+      <div>
         <label htmlFor="create-email" className="block text-base/7 font-semibold text-neutral-950">
           Netfang (valfrjálst)
         </label>
@@ -323,7 +374,15 @@ function CreateEmployeeForm({ onCreated }: { onCreated: (employee: Employee) => 
           Sími (valfrjálst)
         </label>
         <div className="mt-2">
-          <Input id="create-phone" type="tel" placeholder="000 0000" {...register("phone")} />
+          <Input
+            id="create-phone"
+            type="tel"
+            placeholder="000 0000"
+            maxLength={8}
+            {...register("phone", {
+              onChange: (e) => setValue("phone", formatPhone(e.target.value)),
+            })}
+          />
         </div>
       </div>
 

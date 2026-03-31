@@ -34,12 +34,8 @@ interface EmployeeSummary {
 export default function ManagerTimeEntry() {
   const [data, setData] = useState<EmployeeSummary[]>([]);
   const [loading, setLoading] = useState(true);
-  const [from, setFrom] = useState<Date | undefined>(
-    dayjs().startOf("month").toDate(),
-  );
-  const [to, setTo] = useState<Date | undefined>(
-    dayjs().endOf("month").toDate(),
-  );
+  const [from, setFrom] = useState<Date | undefined>(dayjs().startOf("month").toDate());
+  const [to, setTo] = useState<Date | undefined>(dayjs().endOf("month").toDate());
 
   useEffect(() => {
     setLoading(true);
@@ -65,13 +61,10 @@ export default function ManagerTimeEntry() {
       if (employeeId) params.set("employee_id", String(employeeId));
 
       try {
-        const response = await axios.get(
-          `/api/manager/clock-entries/export?${params.toString()}`,
-          {
-            headers: authHeaders(),
-            responseType: "blob",
-          },
-        );
+        const response = await axios.get(`/api/manager/clock-entries/export?${params.toString()}`, {
+          headers: authHeaders(),
+          responseType: "blob",
+        });
 
         const url = window.URL.createObjectURL(new Blob([response.data]));
         const link = document.createElement("a");
@@ -91,9 +84,7 @@ export default function ManagerTimeEntry() {
       {
         accessorKey: "employee.name",
         header: "Starfsmaður",
-        cell: ({ row }) => (
-          <span className="font-medium">{row.original.employee.name}</span>
-        ),
+        cell: ({ row }) => <span className="font-medium">{row.original.employee.name}</span>,
       },
       {
         accessorKey: "employee.email",
@@ -113,9 +104,7 @@ export default function ManagerTimeEntry() {
         accessorKey: "last_clocked_in_at",
         header: "Síðasta innstimplun",
         cell: ({ row }) =>
-          row.original.last_clocked_in_at
-            ? dayjs(row.original.last_clocked_in_at).format("D. MMM YYYY HH:mm")
-            : "–",
+          row.original.last_clocked_in_at ? dayjs(row.original.last_clocked_in_at).format("D. MMM YYYY HH:mm") : "–",
       },
       {
         id: "actions",
@@ -134,22 +123,12 @@ export default function ManagerTimeEntry() {
                   }
                 />
                 <DropdownMenuContent align="end" className="min-w-max">
-                  <DropdownMenuItem
-                    render={
-                      <Link href={`/dashboard/time-entry/${employeeId}`} />
-                    }
-                  >
+                  <DropdownMenuItem render={<Link href={`/dashboard/time-entry/${employeeId}`} />}>
                     Skoða
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => handleExport(employeeId)}>
                     <Download className="size-4" />
                     Sækja sem Excel
-                  </DropdownMenuItem>
-                  <DropdownMenuItem
-                    onClick={() => handleExportPayroll(employeeId)}
-                  >
-                    <Download className="size-4" />
-                    Sækja fyrir launakeyrslu
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
@@ -173,8 +152,7 @@ export default function ManagerTimeEntry() {
         <div>
           <h1 className="text-2xl/9 font-bold tracking-tight">Tímaskráning</h1>
           <p className="mt-2 text-sm/6 text-muted-foreground">
-            Sjáðu yfirlit yfir hvenær og hvar starfsfólk er að klukka sig
-            inn/út.
+            Sjáðu yfirlit yfir hvenær og hvar starfsfólk er að klukka sig inn/út.
           </p>
         </div>
         <Button type="button" size="lg" onClick={() => handleExport()}>
@@ -187,16 +165,17 @@ export default function ManagerTimeEntry() {
         <div className="w-56">
           <DatePicker
             value={from}
-            onChange={setFrom}
+            onChange={(date) => {
+              setFrom(date);
+              if (date && (!to || dayjs(date).isAfter(to))) {
+                setTo(dayjs(date).add(30, "day").toDate());
+              }
+            }}
             placeholder="Frá dagsetningu"
           />
         </div>
         <div className="w-56">
-          <DatePicker
-            value={to}
-            onChange={setTo}
-            placeholder="Til dagsetningar"
-          />
+          <DatePicker value={to} onChange={setTo} placeholder="Til dagsetningar" />
         </div>
       </div>
 
