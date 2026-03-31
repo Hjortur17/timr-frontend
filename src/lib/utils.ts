@@ -30,6 +30,8 @@ export function formatPhone(value: string | null | undefined): string {
 }
 
 export function formatDuration(value: number, unit: "hours" | "minutes" = "hours"): string {
+  console.log("value", value, "unit", unit);
+
   const totalMinutes = unit === "hours" ? Math.round(value * 60) : Math.round(value);
   const h = Math.floor(totalMinutes / 60);
   const m = totalMinutes % 60;

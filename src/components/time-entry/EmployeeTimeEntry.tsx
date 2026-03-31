@@ -30,11 +30,11 @@ export default function EmployeeTimeEntry() {
       .finally(() => setLoading(false));
   }, [from, to]);
 
-  const totalHours = useMemo(() => {
-    return entries.reduce((sum, entry) => sum + (entry.total_hours ?? 0), 0);
+  const totalMinutes = useMemo(() => {
+    return entries.reduce((sum, entry) => sum + (entry.total_minutes ?? 0), 0);
   }, [entries]);
 
-  const formattedTotal = useMemo(() => formatDuration(totalHours), [totalHours]);
+  const formattedTotal = useMemo(() => formatDuration(totalMinutes, "minutes"), [totalMinutes]);
 
   const columns: ColumnDef<ClockEntry>[] = useMemo(
     () => [
@@ -54,9 +54,10 @@ export default function EmployeeTimeEntry() {
         cell: ({ row }) => (row.original.clocked_out_at ? dayjs(row.original.clocked_out_at).format("HH:mm") : "–"),
       },
       {
-        accessorKey: "total_hours",
+        accessorKey: "total_minutes",
         header: "Heildartími",
-        cell: ({ row }) => (row.original.total_hours != null ? formatDuration(row.original.total_hours) : "–"),
+        cell: ({ row }) =>
+          row.original.total_minutes != null ? formatDuration(row.original.total_minutes, "minutes") : "–",
       },
       {
         accessorKey: "shift.title",

@@ -66,7 +66,7 @@ export interface ClockEntry {
   employee_id: number;
   clocked_in_at: string;
   clocked_out_at: string | null;
-  total_hours: number | null;
+  total_minutes: number | null;
   is_extra: boolean;
   clock_in_lat: number | null;
   clock_in_lng: number | null;

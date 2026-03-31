@@ -26,7 +26,7 @@ interface EmployeeSummary {
     name: string;
     email: string | null;
   };
-  total_hours: number;
+  total_minutes: number;
   entry_count: number;
   last_clocked_in_at: string | null;
 }
@@ -92,9 +92,9 @@ export default function ManagerTimeEntry() {
         cell: ({ row }) => row.original.employee.email ?? "–",
       },
       {
-        accessorKey: "total_hours",
+        accessorKey: "total_minutes",
         header: "Heildartímar",
-        cell: ({ row }) => formatDuration(row.original.total_hours),
+        cell: ({ row }) => formatDuration(row.original.total_minutes, "minutes"),
       },
       {
         accessorKey: "entry_count",
