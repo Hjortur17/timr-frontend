@@ -19,6 +19,7 @@ import isoWeek from "dayjs/plugin/isoWeek";
 import { ChevronLeft, ChevronRight, Plus, UserPlus, X } from "lucide-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
+import { formatDuration } from "@/lib/utils";
 import type { Employee, Shift, ShiftAssignment } from "@/types/forms";
 import { authHeaders } from "@/utils/auth";
 import { cn } from "@/utils/classname";
@@ -65,13 +66,6 @@ function durationMinutes(startTime: string, endTime: string): number {
   return e.diff(s, "minute");
 }
 
-function formatDuration(minutes: number): string {
-  const h = Math.floor(minutes / 60);
-  const m = minutes % 60;
-  if (m === 0) return `${h}klst`;
-  return `${h}klst ${m}min`;
-}
-
 function getWeekDays(weekStart: dayjs.Dayjs): dayjs.Dayjs[] {
   return Array.from({ length: 7 }, (_, i) => weekStart.add(i, "day"));
 }
@@ -80,9 +74,7 @@ interface WeeklyCalendarProps {
   onActionsChange?: (actions: React.ReactNode) => void;
 }
 
-export default function WeeklyCalendar({
-  onActionsChange,
-}: WeeklyCalendarProps) {
+export default function WeeklyCalendar({ onActionsChange }: WeeklyCalendarProps) {
   const [weekStart, setWeekStart] = useState(() => dayjs().startOf("isoWeek"));
   const [assignments, setAssignments] = useState<ShiftAssignment[]>([]);
   const [shiftTemplates, setShiftTemplates] = useState<Shift[]>([]);
@@ -90,21 +82,16 @@ export default function WeeklyCalendar({
   const [loading, setLoading] = useState(true);
 
   const [showAddShiftModal, setShowAddShiftModal] = useState(false);
-  const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(
-    null,
-  );
+  const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(null);
   const [selectedDay, setSelectedDay] = useState<dayjs.Dayjs | null>(null);
   const [assigningShiftId, setAssigningShiftId] = useState<number | null>(null);
 
-  const [activeAssignment, setActiveAssignment] =
-    useState<ShiftAssignment | null>(null);
+  const [activeAssignment, setActiveAssignment] = useState<ShiftAssignment | null>(null);
 
   const [isPublishingWeek, setIsPublishingWeek] = useState(false);
   const [isPublishingAll, setIsPublishingAll] = useState(false);
 
-  const [justPublishedIds, setJustPublishedIds] = useState<number[] | null>(
-    null,
-  );
+  const [justPublishedIds, setJustPublishedIds] = useState<number[] | null>(null);
 
   const weekDays = useMemo(() => getWeekDays(weekStart), [weekStart]);
   const weekEnd = weekDays[6];
@@ -236,8 +223,8 @@ export default function WeeklyCalendar({
       toast.success(response.data.message ?? "Vakt úthlutað");
     } catch (err: unknown) {
       const message =
-        (err as { response?: { data?: { message?: string } } })?.response?.data
-          ?.message ?? "Ekki tókst að úthluta vakt";
+        (err as { response?: { data?: { message?: string } } })?.response?.data?.message ??
+        "Ekki tókst að úthluta vakt";
       toast.error(message);
     } finally {
       setAssigningShiftId(null);
@@ -245,9 +232,7 @@ export default function WeeklyCalendar({
   };
 
   const handleDragStart = (event: DragStartEvent) => {
-    const assignment = event.active.data.current?.assignment as
-      | ShiftAssignment
-      | undefined;
+    const assignment = event.active.data.current?.assignment as ShiftAssignment | undefined;
     setActiveAssignment(assignment ?? null);
   };
 
@@ -259,16 +244,10 @@ export default function WeeklyCalendar({
     const dragData = active.data.current as
       | { assignment: ShiftAssignment; employeeId: number; dayIndex: number }
       | undefined;
-    const dropData = over.data.current as
-      | { employeeId: number; dayIndex: number; day: dayjs.Dayjs }
-      | undefined;
+    const dropData = over.data.current as { employeeId: number; dayIndex: number; day: dayjs.Dayjs } | undefined;
 
     if (!dragData || !dropData) return;
-    if (
-      dragData.employeeId === dropData.employeeId &&
-      dragData.dayIndex === dropData.dayIndex
-    )
-      return;
+    if (dragData.employeeId === dropData.employeeId && dragData.dayIndex === dropData.dayIndex) return;
 
     const assignment = dragData.assignment;
     const newDate = dropData.day.format("YYYY-MM-DD");
@@ -280,34 +259,23 @@ export default function WeeklyCalendar({
       date: newDate,
       employee_id: newEmployeeId,
     };
-    setAssignments((prev) =>
-      prev.map((a) => (a.id === assignment.id ? updated : a)),
-    );
+    setAssignments((prev) => prev.map((a) => (a.id === assignment.id ? updated : a)));
 
     try {
       const body: Record<string, unknown> = { date: newDate };
       if (dragData.employeeId !== dropData.employeeId) {
         body.employee_id = newEmployeeId;
       }
-      const response = await axios.put(
-        `/api/manager/shift-assignments/${assignment.id}`,
-        body,
-        {
-          headers: authHeaders(),
-        },
-      );
+      const response = await axios.put(`/api/manager/shift-assignments/${assignment.id}`, body, {
+        headers: authHeaders(),
+      });
       const serverAssignment = response.data.data as ShiftAssignment;
-      setAssignments((prev) =>
-        prev.map((a) => (a.id === assignment.id ? serverAssignment : a)),
-      );
+      setAssignments((prev) => prev.map((a) => (a.id === assignment.id ? serverAssignment : a)));
       toast.success("Vakt færð");
     } catch (err: unknown) {
-      setAssignments((prev) =>
-        prev.map((a) => (a.id === assignment.id ? assignment : a)),
-      );
+      setAssignments((prev) => prev.map((a) => (a.id === assignment.id ? assignment : a)));
       const message =
-        (err as { response?: { data?: { message?: string } } })?.response?.data
-          ?.message ?? "Ekki tókst að færa vakt";
+        (err as { response?: { data?: { message?: string } } })?.response?.data?.message ?? "Ekki tókst að færa vakt";
       toast.error(message);
     }
   };
@@ -319,37 +287,28 @@ export default function WeeklyCalendar({
   const refetchAssignments = useCallback(async () => {
     const from = weekStart.format("YYYY-MM-DD");
     const to = weekEnd.format("YYYY-MM-DD");
-    const res = await axios.get(
-      `/api/manager/shift-assignments?from=${from}&to=${to}`,
-      {
-        headers: authHeaders(),
-      },
-    );
+    const res = await axios.get(`/api/manager/shift-assignments?from=${from}&to=${to}`, {
+      headers: authHeaders(),
+    });
     setAssignments(res.data.data ?? []);
   }, [weekStart, weekEnd]);
 
   const publishWeek = useCallback(async () => {
     if (isPublishingWeek) return;
-    const unpublishedIds = assignments
-      .filter((a) => !a.published || a.has_unpublished_changes)
-      .map((a) => a.id);
+    const unpublishedIds = assignments.filter((a) => !a.published || a.has_unpublished_changes).map((a) => a.id);
     if (unpublishedIds.length === 0) return;
     setIsPublishingWeek(true);
     try {
       const from = weekStart.format("YYYY-MM-DD");
       const to = weekEnd.format("YYYY-MM-DD");
-      await axios.post(
-        "/api/manager/shifts/publish",
-        { from, to },
-        { headers: authHeaders() },
-      );
+      await axios.post("/api/manager/shifts/publish", { from, to }, { headers: authHeaders() });
       toast.success("Vaktir birtar");
       await refetchAssignments();
       setJustPublishedIds(unpublishedIds);
     } catch (err: unknown) {
       const message =
-        (err as { response?: { data?: { message?: string } } })?.response?.data
-          ?.message ?? "Ekki tókst að birta vaktir";
+        (err as { response?: { data?: { message?: string } } })?.response?.data?.message ??
+        "Ekki tókst að birta vaktir";
       toast.error(message);
     } finally {
       setIsPublishingWeek(false);
@@ -358,23 +317,17 @@ export default function WeeklyCalendar({
 
   const publishAll = useCallback(async () => {
     if (isPublishingAll) return;
-    const unpublishedIds = assignments
-      .filter((a) => !a.published || a.has_unpublished_changes)
-      .map((a) => a.id);
+    const unpublishedIds = assignments.filter((a) => !a.published || a.has_unpublished_changes).map((a) => a.id);
     setIsPublishingAll(true);
     try {
-      await axios.post(
-        "/api/manager/shifts/publish",
-        {},
-        { headers: authHeaders() },
-      );
+      await axios.post("/api/manager/shifts/publish", {}, { headers: authHeaders() });
       toast.success("Allar vaktir birtar");
       await refetchAssignments();
       setJustPublishedIds(unpublishedIds);
     } catch (err: unknown) {
       const message =
-        (err as { response?: { data?: { message?: string } } })?.response?.data
-          ?.message ?? "Ekki tókst að birta vaktir";
+        (err as { response?: { data?: { message?: string } } })?.response?.data?.message ??
+        "Ekki tókst að birta vaktir";
       toast.error(message);
     } finally {
       setIsPublishingAll(false);
@@ -384,18 +337,14 @@ export default function WeeklyCalendar({
   const undoPublish = useCallback(async () => {
     if (!justPublishedIds || justPublishedIds.length === 0) return;
     try {
-      await axios.post(
-        "/api/manager/shifts/unpublish",
-        { ids: justPublishedIds },
-        { headers: authHeaders() },
-      );
+      await axios.post("/api/manager/shifts/unpublish", { ids: justPublishedIds }, { headers: authHeaders() });
       toast.success("Birting afturkölluð");
       await refetchAssignments();
       setJustPublishedIds(null);
     } catch (err: unknown) {
       const message =
-        (err as { response?: { data?: { message?: string } } })?.response?.data
-          ?.message ?? "Ekki tókst að afturkalla birtingu";
+        (err as { response?: { data?: { message?: string } } })?.response?.data?.message ??
+        "Ekki tókst að afturkalla birtingu";
       toast.error(message);
     }
   }, [justPublishedIds, refetchAssignments]);
@@ -412,8 +361,8 @@ export default function WeeklyCalendar({
       } catch (err: unknown) {
         setAssignments(prev);
         const message =
-          (err as { response?: { data?: { message?: string } } })?.response
-            ?.data?.message ?? "Ekki tókst að fjarlægja vakt";
+          (err as { response?: { data?: { message?: string } } })?.response?.data?.message ??
+          "Ekki tókst að fjarlægja vakt";
         toast.error(message);
       }
     },
@@ -421,9 +370,7 @@ export default function WeeklyCalendar({
   );
 
   const today = dayjs();
-  const isCurrentWeek =
-    today.isoWeek() === weekStart.isoWeek() &&
-    today.year() === weekStart.year();
+  const isCurrentWeek = today.isoWeek() === weekStart.isoWeek() && today.year() === weekStart.year();
 
   useEffect(() => {
     if (!onActionsChange) return;
@@ -458,11 +405,7 @@ export default function WeeklyCalendar({
   }
 
   return (
-    <DndContext
-      sensors={sensors}
-      onDragStart={handleDragStart}
-      onDragEnd={handleDragEnd}
-    >
+    <DndContext sensors={sensors} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
       <div className="mt-6">
         {/* Week Navigation */}
         <div className="mb-4 flex items-center gap-4">
@@ -520,20 +463,12 @@ export default function WeeklyCalendar({
                 return (
                   <div
                     key={DAY_LABELS[i]}
-                    className={cn(
-                      "border-l border-neutral-200 px-3 py-2.5 text-center",
-                      isToday && "bg-primary/5",
-                    )}
+                    className={cn("border-l border-neutral-200 px-3 py-2.5 text-center", isToday && "bg-primary/5")}
                   >
                     <div className="text-[11px] font-semibold uppercase tracking-wider text-neutral-400">
                       {DAY_LABELS[i]}
                     </div>
-                    <div
-                      className={cn(
-                        "mt-0.5 text-xl font-bold",
-                        isToday ? "text-primary" : "text-neutral-900",
-                      )}
-                    >
+                    <div className={cn("mt-0.5 text-xl font-bold", isToday ? "text-primary" : "text-neutral-900")}>
                       {day.date()}
                     </div>
                   </div>
@@ -543,9 +478,7 @@ export default function WeeklyCalendar({
 
             {/* Employee Rows */}
             {employees.length === 0 ? (
-              <div className="px-6 py-16 text-center text-neutral-400">
-                Engir starfsmenn fundust.
-              </div>
+              <div className="px-6 py-16 text-center text-neutral-400">Engir starfsmenn fundust.</div>
             ) : (
               employees.map((employee) => {
                 const totalMinutes = getEmployeeWeekMinutes(employee.id);
@@ -559,11 +492,9 @@ export default function WeeklyCalendar({
                   >
                     {/* Employee Info */}
                     <div className="flex flex-col justify-center p-3">
-                      <span className="text-sm font-semibold text-neutral-900 truncate">
-                        {employee.name}
-                      </span>
+                      <span className="text-sm font-semibold text-neutral-900 truncate">{employee.name}</span>
                       <span className="mt-0.5 text-xs text-neutral-400">
-                        {totalMinutes > 0 ? formatDuration(totalMinutes) : "0h"}
+                        {totalMinutes > 0 ? formatDuration(totalMinutes, "minutes") : "0klst"}
                       </span>
                     </div>
 
@@ -608,9 +539,7 @@ export default function WeeklyCalendar({
                               {dayAssignments.length === 0 ? (
                                 <>
                                   <UserPlus className="size-6 mx-auto" />
-                                  <span className="mt-2 block text-sm font-semibold">
-                                    Bæta við vakt
-                                  </span>
+                                  <span className="mt-2 block text-sm font-semibold">Bæta við vakt</span>
                                 </>
                               ) : (
                                 <Plus className="size-3.5" />
@@ -627,21 +556,12 @@ export default function WeeklyCalendar({
           </div>
         </div>
 
-        <Modal
-          open={showAddShiftModal}
-          onClose={() => setShowAddShiftModal(false)}
-          hideButtons
-        >
+        <Modal open={showAddShiftModal} onClose={() => setShowAddShiftModal(false)} hideButtons>
           <div className="w-full h-full">
             <h2 className="text-lg font-semibold mb-4">Bæta við vakt</h2>
 
-            <div
-              className="flex flex-col gap-2 w-full h-80 overflow-y-auto"
-              aria-busy={assigningShiftId !== null}
-            >
-              {assigningShiftId !== null && (
-                <p className="text-sm text-neutral-500">Úthluta vakt...</p>
-              )}
+            <div className="flex flex-col gap-2 w-full h-80 overflow-y-auto" aria-busy={assigningShiftId !== null}>
+              {assigningShiftId !== null && <p className="text-sm text-neutral-500">Úthluta vakt...</p>}
               {uniqueTemplates.map((template) => {
                 const isAssigned = alreadyAssignedShiftIds.has(template.id);
                 return (
@@ -666,11 +586,7 @@ export default function WeeklyCalendar({
         </Modal>
       </div>
 
-      <DragOverlay>
-        {activeAssignment && (
-          <ShiftBlock shift={activeAssignment.shift} dragging />
-        )}
-      </DragOverlay>
+      <DragOverlay>{activeAssignment && <ShiftBlock shift={activeAssignment.shift} dragging />}</DragOverlay>
     </DndContext>
   );
 }
@@ -730,15 +646,9 @@ function DraggableShiftBlock({
       ref={setNodeRef}
       {...attributes}
       {...listeners}
-      className={cn(
-        "touch-none cursor-grab active:cursor-grabbing",
-        isDragging && "opacity-40 cursor-grabbing",
-      )}
+      className={cn("touch-none cursor-grab active:cursor-grabbing", isDragging && "opacity-40 cursor-grabbing")}
     >
-      <ShiftBlock
-        shift={assignment.shift}
-        onRemove={() => onRemove(assignment.id)}
-      />
+      <ShiftBlock shift={assignment.shift} onRemove={() => onRemove(assignment.id)} />
     </div>
   );
 }
@@ -813,22 +723,11 @@ function RenderActions({
   if (hasUnpublishedAssignments && !justPublishedIds) {
     return (
       <>
-        <Button
-          type="button"
-          variant="outline"
-          size="lg"
-          onClick={publishWeek}
-          disabled={isPublishingWeek}
-        >
+        <Button type="button" variant="outline" size="lg" onClick={publishWeek} disabled={isPublishingWeek}>
           {isPublishingWeek && <Spinner className="size-4 animate-spin" />}
           Birta viku
         </Button>
-        <Button
-          type="button"
-          size="lg"
-          onClick={publishAll}
-          disabled={isPublishingAll}
-        >
+        <Button type="button" size="lg" onClick={publishAll} disabled={isPublishingAll}>
           {isPublishingAll && <Spinner className="size-4 animate-spin" />}
           Birta allt
         </Button>

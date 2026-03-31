@@ -59,6 +59,20 @@ export interface ShiftAssignment {
   updated_at: string;
 }
 
+export interface ClockEntry {
+  id: number;
+  shift_id: number | null;
+  employee_id: number;
+  clocked_in_at: string;
+  clocked_out_at: string | null;
+  total_hours: number | null;
+  is_extra: boolean;
+  clock_in_lat: number | null;
+  clock_in_lng: number | null;
+  shift?: { id: number; title: string };
+  employee?: { id: number; name: string; email: string | null };
+}
+
 export const companyFormSchema = z.object({
   name: z.string().min(1, { message: "Nafn fyrirtækis er nauðsynlegt" }),
 });

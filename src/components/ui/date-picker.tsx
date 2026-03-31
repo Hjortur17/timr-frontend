@@ -3,7 +3,7 @@
 import dayjs from "dayjs";
 import { CalendarIcon } from "lucide-react";
 import type React from "react";
-import type { DayPicker } from "react-day-picker";
+import type { DayPicker, DayPickerLocale } from "react-day-picker";
 import { is } from "react-day-picker/locale";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
@@ -23,6 +23,7 @@ export function DatePicker({
   value: Date | undefined;
   onChange: (date: Date | undefined) => void;
   placeholder?: string;
+  locale?: DayPickerLocale;
   id?: string;
 } & CalendarProps) {
   return (

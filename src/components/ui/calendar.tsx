@@ -35,7 +35,9 @@ function Calendar({
       formatters={{
         formatMonthDropdown: (date) =>
           locale?.localize
-            ? locale.localize.month(date.getMonth() as 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11, { width: "abbreviated" })
+            ? locale.localize.month(date.getMonth() as 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11, {
+                width: "abbreviated",
+              })
             : date.toLocaleString(locale?.code, { month: "short" }),
         ...formatters,
       }}

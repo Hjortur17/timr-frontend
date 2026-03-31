@@ -1,6 +1,6 @@
 "use client";
 
-import { Calendar, CalendarRange, Home, Users } from "lucide-react";
+import { Calendar, ClockPlus, FileClock, Home, Users } from "lucide-react";
 import { usePathname } from "next/navigation";
 import * as React from "react";
 
@@ -14,9 +14,14 @@ import { NavSettings } from "./nav-settings";
 const managerNavigation = [
   { title: "Vaktir", url: "/dashboard", icon: Calendar },
   { title: "Starfsfólk", url: "/dashboard/employees", icon: Users },
+  { title: "Tímaskráning", url: "/dashboard/time-entry", icon: FileClock },
 ];
 
-const employeeNavigation = [{ title: "Vaktir", url: "/dashboard", icon: Home }];
+const employeeNavigation = [
+  { title: "Vaktir", url: "/dashboard", icon: Home },
+  { title: "Stimpilklukka", url: "/dashboard/punch-clock", icon: ClockPlus },
+  { title: "Tímaskráning", url: "/dashboard/time-entry", icon: FileClock },
+];
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { isManager } = useUser();
