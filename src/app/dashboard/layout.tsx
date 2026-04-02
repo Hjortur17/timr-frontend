@@ -7,9 +7,14 @@ import DoneStep from "@/components/onboarding/DoneStep";
 import ShiftsStep from "@/components/onboarding/ShiftsStep";
 import StaffStep from "@/components/onboarding/StaffStep";
 import ProgressBar from "@/components/ProgressBar";
-import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
+import {
+  SidebarInset,
+  SidebarProvider,
+  SidebarTrigger,
+} from "@/components/ui/sidebar";
 import { UserProvider, useUser } from "@/context/UserContext";
 import type { User } from "@/types/forms";
+import { Separator } from "@/components/ui/separator";
 
 const ONBOARDING_COMPLETE = 6;
 
@@ -34,26 +39,26 @@ function DashboardInner({ children }: { children: ReactNode }) {
 
       <SidebarInset>
         <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12">
-          {/*<div className="flex items-center gap-2 px-4 sm:px-6 lg:px-8">
-          <SidebarTrigger className="-ml-1" />
-          <Separator
-            orientation="vertical"
-            className="mr-2 data-vertical:h-4 data-vertical:self-auto"
-          />
-          <Breadcrumb>
-            <BreadcrumbList>
-              <BreadcrumbItem className="hidden md:block">
-                <BreadcrumbLink href="#">
-                  Build Your Application
-                </BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator className="hidden md:block" />
-              <BreadcrumbItem>
-                <BreadcrumbPage>Data Fetching</BreadcrumbPage>
-              </BreadcrumbItem>
-            </BreadcrumbList>
-          </Breadcrumb>
-        </div>*/}
+          <div className="flex items-center gap-2 px-4 sm:px-6 lg:px-8">
+            <SidebarTrigger className="-ml-1" />
+            {/*<Separator
+              orientation="vertical"
+              className="mr-2 data-vertical:h-4 data-vertical:self-auto"
+            />*/}
+            {/*<Breadcrumb>
+              <BreadcrumbList>
+                <BreadcrumbItem className="hidden md:block">
+                  <BreadcrumbLink href="#">
+                    Build Your Application
+                  </BreadcrumbLink>
+                </BreadcrumbItem>
+                <BreadcrumbSeparator className="hidden md:block" />
+                <BreadcrumbItem>
+                  <BreadcrumbPage>Data Fetching</BreadcrumbPage>
+                </BreadcrumbItem>
+              </BreadcrumbList>
+            </Breadcrumb>*/}
+          </div>
         </header>
 
         {children}
@@ -64,13 +69,22 @@ function DashboardInner({ children }: { children: ReactNode }) {
 
 const STEP_NAMES = ["Fyrirtæki", "Vaktir", "Starfsfólk", "Lokið"]; //  "Launakerfi"
 
-function stepStatus(index: number, currentStep: number): "complete" | "current" | "upcoming" {
+function stepStatus(
+  index: number,
+  currentStep: number,
+): "complete" | "current" | "upcoming" {
   if (index + 1 < currentStep) return "complete";
   if (index + 1 === currentStep) return "current";
   return "upcoming";
 }
 
-function OnboardingWizard({ user, setUser }: { user: User; setUser: (user: User) => void }) {
+function OnboardingWizard({
+  user,
+  setUser,
+}: {
+  user: User;
+  setUser: (user: User) => void;
+}) {
   const currentStep = user.onboarding_step;
 
   const steps = STEP_NAMES.map((name, i) => ({

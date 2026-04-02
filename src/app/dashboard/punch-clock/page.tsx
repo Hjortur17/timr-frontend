@@ -9,14 +9,26 @@ import { Spinner } from "@/components/ui/spinner";
 import type { ClockEntry, ShiftAssignment } from "@/types/forms";
 import { authHeaders } from "@/utils/auth";
 
-type EmployeeState = "loading" | "no-shift" | "upcoming-shift" | "clocked-in" | "completed";
+type EmployeeState =
+  | "loading"
+  | "no-shift"
+  | "upcoming-shift"
+  | "clocked-in"
+  | "completed";
 
-const DEV_COORDS = { latitude: 64.00320221192739, longitude: -22.554861687945017 };
+const DEV_COORDS = {
+  latitude: 64.00320221192739,
+  longitude: -22.554861687945017,
+};
 
 function getCoords(): Promise<{ latitude: number; longitude: number }> {
   return new Promise((resolve, reject) => {
     navigator.geolocation.getCurrentPosition(
-      (pos) => resolve({ latitude: pos.coords.latitude, longitude: pos.coords.longitude }),
+      (pos) =>
+        resolve({
+          latitude: pos.coords.latitude,
+          longitude: pos.coords.longitude,
+        }),
       (err) => {
         if (process.env.NODE_ENV === "development") {
           resolve(DEV_COORDS);
@@ -44,8 +56,14 @@ export default function PunchClockPage() {
 
     try {
       const [shiftsRes, entriesRes] = await Promise.all([
-        axios.get("/api/employee/shifts", { headers, params: { from: today, to: today } }),
-        axios.get("/api/employee/clock-entries", { headers, params: { from: today, to: today } }),
+        axios.get("/api/employee/shifts", {
+          headers,
+          params: { from: today, to: today },
+        }),
+        axios.get("/api/employee/clock-entries", {
+          headers,
+          params: { from: today, to: today },
+        }),
       ]);
       setShifts(shiftsRes.data.data ?? []);
       setClockEntries(entriesRes.data.data ?? []);
@@ -60,9 +78,15 @@ export default function PunchClockPage() {
     fetchData();
   }, [fetchData]);
 
-  const activeEntry = useMemo(() => clockEntries.find((e) => !e.clocked_out_at), [clockEntries]);
+  const activeEntry = useMemo(
+    () => clockEntries.find((e) => !e.clocked_out_at),
+    [clockEntries],
+  );
 
-  const clockedShiftIds = useMemo(() => new Set(clockEntries.map((e) => e.shift_id)), [clockEntries]);
+  const clockedShiftIds = useMemo(
+    () => new Set(clockEntries.map((e) => e.shift_id)),
+    [clockEntries],
+  );
 
   const nextShift = useMemo(() => {
     return shifts.find((s) => !clockedShiftIds.has(s.shift_id));
@@ -72,7 +96,8 @@ export default function PunchClockPage() {
     if (loading) return "loading";
     if (activeEntry) return "clocked-in";
     if (shifts.length === 0) return "no-shift";
-    if (clockEntries.length > 0 && clockEntries.every((e) => e.clocked_out_at)) return "completed";
+    if (clockEntries.length > 0 && clockEntries.every((e) => e.clocked_out_at))
+      return "completed";
     return "upcoming-shift";
   }, [loading, activeEntry, shifts, clockEntries]);
 
@@ -92,7 +117,9 @@ export default function PunchClockPage() {
       const minutes = Math.floor((diff % 3_600_000) / 60_000);
       const seconds = Math.floor((diff % 60_000) / 1000);
       if (hours > 0) {
-        setCountdown(`${hours}:${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`);
+        setCountdown(
+          `${hours}:${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`,
+        );
       } else {
         setCountdown(`${minutes}:${String(seconds).padStart(2, "0")}`);
       }
@@ -134,17 +161,28 @@ export default function PunchClockPage() {
         body.shift_id = nextShift.shift_id;
       }
 
-      await axios.post("/api/employee/clock-in", body, { headers: authHeaders() });
+      await axios.post("/api/employee/clock-in", body, {
+        headers: authHeaders(),
+      });
 
       toast.success("Þú hefur verið stimpluð/stimpladur inn!");
       await fetchData();
     } catch (err) {
-      if (err && typeof err === "object" && "code" in err && "PERMISSION_DENIED" in err) {
+      if (
+        err &&
+        typeof err === "object" &&
+        "code" in err &&
+        "PERMISSION_DENIED" in err
+      ) {
         const geoErr = err as GeolocationPositionError;
         if (geoErr.code === geoErr.PERMISSION_DENIED) {
-          toast.error("Þú verður að leyfa staðsetningarþjónustu til að stimpla inn.");
+          toast.error(
+            "Þú verður að leyfa staðsetningarþjónustu til að stimpla inn.",
+          );
         } else {
-          toast.error("Ekki tókst að finna staðsetningu. Athugaðu að kveikt sé á staðsetningarþjónustu.");
+          toast.error(
+            "Ekki tókst að finna staðsetningu. Athugaðu að kveikt sé á staðsetningarþjónustu.",
+          );
         }
       } else if (axios.isAxiosError(err)) {
         toast.error(err.response?.data?.message ?? "Villa við að stimpla inn");
@@ -159,7 +197,11 @@ export default function PunchClockPage() {
   const handleClockOut = async () => {
     setClockingOut(true);
     try {
-      await axios.post("/api/employee/clock-out", {}, { headers: authHeaders() });
+      await axios.post(
+        "/api/employee/clock-out",
+        {},
+        { headers: authHeaders() },
+      );
       toast.success("Þú hefur verið stimpluð/stimpladur út!");
       await fetchData();
     } catch (err) {
@@ -182,7 +224,7 @@ export default function PunchClockPage() {
   }
 
   return (
-    <section className="h-full w-full flex flex-col items-center justify-center">
+    <section className="h-full w-full flex flex-col items-center justify-center px-4">
       <div className="max-w-md w-full text-center">
         <h1 className="text-4xl font-bold mb-4">Stimpilklukka</h1>
 
@@ -190,7 +232,8 @@ export default function PunchClockPage() {
           <div className="rounded-2xl text-lg p-4 bg-accent w-full mb-24">
             {countdown ? (
               <>
-                Vaktin þín byrjar eftir <span className="font-bold tabular-nums">{countdown}</span>
+                Vaktin þín byrjar eftir{" "}
+                <span className="font-bold tabular-nums">{countdown}</span>
               </>
             ) : (
               <span className="font-bold">Vaktin þín er byrjuð!</span>
@@ -207,15 +250,19 @@ export default function PunchClockPage() {
 
         {employeeState === "clocked-in" && (
           <div className="rounded-2xl text-lg p-4 bg-accent w-full mb-24">
-            Þú ert á vakt — <span className="font-bold tabular-nums">{elapsed}</span>
+            Þú ert á vakt —{" "}
+            <span className="font-bold tabular-nums">{elapsed}</span>
           </div>
         )}
 
         {employeeState === "completed" && (
-          <div className="rounded-2xl text-lg p-4 bg-accent w-full mb-24">Þú hefur lokið vaktinni þinni í dag!</div>
+          <div className="rounded-2xl text-lg p-4 bg-accent w-full mb-24">
+            Þú hefur lokið vaktinni þinni í dag!
+          </div>
         )}
 
-        {(employeeState === "upcoming-shift" || employeeState === "no-shift") && (
+        {(employeeState === "upcoming-shift" ||
+          employeeState === "no-shift") && (
           <Button
             className="text-4xl font-extrabold uppercase w-full h-24"
             onClick={handleClockIn}
