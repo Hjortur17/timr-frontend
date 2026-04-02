@@ -83,9 +83,32 @@ export type CompanyForm = z.infer<typeof companyFormSchema>;
 export const loginFormSchema = z.object({
   email: z.string().email(),
   password: z.string().min(8),
+  remember: z.boolean().optional().default(false),
 });
 
 export type LoginForm = z.infer<typeof loginFormSchema>;
+
+export const forgotPasswordFormSchema = z.object({
+  email: z.string().email({ message: "Netfang er ekki gilt" }),
+});
+
+export type ForgotPasswordForm = z.infer<typeof forgotPasswordFormSchema>;
+
+export const resetPasswordFormSchema = z
+  .object({
+    token: z.string().min(1),
+    email: z.string().email(),
+    password: z.string().min(8, { message: "Lykilorð verður að vera að minnsta kosti 8 stafir" }),
+    password_confirmation: z.string().min(8, {
+      message: "Staðfestar lykilorð verður að vera að minnsta kosti 8 stafir",
+    }),
+  })
+  .refine((data) => data.password === data.password_confirmation, {
+    message: "Lykilorðin eru ekki eins",
+    path: ["password_confirmation"],
+  });
+
+export type ResetPasswordForm = z.infer<typeof resetPasswordFormSchema>;
 
 export const registerFormSchema = z
   .object({

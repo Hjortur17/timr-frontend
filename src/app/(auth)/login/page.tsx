@@ -15,6 +15,7 @@ export default function Login() {
   const {
     register,
     handleSubmit,
+    setError,
     formState: { errors },
   } = useForm<LoginForm>({
     defaultValues: {
@@ -24,9 +25,22 @@ export default function Login() {
   });
 
   const onSubmit = async (data: LoginForm) => {
-    const response = await axios.post("/api/forms/login", data);
-    setToken(response.data.token);
-    router.push("/dashboard");
+    try {
+      const response = await axios.post("/api/forms/login", data);
+      setToken(response.data.token);
+      router.push("/dashboard");
+    } catch (err) {
+      if (axios.isAxiosError(err) && err.response?.data?.errors) {
+        const errors = err.response.data.errors as Record<string, string[]>;
+        for (const [field, messages] of Object.entries(errors)) {
+          if (field === "email" || field === "password") {
+            setError(field, { message: messages[0] });
+          }
+        }
+      } else {
+        setError("email", { message: "Villa kom upp. Vinsamlegast reyndu aftur." });
+      }
+    }
   };
 
   return (
@@ -45,6 +59,7 @@ export default function Login() {
               <div className="mt-2">
                 <Input id="email" type="email" {...register("email")} />
               </div>
+              {errors.email && <p className="mt-1 text-sm text-destructive">{errors.email.message}</p>}
             </div>
 
             <div>
@@ -54,6 +69,7 @@ export default function Login() {
               <div className="mt-2">
                 <Input id="password" type="password" {...register("password")} />
               </div>
+              {errors.password && <p className="mt-1 text-sm text-destructive">{errors.password.message}</p>}
             </div>
 
             <div className="flex items-center justify-between">
@@ -62,8 +78,8 @@ export default function Login() {
                   <div className="group grid size-4 grid-cols-1">
                     <input
                       id="remember-me"
-                      name="remember-me"
                       type="checkbox"
+                      {...register("remember")}
                       className="col-start-1 row-start-1 appearance-none rounded-sm border border-neutral-300 bg-white checked:border-primary checked:bg-primary indeterminate:border-primary indeterminate:bg-primary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:border-neutral-300 disabled:bg-neutral-100 disabled:checked:bg-neutral-100 forced-colors:appearance-auto"
                     />
                     <svg
@@ -94,9 +110,9 @@ export default function Login() {
               </div>
 
               <div className="text-sm/6">
-                <a href="#" className="font-semibold text-primary hover:text-primary/90">
+                <Link href="/forgot-password" className="font-semibold text-primary hover:text-primary/90">
                   Gleymt lykilorð?
-                </a>
+                </Link>
               </div>
             </div>
 
@@ -107,7 +123,7 @@ export default function Login() {
             </div>
           </form>
 
-          <SocialLoginButtons />
+          {/*<SocialLoginButtons />*/}
         </div>
 
         <p className="mt-10 text-center text-sm/6 text-neutral-500">

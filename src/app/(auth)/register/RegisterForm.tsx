@@ -19,7 +19,13 @@ export default function RegisterForm() {
   const inviteEmail = searchParams.get("email") ?? "";
   const isInvite = Boolean(inviteToken);
 
-  const { register, handleSubmit, setValue } = useForm<RegisterForm>({
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    setError,
+    formState: { errors },
+  } = useForm<RegisterForm>({
     defaultValues: {
       name: "",
       email: inviteEmail,
@@ -35,9 +41,22 @@ export default function RegisterForm() {
   }, [inviteEmail, inviteToken, setValue]);
 
   const onSubmit = async (data: RegisterForm) => {
-    const response = await axios.post("/api/forms/register", data);
-    setToken(response.data.token);
-    router.push("/dashboard");
+    try {
+      const response = await axios.post("/api/forms/register", data);
+      setToken(response.data.token);
+      router.push("/dashboard");
+    } catch (err) {
+      if (axios.isAxiosError(err) && err.response?.data?.errors) {
+        const errors = err.response.data.errors as Record<string, string[]>;
+        for (const [field, messages] of Object.entries(errors)) {
+          if (field === "name" || field === "email" || field === "password" || field === "password_confirmation") {
+            setError(field, { message: messages[0] });
+          }
+        }
+      } else {
+        setError("email", { message: "Villa kom upp. Vinsamlegast reyndu aftur." });
+      }
+    }
   };
 
   return (
@@ -60,6 +79,7 @@ export default function RegisterForm() {
               <div className="mt-2">
                 <Input id="name" type="text" {...register("name")} />
               </div>
+              {errors.name && <p className="mt-1 text-sm text-destructive">{errors.name.message}</p>}
             </div>
 
             <div>
@@ -75,6 +95,7 @@ export default function RegisterForm() {
                   className={isInvite ? "bg-muted" : ""}
                 />
               </div>
+              {errors.email && <p className="mt-1 text-sm text-destructive">{errors.email.message}</p>}
             </div>
 
             <div>
@@ -84,6 +105,7 @@ export default function RegisterForm() {
               <div className="mt-2">
                 <Input id="password" type="password" {...register("password")} />
               </div>
+              {errors.password && <p className="mt-1 text-sm text-destructive">{errors.password.message}</p>}
             </div>
 
             <div>
@@ -93,6 +115,9 @@ export default function RegisterForm() {
               <div className="mt-2">
                 <Input id="password_confirmation" type="password" {...register("password_confirmation")} />
               </div>
+              {errors.password_confirmation && (
+                <p className="mt-1 text-sm text-destructive">{errors.password_confirmation.message}</p>
+              )}
             </div>
 
             <Button type="submit" size="lg" className="w-full">
