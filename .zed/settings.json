@@ -1,0 +1,42 @@
+{
+  "formatter": "language_server",
+  "tab_size": 2,
+  "format_on_save": "on",
+  "languages": {
+    "TypeScript": {
+      "tab_size": 2,
+      "formatter": {
+        "external": {
+          "command": "npx",
+          "arguments": ["biome", "format", "--stdin-file-path", "{buffer_path}"]
+        }
+      },
+      "code_actions_on_format": {
+        "source.organizeImports.biome": true,
+        "source.fixAll.biome": true
+      }
+    },
+    "TSX": {
+      "tab_size": 2,
+      "formatter": {
+        "external": {
+          "command": "npx",
+          "arguments": ["biome", "format", "--stdin-file-path", "{buffer_path}"]
+        }
+      },
+      "code_actions_on_format": {
+        "source.organizeImports.biome": true,
+        "source.fixAll.biome": true
+      }
+    },
+    "JavaScript": {
+      "tab_size": 2,
+      "formatter": {
+        "external": {
+          "command": "npx",
+          "arguments": ["biome", "format", "--stdin-file-path", "{buffer_path}"]
+        }
+      }
+    }
+  }
+}
