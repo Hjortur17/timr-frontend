@@ -54,7 +54,9 @@ export default function RegisterForm() {
           }
         }
       } else {
-        setError("email", { message: "Villa kom upp. Vinsamlegast reyndu aftur." });
+        setError("email", {
+          message: "Villa kom upp. Vinsamlegast reyndu aftur.",
+        });
       }
     }
   };

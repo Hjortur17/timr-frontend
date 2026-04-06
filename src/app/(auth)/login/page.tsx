@@ -38,7 +38,9 @@ export default function Login() {
           }
         }
       } else {
-        setError("email", { message: "Villa kom upp. Vinsamlegast reyndu aftur." });
+        setError("email", {
+          message: "Villa kom upp. Vinsamlegast reyndu aftur.",
+        });
       }
     }
   };
@@ -123,7 +125,7 @@ export default function Login() {
             </div>
           </form>
 
-          {/*<SocialLoginButtons />*/}
+          <SocialLoginButtons />
         </div>
 
         <p className="mt-10 text-center text-sm/6 text-neutral-500">
