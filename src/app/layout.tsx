@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter, Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
+import Navigation from "@/components/navigation";
 import { Toaster } from "@/components/ui/sonner";
 import { cn } from "@/utils/classname";
 

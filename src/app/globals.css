@@ -8,6 +8,7 @@
   --color-primary: rgb(10, 124, 104);
   --color-secondary: rgb(200, 232, 227);
   --color-foreground-light: rgb(249, 248, 244);
+  --max-width-8xl: 1440px;
 }
 
 @theme inline {
@@ -135,5 +136,8 @@ body {
   }
   html {
     @apply font-sans;
+  }
+  .link {
+    @apply text-primary underline-offset-4 hover:underline;
   }
 }
