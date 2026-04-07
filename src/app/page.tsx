@@ -21,14 +21,12 @@ const features = [
   },
   {
     name: "Margir sölustaðir",
-    description:
-      "Ert þú að reka fleiri en einn stað? Það er hægt að stjórna mörgum stöðum og deildum á sama stað.",
+    description: "Ert þú að reka fleiri en einn stað? Það er hægt að stjórna mörgum stöðum og deildum á sama stað.",
     icon: Building,
   },
   {
     name: "Stafræn lausn",
-    description:
-      "Kerfið er aðgengilegt bæði í vafra eða í appi. Aðgengilegt á bæði IOS eða Android.",
+    description: "Kerfið er aðgengilegt bæði í vafra eða í appi. Aðgengilegt á bæði IOS eða Android.",
     icon: MonitorSmartphone,
   },
   {
@@ -45,8 +43,7 @@ const features = [
   },
   {
     name: "Íslensk lög",
-    description:
-      "Kerfið er hannað fyrir íslenska vinnustaði, tekið er tillits til íslenska kjarasamninga og laga",
+    description: "Kerfið er hannað fyrir íslenska vinnustaði, tekið er tillits til íslenska kjarasamninga og laga",
     icon: Scale,
   },
 ];
@@ -86,8 +83,7 @@ const tiers = [
     id: "tier-allur-pakkinn",
     href: "#",
     price: { monthly: "10.990 kr", annually: "9.158 kr" },
-    description:
-      "Allt í Vöxtupakka, auk ítarlegra verkfæra fyrir stærri rekstur.",
+    description: "Allt í Vöxtupakka, auk ítarlegra verkfæra fyrir stærri rekstur.",
     features: [
       "Allt að 100 starfsmenn",
       "Margar starfsstöðvar",
@@ -147,10 +143,9 @@ export default function Home() {
               </h1>
 
               <p className="max-w-lg text-lg leading-relaxed text-muted-foreground lg:text-xl">
-                Lorem ipsum dolor sit amet consectetur. Volutpat diam varius
-                gravida id. Sit lectus pharetra fermentum commodo est viverra.
-                Purus nulla nisl pretium vel eu sed suspendisse molestie. Turpis
-                eget erat id lacus.
+                Lorem ipsum dolor sit amet consectetur. Volutpat diam varius gravida id. Sit lectus pharetra fermentum
+                commodo est viverra. Purus nulla nisl pretium vel eu sed suspendisse molestie. Turpis eget erat id
+                lacus.
               </p>
 
               <div className="flex items-center gap-2">
@@ -176,25 +171,20 @@ export default function Home() {
       <section className="bg-background py-24 sm:py-32">
         <div className="mx-auto max-w-8xl px-6 lg:px-8">
           <div className="mx-auto max-w-2xl lg:mx-0">
-            <h2 className="text-base/7 font-semibold text-primary">
-              Eiginleikar
-            </h2>
+            <h2 className="text-base/7 font-semibold text-primary">Eiginleikar</h2>
             <p className="mt-2 text-4xl font-semibold tracking-tight text-pretty text-foreground sm:text-5xl">
               Láttu okkur sjá um það
             </p>
             <p className="mt-6 text-lg/8 text-muted-foreground">
-              Hvort sem þú ert að stjórna liltu fyrirtæki eða stóru að þá
-              auðveldar Timir þér með umfangið í kringum vaktarskipulag.
+              Hvort sem þú ert að stjórna liltu fyrirtæki eða stóru að þá auðveldar Timir þér með umfangið í kringum
+              vaktarskipulag.
             </p>
           </div>
           <dl className="mx-auto mt-16 grid max-w-2xl grid-cols-1 gap-8 text-base/7 text-muted-foreground sm:grid-cols-2 lg:mx-0 lg:max-w-none lg:grid-cols-3 lg:gap-x-16">
             {features.map((feature) => (
               <div key={feature.name} className="relative pl-9">
                 <dt className="inline font-semibold text-foreground">
-                  <feature.icon
-                    aria-hidden="true"
-                    className="absolute top-1 left-1 size-5 text-primary"
-                  />
+                  <feature.icon aria-hidden="true" className="absolute top-1 left-1 size-5 text-primary" />
                   {feature.name}
                 </dt>{" "}
                 <dd className="inline">{feature.description}</dd>
@@ -219,42 +209,21 @@ export default function Home() {
             <div className="isolate -mt-16 grid max-w-sm grid-cols-1 gap-y-16 divide-y divide-border sm:mx-auto lg:-mx-8 lg:mt-0 lg:max-w-none lg:grid-cols-3 lg:divide-x lg:divide-y-0 xl:-mx-4">
               {tiers.map((tier) => (
                 <div key={tier.id} className="pt-16 lg:px-8 lg:pt-0 xl:px-14">
-                  <h3
-                    id={tier.id}
-                    className="text-base/7 font-semibold text-foreground"
-                  >
+                  <h3 id={tier.id} className="text-base/7 font-semibold text-foreground">
                     {tier.name}
                   </h3>
                   <p className="mt-6 flex items-baseline gap-x-1 mb-6">
-                    <span className="text-5xl font-semibold tracking-tight text-foreground">
-                      {tier.price.monthly}
-                    </span>
-                    <span className="text-sm/6 font-semibold text-muted-foreground">
-                      /mánuði
-                    </span>
+                    <span className="text-5xl font-semibold tracking-tight text-foreground">{tier.price.monthly}</span>
+                    <span className="text-sm/6 font-semibold text-muted-foreground">/mánuði</span>
                   </p>
-                  <Link
-                    href={tier.href}
-                    aria-describedby={tier.id}
-                    className="w-full"
-                  >
-                    <Button className="w-full h-12 text-base font-semibold cursor-pointer">
-                      Byrja núna
-                    </Button>
+                  <Link href={tier.href} aria-describedby={tier.id} className="w-full">
+                    <Button className="w-full h-12 text-base font-semibold cursor-pointer">Byrja núna</Button>
                   </Link>
-                  <p className="mt-6 text-sm/6 font-semibold text-foreground">
-                    {tier.description}
-                  </p>
-                  <ul
-                    role="list"
-                    className="mt-6 space-y-3 text-sm/6 text-muted-foreground"
-                  >
+                  <p className="mt-6 text-sm/6 font-semibold text-foreground">{tier.description}</p>
+                  <ul role="list" className="mt-6 space-y-3 text-sm/6 text-muted-foreground">
                     {tier.features.map((feature) => (
                       <li key={feature} className="flex gap-x-3">
-                        <CheckCircle2
-                          aria-hidden="true"
-                          className="h-6 w-5 flex-none text-primary"
-                        />
+                        <CheckCircle2 aria-hidden="true" className="h-6 w-5 flex-none text-primary" />
                         {feature}
                       </li>
                     ))}
@@ -274,8 +243,7 @@ export default function Home() {
                 Viltu fylgjast með okkur?
               </h2>
               <p className="mt-6">
-                Skráðu þig á póstlista hjá okkur og fáðu að vita þegar ný
-                uppfærsla að nýjar viðbætar bætast við
+                Skráðu þig á póstlista hjá okkur og fáðu að vita þegar ný uppfærsla að nýjar viðbætar bætast við
               </p>
             </div>
             <form className="w-full max-w-md">

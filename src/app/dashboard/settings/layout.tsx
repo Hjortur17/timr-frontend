@@ -1,26 +1,32 @@
 "use client";
 
 import { usePathname, useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
+import { useMemo } from "react";
 
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
-const TABS = [
-  {
-    value: "company",
-    label: "Fyrirtækið",
-    path: "/dashboard/settings/company",
-  },
-  { value: "shifts", label: "Vaktir", path: "/dashboard/settings/shifts" },
-  {
-    value: "shifts-templates",
-    label: "Vaktarplan",
-    path: "/dashboard/settings/shifts-templates",
-  },
-];
-
 export default function SettingsLayout({ children }: { children: React.ReactNode }) {
+  const t = useTranslations("settings");
   const pathname = usePathname();
   const router = useRouter();
+
+  const TABS = useMemo(
+    () => [
+      {
+        value: "company",
+        label: t("company"),
+        path: "/dashboard/settings/company",
+      },
+      { value: "shifts", label: t("shifts"), path: "/dashboard/settings/shifts" },
+      {
+        value: "shifts-templates",
+        label: t("shiftTemplates"),
+        path: "/dashboard/settings/shifts-templates",
+      },
+    ],
+    [t],
+  );
 
   const activeTab = TABS.find((t) => pathname === t.path || pathname.startsWith(t.path + "/"))?.value ?? TABS[0].value;
 

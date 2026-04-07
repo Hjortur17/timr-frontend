@@ -2,6 +2,7 @@
 
 import axios from "axios";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { createContext, type ReactNode, useContext, useEffect, useState } from "react";
 import type { User } from "@/types/forms";
 import { authHeaders, clearToken, getToken } from "@/utils/auth";
@@ -26,6 +27,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
   const router = useRouter();
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const t = useTranslations("common");
 
   useEffect(() => {
     const token = getToken();
@@ -50,7 +52,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
   if (loading) {
     return (
       <div className="flex min-h-screen items-center justify-center">
-        <p className="text-neutral-500">Hleð...</p>
+        <p className="text-neutral-500">{t("loading")}</p>
       </div>
     );
   }

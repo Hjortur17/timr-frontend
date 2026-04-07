@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { Inter, Plus_Jakarta_Sans } from "next/font/google";
+import { NextIntlClientProvider } from "next-intl";
+import { getLocale, getMessages } from "next-intl/server";
 import "./globals.css";
-import Navigation from "@/components/navigation";
 import { Toaster } from "@/components/ui/sonner";
 import { cn } from "@/utils/classname";
 
@@ -13,20 +14,25 @@ const plusJakartaSans = Plus_Jakarta_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "Timr | Skipulagðu vaktir á öruggan hátt",
+  title: "Timr | Skipulagðu vaktir á öruggan hátt",
   description: "Skipulagðu vaktir, stjórnaðu starfsmönnum og fylgstu með mætingu — á einum stað.",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const locale = await getLocale();
+  const messages = await getMessages();
+
   return (
-    <html lang="is" className={cn("font-sans", inter.variable)}>
+    <html lang={locale} className={cn("font-sans", inter.variable)}>
       <body className={cn(plusJakartaSans.className, "antialiased")}>
-        {children}
-        <Toaster />
+        <NextIntlClientProvider messages={messages}>
+          {children}
+          <Toaster />
+        </NextIntlClientProvider>
       </body>
     </html>
   );

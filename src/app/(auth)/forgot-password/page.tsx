@@ -2,6 +2,7 @@
 
 import axios from "axios";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
@@ -9,6 +10,7 @@ import { Input } from "@/components/ui/input";
 import type { ForgotPasswordForm } from "@/types/forms";
 
 export default function ForgotPassword() {
+  const t = useTranslations();
   const [submitted, setSubmitted] = useState(false);
   const {
     register,
@@ -26,22 +28,22 @@ export default function ForgotPassword() {
   return (
     <div className="flex min-h-screen flex-col justify-center py-12 sm:px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
-        <h2 className="mt-6 text-center text-2xl/9 font-bold tracking-tight text-neutral-900">Gleymt lykilorð</h2>
+        <h2 className="mt-6 text-center text-2xl/9 font-bold tracking-tight text-neutral-900">
+          {t("auth.forgotPasswordTitle")}
+        </h2>
       </div>
 
       <div className="sm:mx-auto sm:w-full sm:max-w-[480px]">
         <div className="px-6 py-12">
           {submitted ? (
             <div className="text-center space-y-4">
-              <p className="text-sm text-neutral-600">
-                Ef netfangið er skráð hjá okkur munum við senda endurstillingartengil. Athugaðu tölvupóstinn þinn.
-              </p>
+              <p className="text-sm text-neutral-600">{t("auth.resetEmailSent")}</p>
             </div>
           ) : (
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
               <div>
                 <label htmlFor="email" className="block text-base/7 font-semibold text-neutral-950">
-                  Netfang
+                  {t("common.email")}
                 </label>
                 <div className="mt-2">
                   <Input id="email" type="email" {...register("email")} />
@@ -51,7 +53,7 @@ export default function ForgotPassword() {
 
               <div>
                 <Button type="submit" size="lg" className="w-full" disabled={isSubmitting}>
-                  Senda endurstillingartengil
+                  {t("auth.sendResetLink")}
                 </Button>
               </div>
             </form>
@@ -60,7 +62,7 @@ export default function ForgotPassword() {
 
         <p className="mt-10 text-center text-sm/6 text-neutral-500">
           <Link href="/login" className="font-semibold text-primary hover:text-primary/90">
-            Til baka í innskráningu
+            {t("auth.backToLogin")}
           </Link>
         </p>
       </div>

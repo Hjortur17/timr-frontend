@@ -17,12 +17,7 @@ interface DataTableProps<TData, TValue> {
   fixedLayout?: boolean;
 }
 
-export function DataTable<TData, TValue>({
-  columns,
-  data,
-  pageSize = 10,
-  fixedLayout,
-}: DataTableProps<TData, TValue>) {
+export function DataTable<TData, TValue>({ columns, data, pageSize = 10, fixedLayout }: DataTableProps<TData, TValue>) {
   const table = useReactTable({
     data,
     columns,

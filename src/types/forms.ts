@@ -180,6 +180,56 @@ export const generateScheduleFormSchema = z.object({
 
 export type GenerateScheduleForm = z.infer<typeof generateScheduleFormSchema>;
 
+export type VacationRequestStatus = "pending" | "approved" | "denied" | "cancelled";
+
+export interface VacationRequest {
+  id: number;
+  company_id: number;
+  employee_id: number;
+  start_date: string;
+  end_date: string;
+  working_days_count: number;
+  status: VacationRequestStatus;
+  employee_note: string | null;
+  reviewer_note: string | null;
+  reviewed_by: number | null;
+  reviewed_at: string | null;
+  cancelled_at: string | null;
+  employee?: Employee;
+  reviewer?: { id: number; name: string };
+  created_at: string;
+  updated_at: string;
+}
+
+export interface VacationPolicy {
+  id: number;
+  company_id: number;
+  default_days_per_year: number;
+  vacation_year_start_month: number;
+  vacation_year_start_day: number;
+  allow_carry_over: boolean;
+  max_carry_over_days: number | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface VacationBalance {
+  entitled: number;
+  used: number;
+  pending: number;
+  remaining: number;
+  vacation_year_start: string;
+  vacation_year_end: string;
+}
+
+export const vacationRequestFormSchema = z.object({
+  start_date: z.string().min(1, { message: "Upphafsdagur er nauðsynlegur" }),
+  end_date: z.string().min(1, { message: "Lokadagur er nauðsynlegur" }),
+  note: z.string().optional().or(z.literal("")),
+});
+
+export type VacationRequestForm = z.infer<typeof vacationRequestFormSchema>;
+
 export interface ShiftDeletionPreview {
   total_assignments: number;
   total_employees: number;

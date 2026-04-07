@@ -3,6 +3,7 @@
 import axios from "axios";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { SocialLoginButtons } from "@/components/SocialLoginButtons";
@@ -12,6 +13,7 @@ import type { RegisterForm } from "@/types/forms";
 import { setToken } from "@/utils/auth";
 
 export default function RegisterForm() {
+  const t = useTranslations();
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -55,7 +57,7 @@ export default function RegisterForm() {
         }
       } else {
         setError("email", {
-          message: "Villa kom upp. Vinsamlegast reyndu aftur.",
+          message: t("common.error"),
         });
       }
     }
@@ -65,7 +67,7 @@ export default function RegisterForm() {
     <div className="flex min-h-screen flex-col justify-center py-12 sm:px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <h2 className="mt-6 text-center text-2xl/9 font-bold tracking-tight text-neutral-900">
-          {isInvite ? "Búa til aðgang" : "Nýskráning"}
+          {isInvite ? t("auth.createAccount") : t("auth.register")}
         </h2>
       </div>
 
@@ -76,7 +78,7 @@ export default function RegisterForm() {
 
             <div>
               <label htmlFor="name" className="block text-base/7 font-semibold text-neutral-950">
-                Nafn
+                {t("common.name")}
               </label>
               <div className="mt-2">
                 <Input id="name" type="text" {...register("name")} />
@@ -86,7 +88,7 @@ export default function RegisterForm() {
 
             <div>
               <label htmlFor="email" className="block text-base/7 font-semibold text-neutral-950">
-                Netfang
+                {t("common.email")}
               </label>
               <div className="mt-2">
                 <Input
@@ -102,7 +104,7 @@ export default function RegisterForm() {
 
             <div>
               <label htmlFor="password" className="block text-base/7 font-semibold text-neutral-950">
-                Lykilorð
+                {t("common.password")}
               </label>
               <div className="mt-2">
                 <Input id="password" type="password" {...register("password")} />
@@ -112,7 +114,7 @@ export default function RegisterForm() {
 
             <div>
               <label htmlFor="password_confirmation" className="block text-base/7 font-semibold text-neutral-950">
-                Staðfesta lykilorð
+                {t("common.confirmPassword")}
               </label>
               <div className="mt-2">
                 <Input id="password_confirmation" type="password" {...register("password_confirmation")} />
@@ -123,7 +125,7 @@ export default function RegisterForm() {
             </div>
 
             <Button type="submit" size="lg" className="w-full">
-              {isInvite ? "Klára skráningu" : "Nýskrá"}
+              {isInvite ? t("auth.completeRegistration") : t("auth.registerButton")}
             </Button>
           </form>
 
@@ -132,9 +134,9 @@ export default function RegisterForm() {
 
         {!isInvite && (
           <p className="mt-10 text-center text-sm/6 text-neutral-500">
-            Nú þegar með aðgang?{" "}
+            {t("auth.hasAccount")}{" "}
             <Link href="/login" className="font-semibold text-primary hover:text-primary/90">
-              Innskrá
+              {t("auth.loginButton")}
             </Link>
           </p>
         )}

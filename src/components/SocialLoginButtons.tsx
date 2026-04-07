@@ -1,11 +1,16 @@
+"use client";
+
+import { useTranslations } from "next-intl";
+
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
 
 export function SocialLoginButtons() {
+  const t = useTranslations("common");
   return (
     <div>
       <div className="mt-10 flex items-center gap-x-6">
         <div className="w-full flex-1 border-t border-neutral-200" />
-        <p className="text-sm/6 font-medium text-nowrap text-neutral-900">eða</p>
+        <p className="text-sm/6 font-medium text-nowrap text-neutral-900">{t("or")}</p>
         <div className="w-full flex-1 border-t border-neutral-200" />
       </div>
 

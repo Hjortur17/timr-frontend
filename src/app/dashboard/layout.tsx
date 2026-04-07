@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { type ReactNode } from "react";
 import { AppSidebar } from "@/components/app-sidebar";
 import CompanyStep from "@/components/onboarding/CompanyStep";
@@ -63,8 +64,6 @@ function DashboardInner({ children }: { children: ReactNode }) {
   );
 }
 
-const STEP_NAMES = ["Fyrirtæki", "Vaktir", "Starfsfólk", "Lokið"]; //  "Launakerfi"
-
 function stepStatus(index: number, currentStep: number): "complete" | "current" | "upcoming" {
   if (index + 1 < currentStep) return "complete";
   if (index + 1 === currentStep) return "current";
@@ -72,10 +71,13 @@ function stepStatus(index: number, currentStep: number): "complete" | "current" 
 }
 
 function OnboardingWizard({ user, setUser }: { user: User; setUser: (user: User) => void }) {
+  const t = useTranslations("onboarding");
   const currentStep = user.onboarding_step;
 
+  const STEP_NAMES = [t("company"), t("shifts"), t("staff"), t("done")];
+
   const steps = STEP_NAMES.map((name, i) => ({
-    id: `Skref ${i + 1}`,
+    id: `${t("step")} ${i + 1}`,
     name,
     href: "#",
     status: stepStatus(i, currentStep),

@@ -2,6 +2,7 @@
 
 import axios from "axios";
 import dayjs from "dayjs";
+import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -37,6 +38,7 @@ function getCoords(): Promise<{ latitude: number; longitude: number }> {
 }
 
 export default function PunchClockPage() {
+  const t = useTranslations();
   const [shifts, setShifts] = useState<ShiftAssignment[]>([]);
   const [clockEntries, setClockEntries] = useState<ClockEntry[]>([]);
   const [loading, setLoading] = useState(true);
@@ -63,11 +65,11 @@ export default function PunchClockPage() {
       setShifts(shiftsRes.data.data ?? []);
       setClockEntries(entriesRes.data.data ?? []);
     } catch {
-      toast.error("Villa við að sækja gögn");
+      toast.error(t("punchClock.fetchError"));
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [t]);
 
   useEffect(() => {
     fetchData();
@@ -151,20 +153,20 @@ export default function PunchClockPage() {
         headers: authHeaders(),
       });
 
-      toast.success("Þú hefur verið stimpluð/stimpladur inn!");
+      toast.success(t("punchClock.clockedInSuccess"));
       await fetchData();
     } catch (err) {
       if (err && typeof err === "object" && "code" in err && "PERMISSION_DENIED" in err) {
         const geoErr = err as GeolocationPositionError;
         if (geoErr.code === geoErr.PERMISSION_DENIED) {
-          toast.error("Þú verður að leyfa staðsetningarþjónustu til að stimpla inn.");
+          toast.error(t("punchClock.locationRequired"));
         } else {
-          toast.error("Ekki tókst að finna staðsetningu. Athugaðu að kveikt sé á staðsetningarþjónustu.");
+          toast.error(t("punchClock.locationError"));
         }
       } else if (axios.isAxiosError(err)) {
-        toast.error(err.response?.data?.message ?? "Villa við að stimpla inn");
+        toast.error(err.response?.data?.message ?? t("punchClock.clockInError"));
       } else {
-        toast.error("Villa við að stimpla inn");
+        toast.error(t("punchClock.clockInError"));
       }
     } finally {
       setClockingIn(false);
@@ -175,13 +177,13 @@ export default function PunchClockPage() {
     setClockingOut(true);
     try {
       await axios.post("/api/employee/clock-out", {}, { headers: authHeaders() });
-      toast.success("Þú hefur verið stimpluð/stimpladur út!");
+      toast.success(t("punchClock.clockedOutSuccess"));
       await fetchData();
     } catch (err) {
       if (axios.isAxiosError(err)) {
-        toast.error(err.response?.data?.message ?? "Villa við að stimpla út");
+        toast.error(err.response?.data?.message ?? t("punchClock.clockOutError"));
       } else {
-        toast.error("Villa við að stimpla út");
+        toast.error(t("punchClock.clockOutError"));
       }
     } finally {
       setClockingOut(false);
@@ -199,35 +201,35 @@ export default function PunchClockPage() {
   return (
     <section className="h-full w-full flex flex-col items-center justify-center px-4">
       <div className="max-w-md w-full text-center">
-        <h1 className="text-4xl font-bold mb-4">Stimpilklukka</h1>
+        <h1 className="text-4xl font-bold mb-4">{t("punchClock.title")}</h1>
 
         {employeeState === "upcoming-shift" && nextShift && (
           <div className="rounded-2xl text-lg p-4 bg-accent w-full mb-24">
             {countdown ? (
               <>
-                Vaktin þín byrjar eftir <span className="font-bold tabular-nums">{countdown}</span>
+                {t("punchClock.shiftStartsIn")} <span className="font-bold tabular-nums">{countdown}</span>
               </>
             ) : (
-              <span className="font-bold">Vaktin þín er byrjuð!</span>
+              <span className="font-bold">{t("punchClock.shiftStarted")}</span>
             )}
           </div>
         )}
 
         {employeeState === "no-shift" && (
           <div className="rounded-2xl text-lg p-4 bg-accent w-full mb-24">
-            Þú ert ekki skráð/ur á vakt í dag. <br />
-            Ertu að gleyma þér eða ertu að koma auka?
+            {t("punchClock.noShift")} <br />
+            {t("punchClock.noShiftExtra")}
           </div>
         )}
 
         {employeeState === "clocked-in" && (
           <div className="rounded-2xl text-lg p-4 bg-accent w-full mb-24">
-            Þú ert á vakt — <span className="font-bold tabular-nums">{elapsed}</span>
+            {t("punchClock.clockedIn")} <span className="font-bold tabular-nums">{elapsed}</span>
           </div>
         )}
 
         {employeeState === "completed" && (
-          <div className="rounded-2xl text-lg p-4 bg-accent w-full mb-24">Þú hefur lokið vaktinni þinni í dag!</div>
+          <div className="rounded-2xl text-lg p-4 bg-accent w-full mb-24">{t("punchClock.shiftCompleted")}</div>
         )}
 
         {(employeeState === "upcoming-shift" || employeeState === "no-shift") && (
@@ -236,7 +238,7 @@ export default function PunchClockPage() {
             onClick={handleClockIn}
             disabled={clockingIn}
           >
-            {clockingIn ? <Spinner /> : "Stimpla inn"}
+            {clockingIn ? <Spinner /> : t("punchClock.clockIn")}
           </Button>
         )}
 
@@ -247,7 +249,7 @@ export default function PunchClockPage() {
             onClick={handleClockOut}
             disabled={clockingOut}
           >
-            {clockingOut ? <Spinner /> : "Stimpla út"}
+            {clockingOut ? <Spinner /> : t("punchClock.clockOut")}
           </Button>
         )}
       </div>

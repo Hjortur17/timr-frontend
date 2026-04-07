@@ -1,7 +1,8 @@
 "use client";
 
-import { Calendar, ClockPlus, FileClock, Home, Users } from "lucide-react";
+import { Calendar, ClockPlus, FileClock, Home, Palmtree, Users } from "lucide-react";
 import { usePathname } from "next/navigation";
+import { useTranslations } from "next-intl";
 import * as React from "react";
 import { Nav } from "react-day-picker";
 import { NavMain } from "@/components/nav-main";
@@ -12,21 +13,24 @@ import { useUser } from "@/context/UserContext";
 import { NavSecondary } from "./nav-secondary";
 import { NavSettings } from "./nav-settings";
 
-const managerNavigation = [
-  { title: "Vaktir", url: "/dashboard", icon: Calendar },
-  { title: "Starfsfólk", url: "/dashboard/employees", icon: Users },
-  { title: "Tímaskráning", url: "/dashboard/time-entry", icon: FileClock },
-];
-
-const employeeNavigation = [
-  { title: "Vaktir", url: "/dashboard", icon: Home },
-  { title: "Stimpilklukka", url: "/dashboard/punch-clock", icon: ClockPlus },
-  { title: "Tímaskráning", url: "/dashboard/time-entry", icon: FileClock },
-];
-
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { isManager } = useUser();
   const pathname = usePathname();
+  const t = useTranslations("nav");
+
+  const managerNavigation = [
+    { title: t("shifts"), url: "/dashboard", icon: Calendar },
+    { title: t("employees"), url: "/dashboard/employees", icon: Users },
+    { title: t("timeEntry"), url: "/dashboard/time-entry", icon: FileClock },
+    { title: t("vacation"), url: "/dashboard/vacation", icon: Palmtree },
+  ];
+
+  const employeeNavigation = [
+    { title: t("shifts"), url: "/dashboard", icon: Home },
+    { title: t("punchClock"), url: "/dashboard/punch-clock", icon: ClockPlus },
+    { title: t("timeEntry"), url: "/dashboard/time-entry", icon: FileClock },
+    { title: t("vacation"), url: "/dashboard/vacation", icon: Palmtree },
+  ];
 
   const isCurrent = (url: string) => (url === "/dashboard" ? pathname === "/dashboard" : pathname.startsWith(url));
 
@@ -45,7 +49,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 
         {isManager && <NavSettings />}
 
-        {/*<NavSecondary className="mt-auto" />*/}
+        <NavSecondary className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>
         <NavUser />
