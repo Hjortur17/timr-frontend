@@ -14,9 +14,15 @@ interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   pageSize?: number;
+  fixedLayout?: boolean;
 }
 
-export function DataTable<TData, TValue>({ columns, data, pageSize = 10 }: DataTableProps<TData, TValue>) {
+export function DataTable<TData, TValue>({
+  columns,
+  data,
+  pageSize = 10,
+  fixedLayout,
+}: DataTableProps<TData, TValue>) {
   const table = useReactTable({
     data,
     columns,
@@ -29,7 +35,14 @@ export function DataTable<TData, TValue>({ columns, data, pageSize = 10 }: DataT
 
   return (
     <div>
-      <Table>
+      <Table className={fixedLayout ? "table-fixed" : undefined}>
+        {fixedLayout && (
+          <colgroup>
+            {table.getAllColumns().map((col) => (
+              <col key={col.id} style={col.getSize() !== 150 ? { width: col.getSize() } : undefined} />
+            ))}
+          </colgroup>
+        )}
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id}>

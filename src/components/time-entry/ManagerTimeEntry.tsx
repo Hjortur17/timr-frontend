@@ -3,7 +3,7 @@
 import type { ColumnDef } from "@tanstack/react-table";
 import axios from "axios";
 import dayjs from "dayjs";
-import { ArrowRight, Download, MoreHorizontal } from "lucide-react";
+import { ArrowRight, Download, MoreHorizontal, X } from "lucide-react";
 import Link from "next/link";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
@@ -36,6 +36,22 @@ export default function ManagerTimeEntry() {
   const [loading, setLoading] = useState(true);
   const [from, setFrom] = useState<Date | undefined>(dayjs().startOf("month").toDate());
   const [to, setTo] = useState<Date | undefined>(dayjs().endOf("month").toDate());
+
+  const filterActive =
+    !dayjs(from).isSame(dayjs().startOf("month"), "day") || !dayjs(to).isSame(dayjs().endOf("month"), "day");
+
+  const resetFilter = () => {
+    setFrom(dayjs().startOf("month").toDate());
+    setTo(dayjs().endOf("month").toDate());
+  };
+
+  const filterQuery = useMemo(() => {
+    const params = new URLSearchParams();
+    if (from) params.set("from", dayjs(from).format("YYYY-MM-DD"));
+    if (to) params.set("to", dayjs(to).format("YYYY-MM-DD"));
+    const qs = params.toString();
+    return qs ? `?${qs}` : "";
+  }, [from, to]);
 
   useEffect(() => {
     setLoading(true);
@@ -123,7 +139,7 @@ export default function ManagerTimeEntry() {
                   }
                 />
                 <DropdownMenuContent align="end" className="min-w-max">
-                  <DropdownMenuItem render={<Link href={`/dashboard/time-entry/${employeeId}`} />}>
+                  <DropdownMenuItem render={<Link href={`/dashboard/time-entry/${employeeId}${filterQuery}`} />}>
                     Skoða
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => handleExport(employeeId)}>
@@ -133,7 +149,7 @@ export default function ManagerTimeEntry() {
                 </DropdownMenuContent>
               </DropdownMenu>
               <Link
-                href={`/dashboard/time-entry/${employeeId}`}
+                href={`/dashboard/time-entry/${employeeId}${filterQuery}`}
                 className="inline-flex size-8 items-center justify-center rounded-md hover:bg-muted"
               >
                 <ArrowRight className="size-4" />
@@ -143,7 +159,7 @@ export default function ManagerTimeEntry() {
         },
       },
     ],
-    [],
+    [filterQuery],
   );
 
   return (
@@ -177,6 +193,12 @@ export default function ManagerTimeEntry() {
         <div className="w-56">
           <DatePicker value={to} onChange={setTo} placeholder="Til dagsetningar" />
         </div>
+        {filterActive && (
+          <Button type="button" variant="ghost" size="sm" onClick={resetFilter}>
+            <X className="mr-1 size-4" />
+            Hreinsa
+          </Button>
+        )}
       </div>
 
       <div className="mt-6">

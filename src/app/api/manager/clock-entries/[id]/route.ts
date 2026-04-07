@@ -1,17 +1,18 @@
 import { NextResponse } from "next/server";
 import { type ApiError, api } from "@/utils/api";
 
-export async function POST(request: Request) {
+export async function PUT(request: Request, { params }: { params: Promise<{ id: string }> }) {
   const authorization = request.headers.get("Authorization");
 
   if (!authorization) {
     return NextResponse.json({ message: "Unauthenticated." }, { status: 401 });
   }
 
+  const { id } = await params;
   const body = await request.json();
 
   try {
-    const response = await api.post("/api/manager/clock-entries", body, {
+    const response = await api.put(`/api/manager/clock-entries/${id}`, body, {
       headers: { Authorization: authorization },
     });
 
@@ -25,19 +26,18 @@ export async function POST(request: Request) {
   }
 }
 
-export async function GET(request: Request) {
+export async function DELETE(request: Request, { params }: { params: Promise<{ id: string }> }) {
   const authorization = request.headers.get("Authorization");
 
   if (!authorization) {
     return NextResponse.json({ message: "Unauthenticated." }, { status: 401 });
   }
 
-  const { searchParams } = new URL(request.url);
+  const { id } = await params;
 
   try {
-    const response = await api.get("/api/manager/clock-entries", {
+    const response = await api.delete(`/api/manager/clock-entries/${id}`, {
       headers: { Authorization: authorization },
-      params: Object.fromEntries(searchParams),
     });
 
     return NextResponse.json(response.data, { status: response.status });
