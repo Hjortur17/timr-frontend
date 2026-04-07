@@ -2,6 +2,7 @@
 
 import { MenuIcon } from "lucide-react";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import {
   NavigationMenu,
@@ -20,6 +21,7 @@ const navigation = [
 ];
 
 export default function Navigation() {
+  const t = useTranslations("landing");
   return (
     <header className="bg-background">
       <nav aria-label="Global" className="mx-auto flex max-w-8xl items-center justify-between p-6 lg:px-8">
@@ -100,11 +102,11 @@ export default function Navigation() {
         <div className="hidden lg:flex gap-2">
           <Link href="/login">
             <Button variant="link" className="cursor-pointer">
-              Innskrá
+              {t("login")}
             </Button>
           </Link>
           <Link href="/register">
-            <Button className="cursor-pointer">Nýskrá</Button>
+            <Button className="cursor-pointer">{t("register")}</Button>
           </Link>
         </div>
       </nav>

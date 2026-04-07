@@ -2,6 +2,7 @@
 
 import axios from "axios";
 import { CalendarArrowDown, CalendarSync } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { type ReactNode, useCallback, useState } from "react";
 import { toast } from "sonner";
 import EmployeeWeeklyCalendar from "@/components/shifts/EmployeeWeeklyCalendar";
@@ -11,6 +12,7 @@ import { useUser } from "@/context/UserContext";
 import { authHeaders } from "@/utils/auth";
 
 export default function ShiftsPage() {
+  const t = useTranslations();
   const { isManager, isEmployee } = useUser();
   const [actions, setActions] = useState<ReactNode>(null);
 
@@ -34,7 +36,7 @@ export default function ShiftsPage() {
       link.remove();
       window.URL.revokeObjectURL(url);
     } catch {
-      toast.error("Ekki tókst að sækja dagatal");
+      toast.error(t("shifts.downloadCalendarError"));
     }
   };
 
@@ -52,7 +54,7 @@ export default function ShiftsPage() {
       const webcalUrl = httpsUrl.replace(/^https?:\/\//, "webcal://");
       window.location.href = webcalUrl;
     } catch {
-      toast.error("Ekki tókst að gerast áskrifandi að dagatali");
+      toast.error(t("shifts.subscribeCalendarError"));
     }
   };
 
@@ -60,8 +62,8 @@ export default function ShiftsPage() {
     <div className="px-4 sm:px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full flex items-end justify-between">
         <div>
-          <h1 className="text-2xl/9 font-bold tracking-tight text-neutral-900">Vaktir</h1>
-          <p className="mt-2 text-sm/6 text-neutral-500">Skoðaðu og skipulagðu vaktir.</p>
+          <h1 className="text-2xl/9 font-bold tracking-tight text-neutral-900">{t("shifts.title")}</h1>
+          <p className="mt-2 text-sm/6 text-neutral-500">{t("shifts.description")}</p>
         </div>
 
         {actions && <div className="flex items-center gap-2">{actions}</div>}
@@ -73,7 +75,7 @@ export default function ShiftsPage() {
             </Button>*/}
             <Button type="button" onClick={subscribeCalendar}>
               <CalendarSync />
-              Sækja dagatal
+              {t("shifts.downloadCalendar")}
             </Button>
           </div>
         )}

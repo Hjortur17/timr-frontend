@@ -16,6 +16,7 @@ npm run format          # Biome format only
 - **API proxy**: Next.js API routes (`src/app/api/`) proxy to backend at http://localhost:8000
 - **Linting/Formatting**: Biome (not ESLint/Prettier)
 - **Styling**: Tailwind CSS 4 with `@theme` directive for custom colors
+- **i18n**: next-intl — Icelandic (default) + English
 
 ## Architecture
 
@@ -25,6 +26,7 @@ npm run format          # Biome format only
 - **Types**: `src/types/forms.ts` — Zod schemas and TypeScript interfaces
 - **Utils**: `src/utils/` — `api.ts` (Axios instance), `auth.ts` (token management), `classname.ts` (cn utility), `server-auth.ts` (cookie auth)
 - **Lib**: `src/lib/utils.ts` — `cn()`, `formatSsn()`, `formatPhone()`, `formatDuration()` (dayjs with Icelandic locale)
+- **i18n**: `src/i18n/` — `config.ts` (locales), `request.ts` (server config). Translations in `messages/is.json` and `messages/en.json`
 - **Path alias**: `@/*` maps to `./src/*`
 
 ### Key Pages
@@ -84,6 +86,31 @@ Each proxy route: extracts auth token → forwards to Laravel → handles errors
 - **Biome config**: 2-space indent, 120 line width, LF line endings, organize imports on save
 - **Do not add redundant Tailwind classes** that duplicate shadcn/CSS-variable defaults
 
+### Internationalization (next-intl)
+
+All user-facing strings must go through `next-intl`. Never hardcode UI text.
+
+- **Locales**: Icelandic (`is`, default) and English (`en`)
+- **Translation files**: `messages/is.json` and `messages/en.json` — flat namespaced JSON (e.g. `nav.shifts`, `employees.title`)
+- **Config**: `src/i18n/config.ts` defines locales, `src/i18n/request.ts` provides server config. `next.config.ts` uses `createNextIntlPlugin`.
+- **Locale switching**: Cookie-based (`NEXT_LOCALE`), switched via `POST /api/locale` → language selector in sidebar (`nav-secondary.tsx`)
+- **Root layout**: `src/app/layout.tsx` wraps the app with `NextIntlClientProvider` and sets `<html lang={locale}>`
+
+**Usage in client components:**
+```tsx
+"use client";
+import { useTranslations } from "next-intl";
+
+const t = useTranslations();         // all namespaces
+const t = useTranslations("nav");    // scoped to nav.*
+t("shifts")                          // → "Vaktir" (is) / "Shifts" (en)
+```
+
+**When adding new strings:**
+1. Add the key to both `messages/is.json` and `messages/en.json`
+2. Use a descriptive namespace: `"feature.keyName"` (e.g. `"employees.addEmployee"`)
+3. Use `t("namespace.key")` in components — never inline Icelandic or English text
+
 ### Color System (shadcn CSS variables)
 
 | Token | Light mode value | Usage |
@@ -114,6 +141,7 @@ Use Tailwind semantic classes (`text-foreground`, `bg-primary`, `border-border`)
 - `@tanstack/react-table` — data tables
 - `zod` — schema validation
 - `react-hook-form` — form state management
+- `next-intl` — internationalization (Icelandic + English)
 
 ## Development Workflow
 

@@ -17,6 +17,7 @@ import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import isoWeek from "dayjs/plugin/isoWeek";
 import { ChevronLeft, ChevronRight, Plus, UserPlus, X } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import { formatDuration } from "@/lib/utils";
@@ -75,6 +76,7 @@ interface WeeklyCalendarProps {
 }
 
 export default function WeeklyCalendar({ onActionsChange }: WeeklyCalendarProps) {
+  const t = useTranslations();
   const [weekStart, setWeekStart] = useState(() => dayjs().startOf("isoWeek"));
   const [assignments, setAssignments] = useState<ShiftAssignment[]>([]);
   const [shiftTemplates, setShiftTemplates] = useState<Shift[]>([]);
@@ -220,11 +222,10 @@ export default function WeeklyCalendar({ onActionsChange }: WeeklyCalendarProps)
       setShowAddShiftModal(false);
       setSelectedEmployee(null);
       setSelectedDay(null);
-      toast.success(response.data.message ?? "Vakt úthlutað");
+      toast.success(response.data.message ?? t("calendar.shiftAssigned"));
     } catch (err: unknown) {
       const message =
-        (err as { response?: { data?: { message?: string } } })?.response?.data?.message ??
-        "Ekki tókst að úthluta vakt";
+        (err as { response?: { data?: { message?: string } } })?.response?.data?.message ?? t("calendar.assignError");
       toast.error(message);
     } finally {
       setAssigningShiftId(null);
@@ -271,11 +272,11 @@ export default function WeeklyCalendar({ onActionsChange }: WeeklyCalendarProps)
       });
       const serverAssignment = response.data.data as ShiftAssignment;
       setAssignments((prev) => prev.map((a) => (a.id === assignment.id ? serverAssignment : a)));
-      toast.success("Vakt færð");
+      toast.success(t("calendar.shiftMoved"));
     } catch (err: unknown) {
       setAssignments((prev) => prev.map((a) => (a.id === assignment.id ? assignment : a)));
       const message =
-        (err as { response?: { data?: { message?: string } } })?.response?.data?.message ?? "Ekki tókst að færa vakt";
+        (err as { response?: { data?: { message?: string } } })?.response?.data?.message ?? t("calendar.moveError");
       toast.error(message);
     }
   };
@@ -302,18 +303,17 @@ export default function WeeklyCalendar({ onActionsChange }: WeeklyCalendarProps)
       const from = weekStart.format("YYYY-MM-DD");
       const to = weekEnd.format("YYYY-MM-DD");
       await axios.post("/api/manager/shifts/publish", { from, to }, { headers: authHeaders() });
-      toast.success("Vaktir birtar");
+      toast.success(t("calendar.published"));
       await refetchAssignments();
       setJustPublishedIds(unpublishedIds);
     } catch (err: unknown) {
       const message =
-        (err as { response?: { data?: { message?: string } } })?.response?.data?.message ??
-        "Ekki tókst að birta vaktir";
+        (err as { response?: { data?: { message?: string } } })?.response?.data?.message ?? t("calendar.publishError");
       toast.error(message);
     } finally {
       setIsPublishingWeek(false);
     }
-  }, [assignments, weekStart, weekEnd, isPublishingWeek, refetchAssignments]);
+  }, [assignments, weekStart, weekEnd, isPublishingWeek, refetchAssignments, t]);
 
   const publishAll = useCallback(async () => {
     if (isPublishingAll) return;
@@ -321,33 +321,32 @@ export default function WeeklyCalendar({ onActionsChange }: WeeklyCalendarProps)
     setIsPublishingAll(true);
     try {
       await axios.post("/api/manager/shifts/publish", {}, { headers: authHeaders() });
-      toast.success("Allar vaktir birtar");
+      toast.success(t("calendar.allPublished"));
       await refetchAssignments();
       setJustPublishedIds(unpublishedIds);
     } catch (err: unknown) {
       const message =
-        (err as { response?: { data?: { message?: string } } })?.response?.data?.message ??
-        "Ekki tókst að birta vaktir";
+        (err as { response?: { data?: { message?: string } } })?.response?.data?.message ?? t("calendar.publishError");
       toast.error(message);
     } finally {
       setIsPublishingAll(false);
     }
-  }, [assignments, isPublishingAll, refetchAssignments]);
+  }, [assignments, isPublishingAll, refetchAssignments, t]);
 
   const undoPublish = useCallback(async () => {
     if (!justPublishedIds || justPublishedIds.length === 0) return;
     try {
       await axios.post("/api/manager/shifts/unpublish", { ids: justPublishedIds }, { headers: authHeaders() });
-      toast.success("Birting afturkölluð");
+      toast.success(t("calendar.undoPublished"));
       await refetchAssignments();
       setJustPublishedIds(null);
     } catch (err: unknown) {
       const message =
         (err as { response?: { data?: { message?: string } } })?.response?.data?.message ??
-        "Ekki tókst að afturkalla birtingu";
+        t("calendar.undoPublishError");
       toast.error(message);
     }
-  }, [justPublishedIds, refetchAssignments]);
+  }, [justPublishedIds, refetchAssignments, t]);
 
   const removeAssignment = useCallback(
     async (assignmentId: number) => {
@@ -357,16 +356,15 @@ export default function WeeklyCalendar({ onActionsChange }: WeeklyCalendarProps)
         await axios.delete(`/api/manager/shift-assignments/${assignmentId}`, {
           headers: authHeaders(),
         });
-        toast.success("Vakt fjarlægð");
+        toast.success(t("calendar.shiftRemoved"));
       } catch (err: unknown) {
         setAssignments(prev);
         const message =
-          (err as { response?: { data?: { message?: string } } })?.response?.data?.message ??
-          "Ekki tókst að fjarlægja vakt";
+          (err as { response?: { data?: { message?: string } } })?.response?.data?.message ?? t("calendar.removeError");
         toast.error(message);
       }
     },
-    [assignments],
+    [assignments, t],
   );
 
   const today = dayjs();
@@ -399,7 +397,7 @@ export default function WeeklyCalendar({ onActionsChange }: WeeklyCalendarProps)
   if (loading) {
     return (
       <div className="flex items-center justify-center py-12">
-        <p className="text-neutral-500">Hleð vöktum...</p>
+        <p className="text-neutral-500">{t("calendar.loadingShifts")}</p>
       </div>
     );
   }
@@ -431,7 +429,7 @@ export default function WeeklyCalendar({ onActionsChange }: WeeklyCalendarProps)
               onClick={goToday}
               className="rounded-lg border border-neutral-300 px-3 py-1.5 text-sm font-medium text-neutral-700 hover:bg-neutral-50 transition-colors"
             >
-              Í dag
+              {t("common.today")}
             </button>
           )}
           <h2 className="text-lg font-semibold text-neutral-900">
@@ -478,7 +476,7 @@ export default function WeeklyCalendar({ onActionsChange }: WeeklyCalendarProps)
 
             {/* Employee Rows */}
             {employees.length === 0 ? (
-              <div className="px-6 py-16 text-center text-neutral-400">Engir starfsmenn fundust.</div>
+              <div className="px-6 py-16 text-center text-neutral-400">{t("calendar.noEmployees")}</div>
             ) : (
               employees.map((employee) => {
                 const totalMinutes = getEmployeeWeekMinutes(employee.id);
@@ -539,7 +537,7 @@ export default function WeeklyCalendar({ onActionsChange }: WeeklyCalendarProps)
                               {dayAssignments.length === 0 ? (
                                 <>
                                   <UserPlus className="size-6 mx-auto" />
-                                  <span className="mt-2 block text-sm font-semibold">Bæta við vakt</span>
+                                  <span className="mt-2 block text-sm font-semibold">{t("calendar.addShift")}</span>
                                 </>
                               ) : (
                                 <Plus className="size-3.5" />
@@ -558,10 +556,10 @@ export default function WeeklyCalendar({ onActionsChange }: WeeklyCalendarProps)
 
         <Modal open={showAddShiftModal} onClose={() => setShowAddShiftModal(false)} hideButtons>
           <div className="w-full h-full">
-            <h2 className="text-lg font-semibold mb-4">Bæta við vakt</h2>
+            <h2 className="text-lg font-semibold mb-4">{t("calendar.addShift")}</h2>
 
             <div className="flex flex-col gap-2 w-full h-80 overflow-y-auto" aria-busy={assigningShiftId !== null}>
-              {assigningShiftId !== null && <p className="text-sm text-neutral-500">Úthluta vakt...</p>}
+              {assigningShiftId !== null && <p className="text-sm text-neutral-500">{t("calendar.assigningShift")}</p>}
               {uniqueTemplates.map((template) => {
                 const isAssigned = alreadyAssignedShiftIds.has(template.id);
                 return (
@@ -575,7 +573,7 @@ export default function WeeklyCalendar({ onActionsChange }: WeeklyCalendarProps)
                     <ShiftBlock shift={template} />
                     {isAssigned && (
                       <span className="absolute right-2 top-1/2 -translate-y-1/2 text-xs font-medium text-neutral-500">
-                        Þegar úthlutað
+                        {t("calendar.alreadyAssigned")}
                       </span>
                     )}
                   </button>
@@ -712,10 +710,12 @@ function RenderActions({
   publishWeek: () => void;
   publishAll: () => void;
 }) {
+  const t = useTranslations();
+
   if (justPublishedIds) {
     return (
       <Button type="button" variant="ghost" size="lg" onClick={undoPublish}>
-        Afturkalla birtingu
+        {t("calendar.undoPublish")}
       </Button>
     );
   }
@@ -725,11 +725,11 @@ function RenderActions({
       <>
         <Button type="button" variant="outline" size="lg" onClick={publishWeek} disabled={isPublishingWeek}>
           {isPublishingWeek && <Spinner className="size-4 animate-spin" />}
-          Birta viku
+          {t("calendar.publishWeek")}
         </Button>
         <Button type="button" size="lg" onClick={publishAll} disabled={isPublishingAll}>
           {isPublishingAll && <Spinner className="size-4 animate-spin" />}
-          Birta allt
+          {t("calendar.publishAll")}
         </Button>
       </>
     );

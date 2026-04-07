@@ -12,6 +12,7 @@ import {
   UsersIcon,
 } from "lucide-react";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -25,15 +26,16 @@ import {
 import { SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar } from "@/components/ui/sidebar";
 import { useUser } from "@/context/UserContext";
 
-const navigation = [
-  { title: "Prófill", url: "/dashboard", icon: UserPenIcon },
-  { title: "Öryggi", url: "/dashboard", icon: ShieldUserIcon },
-  { title: "Tilkynningar", url: "/dashboard", icon: BellIcon },
-];
-
 export function NavUser() {
   const { user, logout } = useUser();
   const { isMobile } = useSidebar();
+  const t = useTranslations();
+
+  const navigation = [
+    { title: t("nav.profile"), url: "/dashboard", icon: UserPenIcon },
+    { title: t("nav.security"), url: "/dashboard", icon: ShieldUserIcon },
+    { title: t("nav.notifications"), url: "/dashboard", icon: BellIcon },
+  ];
 
   const avatarFallback = user.name
     .split(" ")
@@ -91,7 +93,7 @@ export function NavUser() {
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={() => logout()}>
               <LogOutIcon />
-              Útskrá
+              {t("auth.logout")}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
