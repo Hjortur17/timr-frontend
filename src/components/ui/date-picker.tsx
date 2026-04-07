@@ -4,20 +4,23 @@ import dayjs from "dayjs";
 import { CalendarIcon } from "lucide-react";
 import type React from "react";
 import type { DayPicker, DayPickerLocale } from "react-day-picker";
-import { is } from "react-day-picker/locale";
+import { enUS, is } from "react-day-picker/locale";
+import { useLocale } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
+
+const DAY_PICKER_LOCALES: Record<string, DayPickerLocale> = { is, en: enUS };
 
 type CalendarProps = Omit<React.ComponentProps<typeof DayPicker>, "mode" | "selected" | "onSelect">;
 
 export function DatePicker({
   value,
   onChange,
-  placeholder = "Veldu dagsetningu",
+  placeholder,
   id,
-  locale = is,
+  locale: localeProp,
   ...calendarProps
 }: {
   value: Date | undefined;
@@ -26,6 +29,8 @@ export function DatePicker({
   locale?: DayPickerLocale;
   id?: string;
 } & CalendarProps) {
+  const currentLocale = useLocale();
+  const locale = localeProp ?? DAY_PICKER_LOCALES[currentLocale] ?? is;
   return (
     <Popover>
       <PopoverTrigger

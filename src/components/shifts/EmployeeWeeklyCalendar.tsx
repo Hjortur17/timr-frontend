@@ -18,7 +18,6 @@ import { cn } from "@/utils/classname";
 dayjs.extend(isoWeek);
 dayjs.extend(customParseFormat);
 
-const DAY_LABELS = ["MÁN", "ÞRI", "MIÐ", "FIM", "FÖS", "LAU", "SUN"];
 
 const SHIFT_COLORS = [
   { bg: "bg-emerald-200", text: "text-emerald-800" },
@@ -82,6 +81,8 @@ function getCalendarDays(month: dayjs.Dayjs, today: dayjs.Dayjs): CalendarDay[] 
 
 export default function EmployeeWeeklyCalendar() {
   const t = useTranslations();
+  const dayLabels = t.raw("calendar.dayLabels") as string[];
+  const durationLabels = { hours: t("common.hoursAbbr"), minutes: t("common.minutesAbbr") };
   const [currentMonth, setCurrentMonth] = useState(() => dayjs().startOf("month"));
   const [assignments, setAssignments] = useState<ShiftAssignment[]>([]);
   const [loading, setLoading] = useState(true);
@@ -190,7 +191,7 @@ export default function EmployeeWeeklyCalendar() {
         <div className="flex items-center">
           {totalMonthMinutes > 0 && (
             <span className="ml-4 hidden text-sm text-muted-foreground md:block">
-              {formatDuration(totalMonthMinutes, "minutes")}
+              {formatDuration(totalMonthMinutes, "minutes", durationLabels)}
             </span>
           )}
         </div>
@@ -200,7 +201,7 @@ export default function EmployeeWeeklyCalendar() {
       <div className="shadow-sm ring-1 ring-border lg:flex lg:flex-auto lg:flex-col">
         {/* Day-of-week header */}
         <div className="grid grid-cols-7 gap-px border-b border-border bg-muted text-center text-xs/6 font-semibold text-muted-foreground lg:flex-none">
-          {DAY_LABELS.map((label) => (
+          {dayLabels.map((label) => (
             <div key={label} className="flex justify-center bg-background py-2">
               <span>{label.charAt(0)}</span>
               <span className="sr-only sm:not-sr-only">{label.slice(1)}</span>

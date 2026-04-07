@@ -31,7 +31,6 @@ import { Spinner } from "../ui/spinner";
 dayjs.extend(isoWeek);
 dayjs.extend(customParseFormat);
 
-const DAY_LABELS = ["MÁN", "ÞRI", "MIÐ", "FIM", "FÖS", "LAU", "SUN"];
 
 const SHIFT_COLORS = [
   { bg: "bg-emerald-200", text: "text-emerald-800" },
@@ -77,6 +76,8 @@ interface WeeklyCalendarProps {
 
 export default function WeeklyCalendar({ onActionsChange }: WeeklyCalendarProps) {
   const t = useTranslations();
+  const dayLabels = t.raw("calendar.dayLabels") as string[];
+  const durationLabels = { hours: t("common.hoursAbbr"), minutes: t("common.minutesAbbr") };
   const [weekStart, setWeekStart] = useState(() => dayjs().startOf("isoWeek"));
   const [assignments, setAssignments] = useState<ShiftAssignment[]>([]);
   const [shiftTemplates, setShiftTemplates] = useState<Shift[]>([]);
@@ -460,11 +461,11 @@ export default function WeeklyCalendar({ onActionsChange }: WeeklyCalendarProps)
                 const isToday = day.isSame(today, "day");
                 return (
                   <div
-                    key={DAY_LABELS[i]}
+                    key={dayLabels[i]}
                     className={cn("border-l border-neutral-200 px-3 py-2.5 text-center", isToday && "bg-primary/5")}
                   >
                     <div className="text-[11px] font-semibold uppercase tracking-wider text-neutral-400">
-                      {DAY_LABELS[i]}
+                      {dayLabels[i]}
                     </div>
                     <div className={cn("mt-0.5 text-xl font-bold", isToday ? "text-primary" : "text-neutral-900")}>
                       {day.date()}
@@ -492,7 +493,7 @@ export default function WeeklyCalendar({ onActionsChange }: WeeklyCalendarProps)
                     <div className="flex flex-col justify-center p-3">
                       <span className="text-sm font-semibold text-neutral-900 truncate">{employee.name}</span>
                       <span className="mt-0.5 text-xs text-neutral-400">
-                        {totalMinutes > 0 ? formatDuration(totalMinutes, "minutes") : "0klst"}
+                        {totalMinutes > 0 ? formatDuration(totalMinutes, "minutes", durationLabels) : `0${durationLabels.hours}`}
                       </span>
                     </div>
 
@@ -503,7 +504,7 @@ export default function WeeklyCalendar({ onActionsChange }: WeeklyCalendarProps)
 
                       return (
                         <DroppableCell
-                          key={DAY_LABELS[i]}
+                          key={dayLabels[i]}
                           id={`cell-${employee.id}-${i}`}
                           employeeId={employee.id}
                           dayIndex={i}

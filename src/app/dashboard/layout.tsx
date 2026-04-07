@@ -11,6 +11,7 @@ import ProgressBar from "@/components/ProgressBar";
 import { Separator } from "@/components/ui/separator";
 import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { UserProvider, useUser } from "@/context/UserContext";
+import { useDayjsLocale } from "@/hooks/use-dayjs-locale";
 import type { User } from "@/types/forms";
 
 const ONBOARDING_COMPLETE = 6;
@@ -24,6 +25,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
 }
 
 function DashboardInner({ children }: { children: ReactNode }) {
+  useDayjsLocale();
   const { user, setUser } = useUser();
 
   if (user.onboarding_step < ONBOARDING_COMPLETE) {

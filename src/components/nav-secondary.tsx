@@ -31,7 +31,7 @@ export function NavSecondary({ ...props }: React.ComponentPropsWithoutRef<typeof
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ locale: newLocale }),
     });
-    router.refresh();
+    window.location.reload();
   };
 
   return (

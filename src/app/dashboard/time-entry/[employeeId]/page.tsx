@@ -6,6 +6,7 @@ import dayjs from "dayjs";
 import { Check, Download, MoreHorizontal, Pencil, Trash2, X } from "lucide-react";
 import Link from "next/link";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
 import {
@@ -56,6 +57,8 @@ interface EditForm {
 }
 
 export default function EmployeeTimeEntryDetailPage() {
+  const t = useTranslations();
+  const durationLabels = { hours: t("common.hoursAbbr"), minutes: t("common.minutesAbbr") };
   const { isManager } = useUser();
   const router = useRouter();
   const params = useParams<{ employeeId: string }>();
@@ -212,7 +215,7 @@ export default function EmployeeTimeEntryDetailPage() {
     return entries.reduce((sum, entry) => sum + (entry.total_minutes ?? 0), 0);
   }, [entries]);
 
-  const formattedTotal = useMemo(() => formatDuration(totalMinutes, "minutes"), [totalMinutes]);
+  const formattedTotal = useMemo(() => formatDuration(totalMinutes, "minutes", durationLabels), [totalMinutes, durationLabels]);
 
   const columns: ColumnDef<ClockEntry>[] = useMemo(
     () => [
@@ -269,7 +272,7 @@ export default function EmployeeTimeEntryDetailPage() {
         header: "Heildartími",
         size: 140,
         cell: ({ row }) =>
-          row.original.total_minutes != null ? formatDuration(row.original.total_minutes, "minutes") : "–",
+          row.original.total_minutes != null ? formatDuration(row.original.total_minutes, "minutes", durationLabels) : "–",
       },
       {
         accessorKey: "shift.title",

@@ -362,7 +362,7 @@ function ShiftTemplateFormComponent({
   };
 
   const selectedEmployees = employees.filter((e) => (selectedEmployeeIds ?? []).includes(e.id));
-  const dayLabels = ["Mán", "Þri", "Mið", "Fim", "Fös", "Lau", "Sun"];
+  const dayLabels = t.raw("calendar.dayLabelsShort") as string[];
   const previewData = computeRotationPreview(
     blocks ?? [],
     selectedEmployees.map((e) => ({ id: e.id, name: e.name })),

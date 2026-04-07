@@ -34,6 +34,7 @@ interface EmployeeSummary {
 
 export default function ManagerTimeEntry() {
   const t = useTranslations();
+  const durationLabels = { hours: t("common.hoursAbbr"), minutes: t("common.minutesAbbr") };
   const [data, setData] = useState<EmployeeSummary[]>([]);
   const [loading, setLoading] = useState(true);
   const [from, setFrom] = useState<Date | undefined>(dayjs().startOf("month").toDate());
@@ -112,7 +113,7 @@ export default function ManagerTimeEntry() {
       {
         accessorKey: "total_minutes",
         header: t("timeEntry.totalHours"),
-        cell: ({ row }) => formatDuration(row.original.total_minutes, "minutes"),
+        cell: ({ row }) => formatDuration(row.original.total_minutes, "minutes", durationLabels),
       },
       {
         accessorKey: "entry_count",

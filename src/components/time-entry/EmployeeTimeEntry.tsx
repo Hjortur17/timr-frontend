@@ -14,6 +14,7 @@ import { authHeaders } from "@/utils/auth";
 
 export default function EmployeeTimeEntry() {
   const t = useTranslations();
+  const durationLabels = { hours: t("common.hoursAbbr"), minutes: t("common.minutesAbbr") };
   const [entries, setEntries] = useState<ClockEntry[]>([]);
   const [loading, setLoading] = useState(true);
   const [from, setFrom] = useState<Date | undefined>(dayjs().startOf("month").toDate());
@@ -36,7 +37,7 @@ export default function EmployeeTimeEntry() {
     return entries.reduce((sum, entry) => sum + (entry.total_minutes ?? 0), 0);
   }, [entries]);
 
-  const formattedTotal = useMemo(() => formatDuration(totalMinutes, "minutes"), [totalMinutes]);
+  const formattedTotal = useMemo(() => formatDuration(totalMinutes, "minutes", durationLabels), [totalMinutes, durationLabels]);
 
   const columns: ColumnDef<ClockEntry>[] = useMemo(
     () => [
@@ -59,7 +60,7 @@ export default function EmployeeTimeEntry() {
         accessorKey: "total_minutes",
         header: t("timeEntry.totalTime"),
         cell: ({ row }) =>
-          row.original.total_minutes != null ? formatDuration(row.original.total_minutes, "minutes") : "–",
+          row.original.total_minutes != null ? formatDuration(row.original.total_minutes, "minutes", durationLabels) : "–",
       },
       {
         accessorKey: "shift.title",
