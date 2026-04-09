@@ -37,7 +37,10 @@ export default function EmployeeTimeEntry() {
     return entries.reduce((sum, entry) => sum + (entry.total_minutes ?? 0), 0);
   }, [entries]);
 
-  const formattedTotal = useMemo(() => formatDuration(totalMinutes, "minutes", durationLabels), [totalMinutes, durationLabels]);
+  const formattedTotal = useMemo(
+    () => formatDuration(totalMinutes, "minutes", durationLabels),
+    [totalMinutes, durationLabels],
+  );
 
   const columns: ColumnDef<ClockEntry>[] = useMemo(
     () => [
@@ -60,7 +63,9 @@ export default function EmployeeTimeEntry() {
         accessorKey: "total_minutes",
         header: t("timeEntry.totalTime"),
         cell: ({ row }) =>
-          row.original.total_minutes != null ? formatDuration(row.original.total_minutes, "minutes", durationLabels) : "–",
+          row.original.total_minutes != null
+            ? formatDuration(row.original.total_minutes, "minutes", durationLabels)
+            : "–",
       },
       {
         accessorKey: "shift.title",

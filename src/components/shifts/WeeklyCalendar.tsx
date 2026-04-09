@@ -31,7 +31,6 @@ import { Spinner } from "../ui/spinner";
 dayjs.extend(isoWeek);
 dayjs.extend(customParseFormat);
 
-
 const SHIFT_COLORS = [
   { bg: "bg-emerald-200", text: "text-emerald-800" },
   { bg: "bg-orange-200", text: "text-orange-800" },
@@ -493,7 +492,9 @@ export default function WeeklyCalendar({ onActionsChange }: WeeklyCalendarProps)
                     <div className="flex flex-col justify-center p-3">
                       <span className="text-sm font-semibold text-neutral-900 truncate">{employee.name}</span>
                       <span className="mt-0.5 text-xs text-neutral-400">
-                        {totalMinutes > 0 ? formatDuration(totalMinutes, "minutes", durationLabels) : `0${durationLabels.hours}`}
+                        {totalMinutes > 0
+                          ? formatDuration(totalMinutes, "minutes", durationLabels)
+                          : `0${durationLabels.hours}`}
                       </span>
                     </div>
 

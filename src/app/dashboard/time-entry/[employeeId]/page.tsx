@@ -215,7 +215,10 @@ export default function EmployeeTimeEntryDetailPage() {
     return entries.reduce((sum, entry) => sum + (entry.total_minutes ?? 0), 0);
   }, [entries]);
 
-  const formattedTotal = useMemo(() => formatDuration(totalMinutes, "minutes", durationLabels), [totalMinutes, durationLabels]);
+  const formattedTotal = useMemo(
+    () => formatDuration(totalMinutes, "minutes", durationLabels),
+    [totalMinutes, durationLabels],
+  );
 
   const columns: ColumnDef<ClockEntry>[] = useMemo(
     () => [
@@ -272,7 +275,9 @@ export default function EmployeeTimeEntryDetailPage() {
         header: "Heildartími",
         size: 140,
         cell: ({ row }) =>
-          row.original.total_minutes != null ? formatDuration(row.original.total_minutes, "minutes", durationLabels) : "–",
+          row.original.total_minutes != null
+            ? formatDuration(row.original.total_minutes, "minutes", durationLabels)
+            : "–",
       },
       {
         accessorKey: "shift.title",

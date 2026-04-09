@@ -2,10 +2,10 @@
 
 import dayjs from "dayjs";
 import { CalendarIcon } from "lucide-react";
+import { useLocale } from "next-intl";
 import type React from "react";
 import type { DayPicker, DayPickerLocale } from "react-day-picker";
 import { enUS, is } from "react-day-picker/locale";
-import { useLocale } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";

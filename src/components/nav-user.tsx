@@ -1,112 +1,115 @@
 "use client";
 
 import {
-	BellIcon,
-	Building2Icon,
-	CalendarRangeIcon,
-	ChevronsUpDownIcon,
-	LogOutIcon,
-	Settings2Icon,
-	ShieldUserIcon,
-	UserPenIcon,
-	UsersIcon,
+  BellIcon,
+  Building2Icon,
+  CalendarRangeIcon,
+  ChevronsUpDownIcon,
+  LogOutIcon,
+  Settings2Icon,
+  ShieldUserIcon,
+  UserPenIcon,
+  UsersIcon,
 } from "lucide-react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
-	DropdownMenu,
-	DropdownMenuContent,
-	DropdownMenuGroup,
-	DropdownMenuItem,
-	DropdownMenuLabel,
-	DropdownMenuSeparator,
-	DropdownMenuTrigger,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-	SidebarMenu,
-	SidebarMenuButton,
-	SidebarMenuItem,
-	useSidebar,
-} from "@/components/ui/sidebar";
+import { SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar } from "@/components/ui/sidebar";
 import { useUser } from "@/context/UserContext";
 
 export function NavUser() {
-	const { user, logout } = useUser();
-	const { isMobile } = useSidebar();
-	const t = useTranslations();
+  const { user, logout } = useUser();
+  const { isMobile } = useSidebar();
+  const t = useTranslations();
 
-	const navigation = [
-		{ title: t("nav.profile"), url: "/dashboard", icon: UserPenIcon },
-		{ title: t("nav.security"), url: "/dashboard", icon: ShieldUserIcon },
-		{ title: t("nav.notifications"), url: "/dashboard", icon: BellIcon },
-	];
+  const navigation = [
+    {
+      title: t("nav.profile"),
+      url: "/dashboard/settings/profile",
+      icon: UserPenIcon,
+    },
+    {
+      title: t("nav.security"),
+      url: "/dashboard/settings/security",
+      icon: ShieldUserIcon,
+    },
+    {
+      title: t("nav.notifications"),
+      url: "/dashboard/settings/notifications",
+      icon: BellIcon,
+    },
+  ];
 
-	const avatarFallback = user.name
-		.split(" ")
-		.map((n: string) => n[0])
-		.join("")
-		.slice(0, 2)
-		.toUpperCase();
+  const avatarFallback = user.name
+    .split(" ")
+    .map((n: string) => n[0])
+    .join("")
+    .slice(0, 2)
+    .toUpperCase();
 
-	return (
-		<SidebarMenu>
-			<SidebarMenuItem>
-				<DropdownMenu>
-					<DropdownMenuTrigger
-						render={
-							<SidebarMenuButton size="lg" className="aria-expanded:bg-muted" />
-						}
-					>
-						<Avatar>
-							<AvatarImage src={undefined} alt={user.name} />
-							<AvatarFallback>{avatarFallback}</AvatarFallback>
-						</Avatar>
-						<div className="grid flex-1 text-left text-sm leading-tight">
-							<span className="truncate font-medium">{user.name}</span>
-							<span className="truncate text-xs">{user.email}</span>
-						</div>
-						<ChevronsUpDownIcon className="ml-auto size-4" />
-					</DropdownMenuTrigger>
-					<DropdownMenuContent
-						className="min-w-56 rounded-lg"
-						side={isMobile ? "bottom" : "right"}
-						align="end"
-						sideOffset={4}
-					>
-						<DropdownMenuGroup>
-							<DropdownMenuLabel className="p-0 font-normal">
-								<div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
-									<Avatar>
-										<AvatarImage src={undefined} alt={user.name} />
-										<AvatarFallback>{avatarFallback}</AvatarFallback>
-									</Avatar>
-									<div className="grid flex-1 text-left text-sm leading-tight">
-										<span className="truncate font-medium">{user.name}</span>
-										<span className="truncate text-xs">{user.email}</span>
-									</div>
-								</div>
-							</DropdownMenuLabel>
-						</DropdownMenuGroup>
-						<DropdownMenuSeparator />
-						<DropdownMenuGroup>
-							{navigation.map((item) => (
-								<Link href={item.url} key={item.title}>
-									<DropdownMenuItem>
-										<item.icon />
-										{item.title}
-									</DropdownMenuItem>
-								</Link>
-							))}
-						</DropdownMenuGroup>
-						<DropdownMenuSeparator />
-						<DropdownMenuItem onClick={() => logout()}>
-							<LogOutIcon />
-							{t("auth.logout")}
-						</DropdownMenuItem>
-					</DropdownMenuContent>
-				</DropdownMenu>
-			</SidebarMenuItem>
-		</SidebarMenu>
-	);
+  return (
+    <SidebarMenu>
+      <SidebarMenuItem>
+        <DropdownMenu>
+          <DropdownMenuTrigger render={<SidebarMenuButton size="lg" className="aria-expanded:bg-muted" />}>
+            <Avatar>
+              <AvatarImage src={undefined} alt={user.name} />
+              <AvatarFallback>{avatarFallback}</AvatarFallback>
+            </Avatar>
+            <div className="grid flex-1 text-left text-sm leading-tight">
+              <span className="truncate font-medium">{user.name}</span>
+              <span className="truncate text-xs">{user.email}</span>
+            </div>
+            <ChevronsUpDownIcon className="ml-auto size-4" />
+          </DropdownMenuTrigger>
+          <DropdownMenuContent
+            className="min-w-56 rounded-lg"
+            side={isMobile ? "bottom" : "right"}
+            align="end"
+            sideOffset={4}
+          >
+            <DropdownMenuGroup>
+              <DropdownMenuLabel className="p-0 font-normal">
+                <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
+                  <Avatar>
+                    <AvatarImage src={undefined} alt={user.name} />
+                    <AvatarFallback>{avatarFallback}</AvatarFallback>
+                  </Avatar>
+                  <div className="grid flex-1 text-left text-sm leading-tight">
+                    <span className="truncate font-medium">{user.name}</span>
+                    <span className="truncate text-xs">{user.email}</span>
+                  </div>
+                </div>
+              </DropdownMenuLabel>
+            </DropdownMenuGroup>
+            <DropdownMenuSeparator />
+            <DropdownMenuGroup>
+              {navigation.map((item) => (
+                <Link href={item.url} key={item.title}>
+                  <DropdownMenuItem>
+                    <item.icon />
+                    {item.title}
+                  </DropdownMenuItem>
+                </Link>
+              ))}
+            </DropdownMenuGroup>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onClick={() => logout()}>
+              <LogOutIcon />
+              {t("auth.logout")}
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </SidebarMenuItem>
+    </SidebarMenu>
+  );
 }

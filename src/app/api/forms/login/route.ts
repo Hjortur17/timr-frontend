@@ -17,6 +17,13 @@ export async function POST(request: Request) {
       path: "/",
       ...(remember ? { maxAge: 60 * 60 * 24 * 30 } : {}),
     });
+    if (response.data.data?.locale) {
+      res.cookies.set("NEXT_LOCALE", response.data.data.locale, {
+        path: "/",
+        maxAge: 60 * 60 * 24 * 365,
+        sameSite: "lax",
+      });
+    }
     return res;
   } catch (error) {
     const apiError = error as ApiError;

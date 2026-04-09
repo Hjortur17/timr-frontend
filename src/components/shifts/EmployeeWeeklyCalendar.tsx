@@ -18,7 +18,6 @@ import { cn } from "@/utils/classname";
 dayjs.extend(isoWeek);
 dayjs.extend(customParseFormat);
 
-
 const SHIFT_COLORS = [
   { bg: "bg-emerald-200", text: "text-emerald-800" },
   { bg: "bg-orange-200", text: "text-orange-800" },

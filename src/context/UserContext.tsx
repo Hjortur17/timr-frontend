@@ -2,7 +2,7 @@
 
 import axios from "axios";
 import { useRouter } from "next/navigation";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { createContext, type ReactNode, useContext, useEffect, useState } from "react";
 import type { User } from "@/types/forms";
 import { authHeaders, clearToken, getToken } from "@/utils/auth";
@@ -27,6 +27,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
   const router = useRouter();
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const currentLocale = useLocale();
   const t = useTranslations("common");
 
   useEffect(() => {
@@ -39,15 +40,22 @@ export function UserProvider({ children }: { children: ReactNode }) {
 
     axios
       .get("/api/auth/user", { headers: authHeaders() })
-      .then((res) => {
-        setUser(res.data.data);
+      .then(async (res) => {
+        const userData = res.data.data;
+        setUser(userData);
         setLoading(false);
+
+        // Sync next-intl locale cookie with user's DB preference
+        if (userData.locale && userData.locale !== currentLocale) {
+          document.cookie = `NEXT_LOCALE=${userData.locale};path=/;max-age=${60 * 60 * 24 * 365};samesite=lax`;
+          window.location.reload();
+        }
       })
       .catch(() => {
         clearToken();
         router.replace("/login");
       });
-  }, [router]);
+  }, [router, currentLocale]);
 
   if (loading) {
     return (

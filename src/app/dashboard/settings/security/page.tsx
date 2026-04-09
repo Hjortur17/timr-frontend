@@ -1,6 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useTranslations } from "next-intl";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { LinkedAccounts } from "@/components/LinkedAccounts";
@@ -10,6 +11,7 @@ import { type ChangePasswordForm, changePasswordFormSchema } from "@/types/forms
 import { authHeaders } from "@/utils/auth";
 
 export default function SecurityPage() {
+  const t = useTranslations();
   const {
     register,
     handleSubmit,
@@ -38,15 +40,15 @@ export default function SecurityPage() {
             });
           }
         } else {
-          toast.error(json.message ?? "Villa kom upp.");
+          toast.error(json.message ?? t("common.error"));
         }
         return;
       }
 
-      toast.success("Lykilorð hefur verið uppfært.");
+      toast.success(t("security.passwordUpdated"));
       reset();
     } catch {
-      toast.error("Ekki tókst að uppfæra lykilorð.");
+      toast.error(t("security.passwordUpdateError"));
     }
   }
 
@@ -54,16 +56,14 @@ export default function SecurityPage() {
     <div className="px-4 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-2xl space-y-16 sm:space-y-20 lg:mx-0 lg:max-w-none">
         <div>
-          <h2 className="text-base/7 font-semibold text-foreground">Breyta lykilorði</h2>
-          <p className="mt-1 text-sm/6 text-muted-foreground">
-            Uppfærðu lykilorðið þitt til að tryggja öryggi reikningsins.
-          </p>
+          <h2 className="text-base/7 font-semibold text-foreground">{t("security.changePassword")}</h2>
+          <p className="mt-1 text-sm/6 text-muted-foreground">{t("security.changePasswordDescription")}</p>
 
           <form onSubmit={handleSubmit(onSubmit)} className="mt-6 border-t border-border pt-6">
             <div className="grid max-w-md gap-y-6">
               <div>
                 <label htmlFor="current_password" className="block text-sm/6 font-medium">
-                  Núverandi lykilorð
+                  {t("security.currentPassword")}
                 </label>
                 <div className="mt-2">
                   <Input
@@ -80,7 +80,7 @@ export default function SecurityPage() {
 
               <div>
                 <label htmlFor="password" className="block text-sm/6 font-medium">
-                  Nýtt lykilorð
+                  {t("security.newPassword")}
                 </label>
                 <div className="mt-2">
                   <Input id="password" type="password" autoComplete="new-password" {...register("password")} />
@@ -90,7 +90,7 @@ export default function SecurityPage() {
 
               <div>
                 <label htmlFor="password_confirmation" className="block text-sm/6 font-medium">
-                  Staðfesta nýtt lykilorð
+                  {t("security.confirmNewPassword")}
                 </label>
                 <div className="mt-2">
                   <Input
@@ -107,7 +107,7 @@ export default function SecurityPage() {
 
               <div>
                 <Button type="submit" disabled={isSubmitting}>
-                  {isSubmitting ? "Vista..." : "Vista lykilorð"}
+                  {isSubmitting ? `${t("common.save")}...` : t("security.savePassword")}
                 </Button>
               </div>
             </div>

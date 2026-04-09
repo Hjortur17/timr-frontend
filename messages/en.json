@@ -248,6 +248,145 @@
     "dayLabels": ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"],
     "dayLabelsShort": ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
   },
+  "profile": {
+    "title": "Profile",
+    "description": "This information is visible to other users.",
+    "fullName": "Full name",
+    "nameUpdated": "Name has been updated.",
+    "nameUpdateError": "Failed to update name.",
+    "emailUpdated": "Email has been updated.",
+    "emailUpdateError": "Failed to update email.",
+    "languageAndDates": "Language and dates",
+    "languageAndDatesDescription": "Choose language and date format for your account.",
+    "languageLabel": "Language",
+    "languageUpdated": "Language has been updated.",
+    "languageUpdateError": "Failed to update language."
+  },
+  "security": {
+    "changePassword": "Change Password",
+    "changePasswordDescription": "Update your password to keep your account secure.",
+    "currentPassword": "Current password",
+    "newPassword": "New password",
+    "confirmNewPassword": "Confirm new password",
+    "savePassword": "Save password",
+    "passwordUpdated": "Password has been updated.",
+    "passwordUpdateError": "Failed to update password."
+  },
+  "notifications": {
+    "title": "Notifications",
+    "description": "Choose which notifications you want to receive and on which channel.",
+    "mandatoryTitle": "Required notifications",
+    "mandatoryDescription": "You cannot disable these notifications but you can choose which channel to receive them on.",
+    "optionalTitle": "Optional notifications",
+    "optionalDescription": "You can enable or disable these notifications.",
+    "mandatoryManagerTitle": "Required manager notifications",
+    "mandatoryManagerDescription": "These notifications are required for managers.",
+    "optionalManagerTitle": "Optional manager notifications",
+    "optionalManagerDescription": "Optional notifications for managers.",
+    "saveSettings": "Save settings",
+    "settingsUpdated": "Settings updated.",
+    "settingsSaveError": "Failed to save settings.",
+    "fetchError": "Failed to fetch settings.",
+    "mandatoryTooltip": "This notification is required and cannot be disabled.",
+    "channelPush": "Push",
+    "channelEmail": "Email",
+    "channelInApp": "In-app",
+    "reminderBefore": "Reminder before shift",
+    "minutes15": "15 minutes",
+    "minutes30": "30 minutes",
+    "minutes60": "1 hour",
+    "minutesFallback": "{min} min",
+    "day": "Day",
+    "time": "Time",
+    "sunday": "Sunday",
+    "monday": "Monday",
+    "tuesday": "Tuesday",
+    "wednesday": "Wednesday",
+    "thursday": "Thursday",
+    "friday": "Friday",
+    "saturday": "Saturday",
+    "type": {
+      "forgot_clock_out_reminder": {
+        "label": "Forgot to clock out",
+        "description": "Get notified if you forget to clock out of a shift."
+      },
+      "forgot_clock_in_reminder": {
+        "label": "Forgot to clock in",
+        "description": "Get notified if you forget to clock in for a shift."
+      },
+      "overtime_alert": {
+        "label": "Overtime (100%)",
+        "description": "Notification when you reach 100% of allowed overtime."
+      },
+      "timesheet_submission_deadline": {
+        "label": "Timesheet submission deadline",
+        "description": "Reminder to submit your timesheet before the deadline."
+      },
+      "schedule_change_alert": {
+        "label": "Shift changed or deleted",
+        "description": "Notification when your shifts are changed or deleted."
+      },
+      "shift_start_reminder": { "label": "Shift start reminder", "description": "Reminder before your shift starts." },
+      "shift_published": { "label": "Shifts published", "description": "Notification when new shifts are published." },
+      "break_time_reminder": {
+        "label": "Break time reminder",
+        "description": "Reminder to take a break during your shift."
+      },
+      "overtime_warning": {
+        "label": "Overtime warning (90%)",
+        "description": "Warning when you reach 90% of allowed overtime."
+      },
+      "weekly_timesheet_summary": {
+        "label": "Weekly timesheet summary",
+        "description": "Weekly summary of time entries."
+      },
+      "open_shift_available": {
+        "label": "Open shift available",
+        "description": "Notification when an open shift is available."
+      },
+      "vacation_balance_reminder": {
+        "label": "Vacation balance",
+        "description": "Reminder about your vacation balance."
+      },
+      "shift_swap_request": {
+        "label": "Shift swap request",
+        "description": "Notification when someone requests a shift swap."
+      },
+      "vacation_request_response": {
+        "label": "Vacation request response",
+        "description": "Notification when your vacation request is responded to."
+      },
+      "overtime_escalation": {
+        "label": "Employee overtime (100%)",
+        "description": "Notification when an employee reaches 100% overtime."
+      },
+      "forgot_clock_out_escalation": {
+        "label": "Employee forgot to clock out",
+        "description": "Notification when an employee forgets to clock out."
+      },
+      "timesheet_approval_deadline": {
+        "label": "Timesheet approval deadline",
+        "description": "Reminder to approve timesheets before the deadline."
+      },
+      "unapproved_timesheets_alert": {
+        "label": "Unapproved timesheets",
+        "description": "Notification about unapproved timesheets."
+      },
+      "unusual_activity_alert": {
+        "label": "Unusual activity",
+        "description": "Notification about unusual clock-in/out activity."
+      }
+    }
+  },
+  "linkedAccounts": {
+    "title": "Linked Accounts",
+    "description": "Link your Google or Apple account to sign in faster.",
+    "fetchError": "Failed to fetch linked accounts.",
+    "unlinkError": "Failed to unlink account.",
+    "noAccounts": "No accounts linked.",
+    "linkGoogle": "Link Google",
+    "linkApple": "Link Apple"
+  },
   "settings": {
     "company": "Company",
     "shifts": "Shifts",
@@ -256,5 +395,16 @@
   "landing": {
     "login": "Sign In",
     "register": "Sign Up"
+  },
+  "actions": {
+    "edit": "Edit",
+    "delete": "Delete",
+    "view": "View",
+    "create": "Create",
+    "save": "Save",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "close": "Close",
+    "open": "Open"
   }
 }

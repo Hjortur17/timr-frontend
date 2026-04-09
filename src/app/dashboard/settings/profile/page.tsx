@@ -1,12 +1,14 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useUser } from "@/context/UserContext";
+import { localeNames, locales } from "@/i18n/config";
 import {
   type UpdateProfileEmailForm,
   type UpdateProfileNameForm,
@@ -17,13 +19,9 @@ import { authHeaders } from "@/utils/auth";
 
 type EditingField = "name" | "email" | "locale" | null;
 
-const LOCALE_LABELS: Record<string, string> = {
-  is: "Íslenska",
-  en: "English",
-};
-
 export default function ProfilePage() {
   const { user, setUser } = useUser();
+  const t = useTranslations();
   const [editingField, setEditingField] = useState<EditingField>(null);
 
   const nameForm = useForm<UpdateProfileNameForm>({
@@ -72,16 +70,16 @@ export default function ProfilePage() {
             });
           }
         } else {
-          toast.error(json.message ?? "Villa kom upp.");
+          toast.error(json.message ?? t("common.error"));
         }
         return;
       }
 
       setUser(json.data);
       setEditingField(null);
-      toast.success("Nafn hefur verið uppfært.");
+      toast.success(t("profile.nameUpdated"));
     } catch {
-      toast.error("Ekki tókst að uppfæra nafn.");
+      toast.error(t("profile.nameUpdateError"));
     }
   }
 
@@ -103,16 +101,16 @@ export default function ProfilePage() {
             });
           }
         } else {
-          toast.error(json.message ?? "Villa kom upp.");
+          toast.error(json.message ?? t("common.error"));
         }
         return;
       }
 
       setUser(json.data);
       setEditingField(null);
-      toast.success("Netfang hefur verið uppfært.");
+      toast.success(t("profile.emailUpdated"));
     } catch {
-      toast.error("Ekki tókst að uppfæra netfang.");
+      toast.error(t("profile.emailUpdateError"));
     }
   }
 
@@ -128,15 +126,16 @@ export default function ProfilePage() {
       const json = await res.json();
 
       if (!res.ok) {
-        toast.error(json.message ?? "Villa kom upp.");
+        toast.error(json.message ?? t("common.error"));
         return;
       }
 
       setUser(json.data);
-      setEditingField(null);
-      toast.success("Tungumál hefur verið uppfært.");
+
+      document.cookie = `NEXT_LOCALE=${selectedLocale};path=/;max-age=${60 * 60 * 24 * 365};samesite=lax`;
+      window.location.reload();
     } catch {
-      toast.error("Ekki tókst að uppfæra tungumál.");
+      toast.error(t("profile.languageUpdateError"));
     } finally {
       setLocaleSubmitting(false);
     }
@@ -146,12 +145,12 @@ export default function ProfilePage() {
     <div className="px-4 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-2xl space-y-16 sm:space-y-20 lg:mx-0 lg:max-w-none">
         <div>
-          <h2 className="text-base/7 font-semibold text-foreground">Prófíll</h2>
-          <p className="mt-1 text-sm/6 text-muted-foreground">Þessar upplýsingar eru sýnilegar öðrum notendum.</p>
+          <h2 className="text-base/7 font-semibold text-foreground">{t("profile.title")}</h2>
+          <p className="mt-1 text-sm/6 text-muted-foreground">{t("profile.description")}</p>
 
           <dl className="mt-6 divide-y divide-border border-t border-border text-sm/6">
             <div className="py-6 sm:flex">
-              <dt className="font-medium text-foreground sm:w-64 sm:flex-none sm:pr-6">Fullt nafn</dt>
+              <dt className="font-medium text-foreground sm:w-64 sm:flex-none sm:pr-6">{t("profile.fullName")}</dt>
               <dd className="mt-1 flex justify-between gap-x-6 sm:mt-0 sm:flex-auto">
                 {editingField === "name" ? (
                   <form onSubmit={nameForm.handleSubmit(onNameSubmit)} className="flex w-full items-start gap-x-3">
@@ -162,10 +161,10 @@ export default function ProfilePage() {
                       )}
                     </div>
                     <Button type="submit" size="sm" disabled={nameForm.formState.isSubmitting}>
-                      {nameForm.formState.isSubmitting ? "Vista..." : "Vista"}
+                      {nameForm.formState.isSubmitting ? `${t("common.save")}...` : t("common.save")}
                     </Button>
                     <Button type="button" variant="ghost" size="sm" onClick={handleCancel}>
-                      Hætta við
+                      {t("common.cancel")}
                     </Button>
                   </form>
                 ) : (
@@ -176,14 +175,14 @@ export default function ProfilePage() {
                       className="font-semibold text-primary hover:text-primary/80"
                       onClick={() => startEditing("name")}
                     >
-                      Breyta
+                      {t("common.edit")}
                     </button>
                   </>
                 )}
               </dd>
             </div>
             <div className="py-6 sm:flex">
-              <dt className="font-medium text-foreground sm:w-64 sm:flex-none sm:pr-6">Netfang</dt>
+              <dt className="font-medium text-foreground sm:w-64 sm:flex-none sm:pr-6">{t("common.email")}</dt>
               <dd className="mt-1 flex justify-between gap-x-6 sm:mt-0 sm:flex-auto">
                 {editingField === "email" ? (
                   <form onSubmit={emailForm.handleSubmit(onEmailSubmit)} className="flex w-full items-start gap-x-3">
@@ -194,10 +193,10 @@ export default function ProfilePage() {
                       )}
                     </div>
                     <Button type="submit" size="sm" disabled={emailForm.formState.isSubmitting}>
-                      {emailForm.formState.isSubmitting ? "Vista..." : "Vista"}
+                      {emailForm.formState.isSubmitting ? `${t("common.save")}...` : t("common.save")}
                     </Button>
                     <Button type="button" variant="ghost" size="sm" onClick={handleCancel}>
-                      Hætta við
+                      {t("common.cancel")}
                     </Button>
                   </form>
                 ) : (
@@ -208,7 +207,7 @@ export default function ProfilePage() {
                       className="font-semibold text-primary hover:text-primary/80"
                       onClick={() => startEditing("email")}
                     >
-                      Breyta
+                      {t("common.edit")}
                     </button>
                   </>
                 )}
@@ -218,14 +217,12 @@ export default function ProfilePage() {
         </div>
 
         <div>
-          <h2 className="text-base/7 font-semibold text-foreground">Tungumál og dagsetningar</h2>
-          <p className="mt-1 text-sm/6 text-muted-foreground">
-            Veldu tungumál og dagsetningarsnið fyrir reikninginn þinn.
-          </p>
+          <h2 className="text-base/7 font-semibold text-foreground">{t("profile.languageAndDates")}</h2>
+          <p className="mt-1 text-sm/6 text-muted-foreground">{t("profile.languageAndDatesDescription")}</p>
 
           <dl className="mt-6 divide-y divide-border border-t border-border text-sm/6">
             <div className="py-6 sm:flex">
-              <dt className="font-medium text-foreground sm:w-64 sm:flex-none sm:pr-6">Tungumál</dt>
+              <dt className="font-medium text-foreground sm:w-64 sm:flex-none sm:pr-6">{t("profile.languageLabel")}</dt>
               <dd className="mt-1 flex justify-between gap-x-6 sm:mt-0 sm:flex-auto">
                 {editingField === "locale" ? (
                   <div className="flex w-full items-start gap-x-3">
@@ -234,25 +231,30 @@ export default function ProfilePage() {
                       onChange={(e) => setSelectedLocale(e.target.value)}
                       className="block h-9 flex-auto rounded-md border border-input bg-transparent px-2.5 text-sm shadow-xs outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
                     >
-                      <option value="is">Íslenska</option>
-                      <option value="en">English</option>
+                      {locales.map((loc) => (
+                        <option key={loc} value={loc}>
+                          {localeNames[loc]}
+                        </option>
+                      ))}
                     </select>
                     <Button type="button" size="sm" disabled={localeSubmitting} onClick={onLocaleSubmit}>
-                      {localeSubmitting ? "Vista..." : "Vista"}
+                      {localeSubmitting ? `${t("common.save")}...` : t("common.save")}
                     </Button>
                     <Button type="button" variant="ghost" size="sm" onClick={handleCancel}>
-                      Hætta við
+                      {t("common.cancel")}
                     </Button>
                   </div>
                 ) : (
                   <>
-                    <div className="text-foreground">{LOCALE_LABELS[user.locale] ?? user.locale}</div>
+                    <div className="text-foreground">
+                      {localeNames[user.locale as keyof typeof localeNames] ?? user.locale}
+                    </div>
                     <button
                       type="button"
                       className="font-semibold text-primary hover:text-primary/80"
                       onClick={() => startEditing("locale")}
                     >
-                      Breyta
+                      {t("common.edit")}
                     </button>
                   </>
                 )}
