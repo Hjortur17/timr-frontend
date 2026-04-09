@@ -98,52 +98,57 @@ export default function ShiftsPage() {
 
   return (
     <div className="px-4 sm:px-6 lg:px-8">
-      <div className="sm:mx-auto sm:w-full flex items-end justify-between">
+      <div className="mx-auto max-w-2xl space-y-16 sm:space-y-20 lg:mx-0 lg:max-w-none">
         <div>
-          <h1 className="text-2xl/9 font-bold tracking-tight text-foreground">Vaktir</h1>
-          <p className="mt-2 text-sm/6 text-muted-foreground">Skoðaðu og skipulagðu vaktir.</p>
+          <div className="flex items-end justify-between">
+            <div>
+              <h2 className="text-base/7 font-semibold text-foreground">Vaktir</h2>
+              <p className="mt-1 text-sm/6 text-muted-foreground">Skoðaðu og skipulagðu vaktir</p>
+            </div>
+            <Button type="button" onClick={() => setOpenCreateDrawer(true)}>
+              Bæta við vakt
+            </Button>
+          </div>
+
+          <div className="mt-6 border-t border-border pt-6">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="py-3.5 pr-3 pl-4 sm:pl-3">Nafn</TableHead>
+                  <TableHead className="px-3 py-3.5">Upphafstími</TableHead>
+                  <TableHead className="px-3 py-3.5">Lokatími</TableHead>
+                  <TableHead className="px-3 py-3.5">Nótur</TableHead>
+                  <TableHead className="py-3.5 pr-4 pl-3 sm:pr-3">
+                    <span className="sr-only">Aðgerðir</span>
+                  </TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {shifts.map((shift) => (
+                  <TableRow key={shift.id} className="even:bg-muted/30">
+                    <TableCell className="py-4 pr-3 pl-4 font-medium sm:pl-3">{shift.title}</TableCell>
+                    <TableCell className="px-3 py-4 text-muted-foreground">
+                      {shift.start_time?.slice(0, 5) ?? "–"}
+                    </TableCell>
+                    <TableCell className="px-3 py-4 text-muted-foreground">
+                      {shift.end_time?.slice(0, 5) ?? "–"}
+                    </TableCell>
+                    <TableCell className="px-3 py-4 text-muted-foreground">{shift.notes ?? "–"}</TableCell>
+                    <TableCell className="flex justify-end gap-2 py-4 pr-4 pl-3 sm:pr-3">
+                      <button type="button" onClick={() => onOpenDeleteDialog(shift)}>
+                        <Trash2 className="size-5 text-neutral-500 hover:text-red-700 duration-200 transition-colors cursor-pointer" />
+                      </button>
+                      <Button type="button" variant="secondary" size="sm" onClick={() => onOpenEditDrawer(shift)}>
+                        Breyta
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
         </div>
-
-        <Button type="button" size="lg" onClick={() => setOpenCreateDrawer(true)}>
-          Bæta við vakt
-        </Button>
       </div>
-
-      <section className="mt-6">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead className="py-3.5 pr-3 pl-4 sm:pl-3">Nafn</TableHead>
-              <TableHead className="px-3 py-3.5">Upphafstími</TableHead>
-              <TableHead className="px-3 py-3.5">Lokatími</TableHead>
-              <TableHead className="px-3 py-3.5">Nótur</TableHead>
-              <TableHead className="py-3.5 pr-4 pl-3 sm:pr-3">
-                <span className="sr-only">Aðgerðir</span>
-              </TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {shifts.map((shift) => (
-              <TableRow key={shift.id} className="even:bg-muted/30">
-                <TableCell className="py-4 pr-3 pl-4 font-medium sm:pl-3">{shift.title}</TableCell>
-                <TableCell className="px-3 py-4 text-muted-foreground">
-                  {shift.start_time?.slice(0, 5) ?? "–"}
-                </TableCell>
-                <TableCell className="px-3 py-4 text-muted-foreground">{shift.end_time?.slice(0, 5) ?? "–"}</TableCell>
-                <TableCell className="px-3 py-4 text-muted-foreground">{shift.notes ?? "–"}</TableCell>
-                <TableCell className="flex justify-end gap-2 py-4 pr-4 pl-3 sm:pr-3">
-                  <button type="button" onClick={() => onOpenDeleteDialog(shift)}>
-                    <Trash2 className="size-5 text-neutral-500 hover:text-red-700 duration-200 transition-colors cursor-pointer" />
-                  </button>
-                  <Button type="button" variant="secondary" size="sm" onClick={() => onOpenEditDrawer(shift)}>
-                    Breyta
-                  </Button>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </section>
 
       <Sheet open={openCreateDrawer} onOpenChange={(value) => !value && setOpenCreateDrawer(false)}>
         <SheetContent side="right" className="sm:max-w-md overflow-y-auto">

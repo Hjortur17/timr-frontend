@@ -26,9 +26,9 @@ import { SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar } from "@/c
 import { useUser } from "@/context/UserContext";
 
 const navigation = [
-  { title: "Prófill", url: "/dashboard", icon: UserPenIcon },
-  { title: "Öryggi", url: "/dashboard", icon: ShieldUserIcon },
-  { title: "Tilkynningar", url: "/dashboard", icon: BellIcon },
+  { title: "Prófill", url: "/dashboard/settings/profile", icon: UserPenIcon },
+  { title: "Öryggi", url: "/dashboard/settings/security", icon: ShieldUserIcon },
+  { title: "Tilkynningar", url: "/dashboard/settings/notifications", icon: BellIcon },
 ];
 
 export function NavUser() {
@@ -81,7 +81,7 @@ export function NavUser() {
             <DropdownMenuGroup>
               {navigation.map((item) => (
                 <Link href={item.url} key={item.title}>
-                  <DropdownMenuItem disabled>
+                  <DropdownMenuItem>
                     <item.icon />
                     {item.title}
                   </DropdownMenuItem>

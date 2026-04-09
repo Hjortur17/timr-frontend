@@ -141,80 +141,85 @@ export default function ShiftsTemplatePage() {
 
   return (
     <div className="px-4 sm:px-6 lg:px-8">
-      <div className="sm:mx-auto sm:w-full flex items-end justify-between">
+      <div className="mx-auto max-w-2xl space-y-16 sm:space-y-20 lg:mx-0 lg:max-w-none">
         <div>
-          <h1 className="text-2xl/9 font-bold tracking-tight text-foreground">Vaktarplan</h1>
-          <p className="mt-2 text-sm/6 text-muted-foreground">Skoðaðu og skipulagðu vaktir.</p>
+          <div className="flex items-end justify-between">
+            <div>
+              <h2 className="text-base/7 font-semibold text-foreground">Vaktarplan</h2>
+              <p className="mt-1 text-sm/6 text-muted-foreground">Skoðaðu og skipulagðu vaktir</p>
+            </div>
+            <Button type="button" onClick={() => setOpenCreateDrawer(true)}>
+              Bæta við vakt
+            </Button>
+          </div>
+
+          <div className="mt-6 border-t border-border pt-6">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="py-3.5 pr-3 pl-4 sm:pl-3">Nafn</TableHead>
+                  <TableHead className="px-3 py-3.5">Mynstur</TableHead>
+                  <TableHead className="px-3 py-3.5">Vakt</TableHead>
+                  <TableHead className="px-3 py-3.5">Starfsmenn</TableHead>
+                  <TableHead className="py-3.5 pr-4 pl-3 sm:pr-3">
+                    <span className="sr-only">Aðgerðir</span>
+                  </TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {templates.map((template) => (
+                  <TableRow key={template.id} className="even:bg-muted/30">
+                    <TableCell className="py-4 pr-3 pl-4 font-medium sm:pl-3">{template.name}</TableCell>
+                    <TableCell className="px-3 py-4 text-muted-foreground">
+                      {getPatternLabel(template.pattern)}
+                    </TableCell>
+                    <TableCell className="px-3 py-4 text-muted-foreground">{template.shift?.title ?? "–"}</TableCell>
+                    <TableCell className="px-3 py-4 text-muted-foreground">
+                      {template.employees?.length ?? 0} starfsmenn
+                    </TableCell>
+                    <TableCell className="flex justify-end gap-2 py-4 pr-4 pl-3 sm:pr-3">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setSelectedTemplate(template);
+                          setShowDeleteDialog(true);
+                        }}
+                      >
+                        <Trash2 className="size-5 text-neutral-500 hover:text-red-700 duration-200 transition-colors cursor-pointer" />
+                      </button>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={() => {
+                          setSelectedTemplate(template);
+                          setFormKey((k) => k + 1);
+                          setOpenGenerateDrawer(true);
+                        }}
+                      >
+                        <CalendarDays className="size-4 mr-1" />
+                        Uppfæra vaktir
+                      </Button>
+                      <Button
+                        type="button"
+                        variant="secondary"
+                        size="sm"
+                        onClick={() => {
+                          setSelectedTemplate(template);
+                          setFormKey((k) => k + 1);
+                          setOpenEditDrawer(true);
+                        }}
+                      >
+                        Breyta
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
         </div>
-
-        <Button type="button" size="lg" onClick={() => setOpenCreateDrawer(true)}>
-          Bæta við vaktarplani
-        </Button>
       </div>
-
-      <section className="mt-6">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead className="py-3.5 pr-3 pl-4 sm:pl-3">Nafn</TableHead>
-              <TableHead className="px-3 py-3.5">Mynstur</TableHead>
-              <TableHead className="px-3 py-3.5">Vakt</TableHead>
-              <TableHead className="px-3 py-3.5">Starfsmenn</TableHead>
-              <TableHead className="py-3.5 pr-4 pl-3 sm:pr-3">
-                <span className="sr-only">Aðgerðir</span>
-              </TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {templates.map((template) => (
-              <TableRow key={template.id} className="even:bg-muted/30">
-                <TableCell className="py-4 pr-3 pl-4 font-medium sm:pl-3">{template.name}</TableCell>
-                <TableCell className="px-3 py-4 text-muted-foreground">{getPatternLabel(template.pattern)}</TableCell>
-                <TableCell className="px-3 py-4 text-muted-foreground">{template.shift?.title ?? "–"}</TableCell>
-                <TableCell className="px-3 py-4 text-muted-foreground">
-                  {template.employees?.length ?? 0} starfsmenn
-                </TableCell>
-                <TableCell className="flex justify-end gap-2 py-4 pr-4 pl-3 sm:pr-3">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setSelectedTemplate(template);
-                      setShowDeleteDialog(true);
-                    }}
-                  >
-                    <Trash2 className="size-5 text-neutral-500 hover:text-red-700 duration-200 transition-colors cursor-pointer" />
-                  </button>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    onClick={() => {
-                      setSelectedTemplate(template);
-                      setFormKey((k) => k + 1);
-                      setOpenGenerateDrawer(true);
-                    }}
-                  >
-                    <CalendarDays className="size-4 mr-1" />
-                    Uppfæra vaktir
-                  </Button>
-                  <Button
-                    type="button"
-                    variant="secondary"
-                    size="sm"
-                    onClick={() => {
-                      setSelectedTemplate(template);
-                      setFormKey((k) => k + 1);
-                      setOpenEditDrawer(true);
-                    }}
-                  >
-                    Breyta
-                  </Button>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </section>
 
       {/* Create drawer */}
       <Sheet open={openCreateDrawer} onOpenChange={(value) => !value && setOpenCreateDrawer(false)}>
