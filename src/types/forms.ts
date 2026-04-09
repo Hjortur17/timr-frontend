@@ -14,6 +14,7 @@ export interface User {
   companies: Company[];
   name: string;
   email: string;
+  locale: string;
   is_active: boolean;
   onboarding_step: number;
   created_at: string;
@@ -110,6 +111,21 @@ export const resetPasswordFormSchema = z
 
 export type ResetPasswordForm = z.infer<typeof resetPasswordFormSchema>;
 
+export const changePasswordFormSchema = z
+  .object({
+    current_password: z.string().min(1, { message: "Núverandi lykilorð er nauðsynlegt" }),
+    password: z.string().min(8, { message: "Lykilorð verður að vera að minnsta kosti 8 stafir" }),
+    password_confirmation: z.string().min(8, {
+      message: "Staðfesting lykilorðs verður að vera að minnsta kosti 8 stafir",
+    }),
+  })
+  .refine((data) => data.password === data.password_confirmation, {
+    message: "Lykilorðin eru ekki eins",
+    path: ["password_confirmation"],
+  });
+
+export type ChangePasswordForm = z.infer<typeof changePasswordFormSchema>;
+
 export const registerFormSchema = z
   .object({
     name: z.string().min(1),
@@ -179,6 +195,18 @@ export const generateScheduleFormSchema = z.object({
 });
 
 export type GenerateScheduleForm = z.infer<typeof generateScheduleFormSchema>;
+
+export const updateProfileNameSchema = z.object({
+  name: z.string().min(1, { message: "Nafn er nauðsynlegt" }),
+});
+
+export type UpdateProfileNameForm = z.infer<typeof updateProfileNameSchema>;
+
+export const updateProfileEmailSchema = z.object({
+  email: z.string().email({ message: "Netfang er ekki gilt" }),
+});
+
+export type UpdateProfileEmailForm = z.infer<typeof updateProfileEmailSchema>;
 
 export interface ShiftDeletionPreview {
   total_assignments: number;
