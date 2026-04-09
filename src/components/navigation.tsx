@@ -14,10 +14,8 @@ import {
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 
 const navigation = [
-  { name: "Product", href: "#" },
-  { name: "Features", href: "#" },
-  { name: "Marketplace", href: "#" },
-  { name: "Company", href: "#" },
+  { name: "Eiginleikar", href: "#features" },
+  { name: "Verðskrá", href: "#pricing" },
 ];
 
 export default function Navigation() {
@@ -26,19 +24,9 @@ export default function Navigation() {
     <header className="bg-background">
       <nav aria-label="Global" className="mx-auto flex max-w-8xl items-center justify-between p-6 lg:px-8">
         <div className="flex items-center gap-x-12">
-          <a href="#" className="-m-1.5 p-1.5">
-            <span className="sr-only">Your Company</span>
-            <img
-              alt=""
-              src="https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=indigo&shade=600"
-              className="h-8 w-auto dark:hidden"
-            />
-            <img
-              alt=""
-              src="https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=indigo&shade=500"
-              className="h-8 w-auto not-dark:hidden"
-            />
-          </a>
+          <Link href="/" className="text-xl font-bold text-primary">
+            Timr
+          </Link>
           <NavigationMenu className="hidden lg:flex">
             <NavigationMenuList>
               {navigation.map((item) => (
@@ -87,12 +75,12 @@ export default function Navigation() {
                     ))}
                   </div>
                   <div className="py-6">
-                    <a
-                      href="#"
+                    <Link
+                      href="/login"
                       className="-mx-3 block rounded-lg px-3 py-2.5 text-base/7 font-semibold text-foreground hover:bg-accent"
                     >
-                      Log in
-                    </a>
+                      Innskráning
+                    </Link>
                   </div>
                 </div>
               </div>
