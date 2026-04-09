@@ -1,9 +1,5 @@
 import { type ClassValue, clsx } from "clsx";
-import dayjs from "dayjs";
-import "dayjs/locale/is";
 import { twMerge } from "tailwind-merge";
-
-dayjs.locale("is");
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -29,13 +25,15 @@ export function formatPhone(value: string | null | undefined): string {
   return `${digits.slice(0, 3)} ${digits.slice(3, 7)}`;
 }
 
-export function formatDuration(value: number, unit: "hours" | "minutes" = "hours"): string {
-  console.log("value", value, "unit", unit);
-
+export function formatDuration(
+  value: number,
+  unit: "hours" | "minutes" = "hours",
+  labels: { hours: string; minutes: string } = { hours: "klst", minutes: "min" },
+): string {
   const totalMinutes = unit === "hours" ? Math.round(value * 60) : Math.round(value);
   const h = Math.floor(totalMinutes / 60);
   const m = totalMinutes % 60;
-  if (h === 0) return `${m}min`;
-  if (m === 0) return `${h}klst`;
-  return `${h}klst ${m}min`;
+  if (h === 0) return `${m}${labels.minutes}`;
+  if (m === 0) return `${h}${labels.hours}`;
+  return `${h}${labels.hours} ${m}${labels.minutes}`;
 }

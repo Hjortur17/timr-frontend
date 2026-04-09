@@ -4,6 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
 import dayjs from "dayjs";
 import { CalendarDays, Plus, Trash2 } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -25,14 +26,6 @@ import type {
 import { generateScheduleFormSchema, shiftTemplateFormSchema } from "@/types/forms";
 import { authHeaders } from "@/utils/auth";
 
-const PATTERN_PRESETS: Record<string, { label: string; blocks: number[] }> = {
-  "2-2-3": { label: "2-2-3", blocks: [2, 2, 3] },
-  "5-5-4": { label: "5-5-4", blocks: [5, 5, 4] },
-  "5-2": { label: "5-2", blocks: [5, 2] },
-  "4-3": { label: "4-3", blocks: [4, 3] },
-  custom: { label: "Sérsniðið", blocks: [] },
-};
-
 const EMPLOYEE_COLORS = [
   "bg-primary/70 text-primary-foreground",
   "bg-orange-400/70 text-white",
@@ -42,9 +35,12 @@ const EMPLOYEE_COLORS = [
   "bg-amber-400/70 text-white",
 ];
 
-const DAY_LABELS = ["Mán", "Þri", "Mið", "Fim", "Fös", "Lau", "Sun"];
-
-function computeRotationPreview(blocks: number[], employees: { id: number; name: string }[], cycles: number = 2) {
+function computeRotationPreview(
+  blocks: number[],
+  employees: { id: number; name: string }[],
+  dayLabels: string[],
+  cycles: number = 2,
+) {
   if (blocks.length === 0 || employees.length === 0) return [];
 
   const cycleLength = blocks.reduce((a, b) => a + b, 0);
@@ -65,7 +61,7 @@ function computeRotationPreview(blocks: number[], employees: { id: number; name:
         const globalDay = cycle * cycleLength + dayInCycle;
         rows.push({
           day: globalDay,
-          dayLabel: DAY_LABELS[dayInCycle % 7],
+          dayLabel: dayLabels[dayInCycle % 7],
           employeeIndex: empIndex,
           employeeName: employees[empIndex].name,
         });
@@ -77,6 +73,7 @@ function computeRotationPreview(blocks: number[], employees: { id: number; name:
 }
 
 export default function ShiftsTemplatePage() {
+  const t = useTranslations();
   const [templates, setTemplates] = useState<ShiftTemplate[]>([]);
   const [shifts, setShifts] = useState<Shift[]>([]);
   const [employees, setEmployees] = useState<Employee[]>([]);
@@ -111,14 +108,14 @@ export default function ShiftsTemplatePage() {
     setTemplates((prev) => [...prev, template]);
     setFormKey((k) => k + 1);
     setOpenCreateDrawer(false);
-    toast.success("Vaktarplan búið til.");
+    toast.success(t("shiftTemplates.templateCreated"));
   };
 
   const onUpdated = (template: ShiftTemplate) => {
     setTemplates((prev) => prev.map((t) => (t.id === template.id ? template : t)));
     setFormKey((k) => k + 1);
     setOpenEditDrawer(false);
-    toast.success("Vaktarplan uppfært.");
+    toast.success(t("shiftTemplates.templateUpdated"));
   };
 
   const deleteTemplate = async (template: ShiftTemplate) => {
@@ -127,16 +124,23 @@ export default function ShiftsTemplatePage() {
         headers: authHeaders(),
       });
       setTemplates((prev) => prev.filter((t) => t.id !== template.id));
-      toast.success("Vaktarplani eytt.");
+      toast.success(t("shiftTemplates.templateDeleted"));
     } catch {
-      toast.error("Ekki tókst að eyða vaktarplani.");
+      toast.error(t("shiftTemplates.deleteError"));
     }
     setShowDeleteDialog(false);
     setSelectedTemplate(null);
   };
 
-  const getPatternLabel = (pattern: PatternType) => {
-    return PATTERN_PRESETS[pattern]?.label ?? pattern;
+  const getPatternLabel = (pattern: PatternType): string => {
+    const patternPresets: Record<string, string> = {
+      "2-2-3": "2-2-3",
+      "5-5-4": "5-5-4",
+      "5-2": "5-2",
+      "4-3": "4-3",
+      custom: t("shiftTemplates.custom"),
+    };
+    return patternPresets[pattern] ?? pattern;
   };
 
   return (
@@ -145,11 +149,11 @@ export default function ShiftsTemplatePage() {
         <div>
           <div className="flex items-end justify-between">
             <div>
-              <h2 className="text-base/7 font-semibold text-foreground">Vaktarplan</h2>
-              <p className="mt-1 text-sm/6 text-muted-foreground">Skoðaðu og skipulagðu vaktir</p>
+              <h1 className="text-2xl/9 font-bold tracking-tight text-foreground">{t("shiftTemplates.title")}</h1>
+              <p className="mt-2 text-sm/6 text-muted-foreground">{t("shiftTemplates.description")}</p>
             </div>
-            <Button type="button" onClick={() => setOpenCreateDrawer(true)}>
-              Bæta við vakt
+            <Button type="button" size="lg" onClick={() => setOpenCreateDrawer(true)}>
+              {t("shiftTemplates.addTemplate")}
             </Button>
           </div>
 
@@ -157,12 +161,12 @@ export default function ShiftsTemplatePage() {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead className="py-3.5 pr-3 pl-4 sm:pl-3">Nafn</TableHead>
-                  <TableHead className="px-3 py-3.5">Mynstur</TableHead>
-                  <TableHead className="px-3 py-3.5">Vakt</TableHead>
-                  <TableHead className="px-3 py-3.5">Starfsmenn</TableHead>
+                  <TableHead className="py-3.5 pr-3 pl-4 sm:pl-3">{t("common.name")}</TableHead>
+                  <TableHead className="px-3 py-3.5">{t("shiftTemplates.pattern")}</TableHead>
+                  <TableHead className="px-3 py-3.5">{t("shiftTemplates.shift")}</TableHead>
+                  <TableHead className="px-3 py-3.5">{t("shiftTemplates.employees")}</TableHead>
                   <TableHead className="py-3.5 pr-4 pl-3 sm:pr-3">
-                    <span className="sr-only">Aðgerðir</span>
+                    <span className="sr-only">{t("common.actions")}</span>
                   </TableHead>
                 </TableRow>
               </TableHeader>
@@ -175,7 +179,9 @@ export default function ShiftsTemplatePage() {
                     </TableCell>
                     <TableCell className="px-3 py-4 text-muted-foreground">{template.shift?.title ?? "–"}</TableCell>
                     <TableCell className="px-3 py-4 text-muted-foreground">
-                      {template.employees?.length ?? 0} starfsmenn
+                      {t("shiftTemplates.employeesCount", {
+                        count: template.employees?.length ?? 0,
+                      })}
                     </TableCell>
                     <TableCell className="flex justify-end gap-2 py-4 pr-4 pl-3 sm:pr-3">
                       <button
@@ -198,7 +204,7 @@ export default function ShiftsTemplatePage() {
                         }}
                       >
                         <CalendarDays className="size-4 mr-1" />
-                        Uppfæra vaktir
+                        {t("shiftTemplates.updateShifts")}
                       </Button>
                       <Button
                         type="button"
@@ -210,7 +216,7 @@ export default function ShiftsTemplatePage() {
                           setOpenEditDrawer(true);
                         }}
                       >
-                        Breyta
+                        {t("common.edit")}
                       </Button>
                     </TableCell>
                   </TableRow>
@@ -225,7 +231,7 @@ export default function ShiftsTemplatePage() {
       <Sheet open={openCreateDrawer} onOpenChange={(value) => !value && setOpenCreateDrawer(false)}>
         <SheetContent side="right" className="sm:max-w-md overflow-y-auto">
           <SheetHeader>
-            <SheetTitle>Bæta við vaktarplani</SheetTitle>
+            <SheetTitle>{t("shiftTemplates.addTemplate")}</SheetTitle>
           </SheetHeader>
           <div className="px-4">
             <ShiftTemplateFormComponent key={formKey} shifts={shifts} employees={employees} onSaved={onCreated} />
@@ -237,7 +243,7 @@ export default function ShiftsTemplatePage() {
       <Sheet open={openEditDrawer} onOpenChange={(value) => !value && setOpenEditDrawer(false)}>
         <SheetContent side="right" className="sm:max-w-md overflow-y-auto">
           <SheetHeader>
-            <SheetTitle>Breyta vaktarplani</SheetTitle>
+            <SheetTitle>{t("shiftTemplates.editTemplate")}</SheetTitle>
           </SheetHeader>
           <div className="px-4">
             {selectedTemplate && (
@@ -257,7 +263,7 @@ export default function ShiftsTemplatePage() {
       <Sheet open={openGenerateDrawer} onOpenChange={(value) => !value && setOpenGenerateDrawer(false)}>
         <SheetContent side="right" className="sm:max-w-md overflow-y-auto">
           <SheetHeader>
-            <SheetTitle>Uppfæra vaktir</SheetTitle>
+            <SheetTitle>{t("shiftTemplates.updateShifts")}</SheetTitle>
           </SheetHeader>
           <div className="px-4">
             {selectedTemplate && (
@@ -278,15 +284,15 @@ export default function ShiftsTemplatePage() {
           setSelectedTemplate(null);
         }}
         variant="danger"
-        title="Eyða vaktarplani?"
-        description="Ertu viss um að þú viljir eyða þessu vaktarplani? Ekki er hægt að endurheimta þessa aðgerð."
+        title={t("shiftTemplates.deleteTemplate")}
+        description={t("shiftTemplates.deleteTemplateConfirm")}
         onConfirm={() => selectedTemplate && deleteTemplate(selectedTemplate)}
         onCancel={() => {
           setShowDeleteDialog(false);
           setSelectedTemplate(null);
         }}
-        buttonTextConfirm="Eyða"
-        buttonTextCancel="Hætta við"
+        buttonTextConfirm={t("common.delete")}
+        buttonTextCancel={t("common.cancel")}
       />
     </div>
   );
@@ -303,6 +309,7 @@ function ShiftTemplateFormComponent({
   employees: Employee[];
   onSaved: (template: ShiftTemplate) => void;
 }) {
+  const t = useTranslations();
   const { register, handleSubmit, watch, setValue, control } = useForm<ShiftTemplateForm>({
     resolver: zodResolver(shiftTemplateFormSchema),
     defaultValues: {
@@ -325,9 +332,15 @@ function ShiftTemplateFormComponent({
   // When pattern changes, update blocks
   useEffect(() => {
     if (pattern !== "custom") {
-      const preset = PATTERN_PRESETS[pattern];
+      const presets: Record<string, number[]> = {
+        "2-2-3": [2, 2, 3],
+        "5-5-4": [5, 5, 4],
+        "5-2": [5, 2],
+        "4-3": [4, 3],
+      };
+      const preset = presets[pattern];
       if (preset) {
-        setValue("blocks", preset.blocks);
+        setValue("blocks", preset);
       }
     }
   }, [pattern, setValue]);
@@ -356,9 +369,11 @@ function ShiftTemplateFormComponent({
   };
 
   const selectedEmployees = employees.filter((e) => (selectedEmployeeIds ?? []).includes(e.id));
+  const dayLabels = t.raw("calendar.dayLabelsShort") as string[];
   const previewData = computeRotationPreview(
     blocks ?? [],
     selectedEmployees.map((e) => ({ id: e.id, name: e.name })),
+    dayLabels,
   );
 
   const onSubmit = async (data: ShiftTemplateForm) => {
@@ -375,7 +390,7 @@ function ShiftTemplateFormComponent({
         onSaved(response.data.data);
       }
     } catch {
-      toast.error("Villa kom upp. Reyndu aftur.");
+      toast.error(t("shiftTemplates.formError"));
     }
   };
 
@@ -384,23 +399,23 @@ function ShiftTemplateFormComponent({
       {/* Name */}
       <div>
         <label htmlFor="tpl-name" className="block text-sm font-semibold text-foreground">
-          Nafn
+          {t("common.name")}
         </label>
         <div className="mt-2">
-          <Input id="tpl-name" type="text" placeholder="t.d. Morgunvakt 2-2-3" {...register("name")} />
+          <Input id="tpl-name" type="text" placeholder={t("shiftTemplates.namePlaceholder")} {...register("name")} />
         </div>
       </div>
 
       {/* Description */}
       <div>
         <label htmlFor="tpl-description" className="block text-sm font-semibold text-foreground">
-          Lýsing (valfrjálst)
+          {t("shiftTemplates.descriptionOptional")}
         </label>
         <div className="mt-2">
           <Input
             id="tpl-description"
             type="text"
-            placeholder="Stutt lýsing á sniðmátinu"
+            placeholder={t("shiftTemplates.descriptionPlaceholder")}
             {...register("description")}
           />
         </div>
@@ -409,7 +424,7 @@ function ShiftTemplateFormComponent({
       {/* Shift selector */}
       <div>
         <label htmlFor="tpl-shift" className="block text-sm font-semibold text-foreground">
-          Vakt
+          {t("shiftTemplates.shift")}
         </label>
         <div className="mt-2">
           <Controller
@@ -422,7 +437,7 @@ function ShiftTemplateFormComponent({
                 onChange={(e) => field.onChange(Number(e.target.value))}
                 className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm shadow-xs focus:outline-none focus:ring-1 focus:ring-ring"
               >
-                <option value="">Veldu vakt</option>
+                <option value="">{t("shiftTemplates.selectShift")}</option>
                 {shifts.map((shift) => (
                   <option key={shift.id} value={shift.id}>
                     {shift.title} ({shift.start_time}–{shift.end_time})
@@ -437,33 +452,43 @@ function ShiftTemplateFormComponent({
       {/* Pattern selector */}
       <div>
         <label htmlFor="tpl-pattern" className="block text-sm font-semibold text-foreground">
-          Mynstur
+          {t("shiftTemplates.pattern")}
         </label>
         <div className="mt-2">
           <Controller
             name="pattern"
             control={control}
-            render={({ field }) => (
-              <select
-                id="tpl-pattern"
-                value={field.value}
-                onChange={(e) => field.onChange(e.target.value)}
-                className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm shadow-xs focus:outline-none focus:ring-1 focus:ring-ring"
-              >
-                {Object.entries(PATTERN_PRESETS).map(([key, { label }]) => (
-                  <option key={key} value={key}>
-                    {label}
-                  </option>
-                ))}
-              </select>
-            )}
+            render={({ field }) => {
+              const patternPresets: Record<string, string> = {
+                "2-2-3": "2-2-3",
+                "5-5-4": "5-5-4",
+                "5-2": "5-2",
+                "4-3": "4-3",
+                custom: t("shiftTemplates.custom"),
+              };
+              return (
+                <select
+                  id="tpl-pattern"
+                  value={field.value}
+                  onChange={(e) => field.onChange(e.target.value)}
+                  className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm shadow-xs focus:outline-none focus:ring-1 focus:ring-ring"
+                >
+                  {Object.entries(patternPresets).map(([key, label]) => (
+                    <option key={key} value={key}>
+                      {label}
+                    </option>
+                  ))}
+                </select>
+              );
+            }}
           />
         </div>
 
         {/* Show blocks info for presets */}
         {pattern !== "custom" && blocks && (
           <p className="mt-1 text-xs text-muted-foreground">
-            Blokkir: {blocks.join(" – ")} ({blocks.reduce((a, b) => a + b, 0)} dagar í hringrás)
+            {t("shiftTemplates.blocks")}: {blocks.join(" – ")} ({blocks.reduce((a, b) => a + b, 0)}{" "}
+            {t("shiftTemplates.daysInCycle")})
           </p>
         )}
 
@@ -472,13 +497,18 @@ function ShiftTemplateFormComponent({
           <div className="mt-2">
             <Input
               type="text"
-              placeholder="t.d. 3, 2, 2"
+              placeholder={t("shiftTemplates.blocksPlaceholder")}
               value={customBlocksInput}
               onChange={(e) => handleCustomBlocksChange(e.target.value)}
             />
             <p className="mt-1 text-xs text-muted-foreground">
-              Sláðu inn blokkastærðir, aðskildar með kommu.
-              {blocks && blocks.length > 0 && <> Hringrás: {blocks.reduce((a, b) => a + b, 0)} dagar.</>}
+              {t("shiftTemplates.enterBlockSizes")}
+              {blocks && blocks.length > 0 && (
+                <>
+                  {" "}
+                  {t("shiftTemplates.cycle")}: {blocks.reduce((a, b) => a + b, 0)} {t("shiftTemplates.days")}.
+                </>
+              )}
             </p>
           </div>
         )}
@@ -486,10 +516,8 @@ function ShiftTemplateFormComponent({
 
       {/* Employee selector */}
       <div>
-        <label className="block text-sm font-semibold text-foreground">Starfsmenn (röðun skiptir máli)</label>
-        <p className="mt-1 text-xs text-muted-foreground">
-          Smelltu til að velja. Röðunin ákvarðar hvernig blokkum er úthlutað.
-        </p>
+        <label className="block text-sm font-semibold text-foreground">{t("shiftTemplates.employeesLabel")}</label>
+        <p className="mt-1 text-xs text-muted-foreground">{t("shiftTemplates.employeesHint")}</p>
         <div className="mt-2 space-y-1">
           {employees.map((employee) => {
             const isSelected = (selectedEmployeeIds ?? []).includes(employee.id);
@@ -523,7 +551,7 @@ function ShiftTemplateFormComponent({
       {/* Rotation preview */}
       {previewData.length > 0 && (
         <div>
-          <label className="block text-sm font-semibold text-foreground">Forskoðun</label>
+          <label className="block text-sm font-semibold text-foreground">{t("shiftTemplates.preview")}</label>
           <div className="mt-2 overflow-x-auto">
             {[0, 1].map((cycleIdx) => {
               const cycleLength = blocks?.reduce((a, b) => a + b, 0) ?? 0;
@@ -533,7 +561,9 @@ function ShiftTemplateFormComponent({
               if (cycleDays.length === 0) return null;
               return (
                 <div key={cycleIdx} className="mb-2">
-                  <p className="text-xs text-muted-foreground mb-1">Vika {cycleIdx + 1}</p>
+                  <p className="text-xs text-muted-foreground mb-1">
+                    {t("shiftTemplates.week", { week: cycleIdx + 1 })}
+                  </p>
                   <div className="flex gap-1">
                     {cycleDays.map((day) => {
                       const colorClass = EMPLOYEE_COLORS[day.employeeIndex % EMPLOYEE_COLORS.length];
@@ -559,7 +589,7 @@ function ShiftTemplateFormComponent({
       )}
 
       <Button type="submit" variant="secondary" size="lg" className="w-full">
-        {template ? "Vista breytingar" : "Búa til vaktarplan"}
+        {template ? t("shiftTemplates.saveChanges") : t("shiftTemplates.createTemplate")}
       </Button>
     </form>
   );
@@ -572,6 +602,7 @@ function GenerateScheduleFormComponent({
   template: ShiftTemplate;
   onGenerated: () => void;
 }) {
+  const t = useTranslations();
   const { handleSubmit, setValue, watch } = useForm<GenerateScheduleForm>({
     resolver: zodResolver(generateScheduleFormSchema),
     defaultValues: { start_date: "", end_date: "" },
@@ -601,10 +632,14 @@ function GenerateScheduleFormComponent({
       const response = await axios.post(`/api/manager/shift-templates/${template.id}/generate`, data, {
         headers: authHeaders(),
       });
-      toast.success(`${response.data.assignments_created} vaktaráðningar búnar til.`);
+      toast.success(
+        t("shiftTemplates.assignmentsCreated", {
+          count: response.data.assignments_created,
+        }),
+      );
       onGenerated();
     } catch {
-      toast.error("Villa kom upp við að mynda röðun.");
+      toast.error(t("shiftTemplates.generateError"));
     }
   };
 
@@ -614,18 +649,18 @@ function GenerateScheduleFormComponent({
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
       <div>
-        <p className="text-sm text-muted-foreground">Veldu hvenær vaktarplan á að byrja.</p>
-        <p className="text-sm text-muted-foreground">Hægt að stilla hvenær það á að stoppa.</p>
+        <p className="text-sm text-muted-foreground">{t("shiftTemplates.selectStartDate")}</p>
+        <p className="text-sm text-muted-foreground">{t("shiftTemplates.selectEndDate")}</p>
       </div>
 
       <div>
-        <label className="block text-sm font-semibold text-foreground">Upphafsdagur</label>
+        <label className="block text-sm font-semibold text-foreground">{t("shiftTemplates.startDate")}</label>
         <div className="mt-2">
           <DatePicker
             id="gen-start"
             value={startDate}
             onChange={handleStartDateChange}
-            placeholder="Veldu upphafsdagsetningu"
+            placeholder={t("shiftTemplates.selectStartDatePlaceholder")}
             captionLayout="dropdown"
             startMonth={today}
             endMonth={fiftyYearsFromNow}
@@ -634,13 +669,13 @@ function GenerateScheduleFormComponent({
       </div>
 
       <div>
-        <label className="block text-sm font-semibold text-foreground">Lokadagur</label>
+        <label className="block text-sm font-semibold text-foreground">{t("shiftTemplates.endDate")}</label>
         <div className="mt-2">
           <DatePicker
             id="gen-end"
             value={endDate}
             onChange={(date) => setValue("end_date", date ? dayjs(date).format("YYYY-MM-DD") : "")}
-            placeholder="Veldu lokadagsetningu"
+            placeholder={t("shiftTemplates.selectEndDatePlaceholder")}
             captionLayout="dropdown"
             startMonth={startDate ?? today}
             endMonth={fiftyYearsFromNow}
@@ -650,7 +685,7 @@ function GenerateScheduleFormComponent({
       </div>
 
       <Button type="submit" variant="secondary" size="lg" className="w-full">
-        Mynda röðun
+        {t("shiftTemplates.generateSchedule")}
       </Button>
     </form>
   );

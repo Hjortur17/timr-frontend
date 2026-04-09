@@ -3,6 +3,7 @@
 import axios from "axios";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { useForm } from "react-hook-form";
 import { SocialLoginButtons } from "@/components/SocialLoginButtons";
 import { Button } from "@/components/ui/button";
@@ -11,6 +12,7 @@ import type { LoginForm } from "@/types/forms";
 import { setToken } from "@/utils/auth";
 
 export default function Login() {
+  const t = useTranslations();
   const router = useRouter();
   const {
     register,
@@ -39,7 +41,7 @@ export default function Login() {
         }
       } else {
         setError("email", {
-          message: "Villa kom upp. Vinsamlegast reyndu aftur.",
+          message: t("common.error"),
         });
       }
     }
@@ -48,7 +50,7 @@ export default function Login() {
   return (
     <div className="flex min-h-screen flex-col justify-center py-12 sm:px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
-        <h2 className="mt-6 text-center text-2xl/9 font-bold tracking-tight text-neutral-900">Innskráning</h2>
+        <h2 className="mt-6 text-center text-2xl/9 font-bold tracking-tight text-neutral-900">{t("auth.login")}</h2>
       </div>
 
       <div className="sm:mx-auto sm:w-full sm:max-w-[480px]">
@@ -56,7 +58,7 @@ export default function Login() {
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
             <div>
               <label htmlFor="email" className="block text-base/7 font-semibold text-neutral-950">
-                Netfang
+                {t("common.email")}
               </label>
               <div className="mt-2">
                 <Input id="email" type="email" {...register("email")} />
@@ -66,7 +68,7 @@ export default function Login() {
 
             <div>
               <label htmlFor="password" className="block text-base/7 font-semibold text-neutral-950">
-                Lykilorð
+                {t("common.password")}
               </label>
               <div className="mt-2">
                 <Input id="password" type="password" {...register("password")} />
@@ -107,20 +109,20 @@ export default function Login() {
                   </div>
                 </div>
                 <label htmlFor="remember-me" className="block text-sm/6 text-neutral-900">
-                  Muna mig
+                  {t("auth.rememberMe")}
                 </label>
               </div>
 
               <div className="text-sm/6">
                 <Link href="/forgot-password" className="font-semibold text-primary hover:text-primary/90">
-                  Gleymt lykilorð?
+                  {t("auth.forgotPassword")}
                 </Link>
               </div>
             </div>
 
             <div>
               <Button type="submit" size="lg" className="w-full">
-                Innskrá
+                {t("auth.loginButton")}
               </Button>
             </div>
           </form>
@@ -129,9 +131,9 @@ export default function Login() {
         </div>
 
         <p className="mt-10 text-center text-sm/6 text-neutral-500">
-          Ekki með aðgang?{" "}
+          {t("auth.noAccount")}{" "}
           <Link href="/register" className="font-semibold text-primary hover:text-primary/90">
-            Nýskráning
+            {t("auth.register")}
           </Link>
         </p>
       </div>

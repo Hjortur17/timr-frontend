@@ -3,6 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
 import { Loader2, Trash2 } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -22,6 +23,7 @@ import { Shift, ShiftDeletionPreview, ShiftForm, shiftFormSchema } from "@/types
 import { authHeaders } from "@/utils/auth";
 
 export default function ShiftsPage() {
+  const t = useTranslations();
   const [shifts, setShifts] = useState<Shift[]>([]);
 
   const [formKey, setFormKey] = useState(0);
@@ -64,7 +66,7 @@ export default function ShiftsPage() {
       const res = await axios.get(`/api/manager/shifts/${shift.id}/deletion-preview`, { headers: authHeaders() });
       setDeletionPreview(res.data.data);
     } catch {
-      toast.error("Gat ekki sótt upplýsingar um vakt.");
+      toast.error(t("shifts.couldNotFetchShift"));
       setShowDeleteDialog(false);
       setSelectedShift(null);
     } finally {
@@ -86,7 +88,7 @@ export default function ShiftsPage() {
     });
     setShifts((prev) => prev.filter((s) => s.id !== shift.id));
     closeDeleteDialog();
-    toast.success("Vakt eytt.");
+    toast.success(t("shifts.shiftDeleted"));
   };
 
   useEffect(() => {
@@ -100,60 +102,55 @@ export default function ShiftsPage() {
     <div className="px-4 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-2xl space-y-16 sm:space-y-20 lg:mx-0 lg:max-w-none">
         <div>
-          <div className="flex items-end justify-between">
-            <div>
-              <h2 className="text-base/7 font-semibold text-foreground">Vaktir</h2>
-              <p className="mt-1 text-sm/6 text-muted-foreground">Skoðaðu og skipulagðu vaktir</p>
-            </div>
-            <Button type="button" onClick={() => setOpenCreateDrawer(true)}>
-              Bæta við vakt
-            </Button>
-          </div>
-
-          <div className="mt-6 border-t border-border pt-6">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead className="py-3.5 pr-3 pl-4 sm:pl-3">Nafn</TableHead>
-                  <TableHead className="px-3 py-3.5">Upphafstími</TableHead>
-                  <TableHead className="px-3 py-3.5">Lokatími</TableHead>
-                  <TableHead className="px-3 py-3.5">Nótur</TableHead>
-                  <TableHead className="py-3.5 pr-4 pl-3 sm:pr-3">
-                    <span className="sr-only">Aðgerðir</span>
-                  </TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {shifts.map((shift) => (
-                  <TableRow key={shift.id} className="even:bg-muted/30">
-                    <TableCell className="py-4 pr-3 pl-4 font-medium sm:pl-3">{shift.title}</TableCell>
-                    <TableCell className="px-3 py-4 text-muted-foreground">
-                      {shift.start_time?.slice(0, 5) ?? "–"}
-                    </TableCell>
-                    <TableCell className="px-3 py-4 text-muted-foreground">
-                      {shift.end_time?.slice(0, 5) ?? "–"}
-                    </TableCell>
-                    <TableCell className="px-3 py-4 text-muted-foreground">{shift.notes ?? "–"}</TableCell>
-                    <TableCell className="flex justify-end gap-2 py-4 pr-4 pl-3 sm:pr-3">
-                      <button type="button" onClick={() => onOpenDeleteDialog(shift)}>
-                        <Trash2 className="size-5 text-neutral-500 hover:text-red-700 duration-200 transition-colors cursor-pointer" />
-                      </button>
-                      <Button type="button" variant="secondary" size="sm" onClick={() => onOpenEditDrawer(shift)}>
-                        Breyta
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </div>
+          <h1 className="text-2xl/9 font-bold tracking-tight text-foreground">{t("shifts.title")}</h1>
+          <p className="mt-2 text-sm/6 text-muted-foreground">{t("shifts.description")}</p>
         </div>
+
+        <Button type="button" size="lg" onClick={() => setOpenCreateDrawer(true)}>
+          {t("shifts.addShift")}
+        </Button>
       </div>
+
+      <section className="mt-6">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead className="py-3.5 pr-3 pl-4 sm:pl-3">{t("common.name")}</TableHead>
+              <TableHead className="px-3 py-3.5">{t("shifts.startTime")}</TableHead>
+              <TableHead className="px-3 py-3.5">{t("shifts.endTime")}</TableHead>
+              <TableHead className="px-3 py-3.5">{t("shifts.notes")}</TableHead>
+              <TableHead className="py-3.5 pr-4 pl-3 sm:pr-3">
+                <span className="sr-only">{t("common.actions")}</span>
+              </TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {shifts.map((shift) => (
+              <TableRow key={shift.id} className="even:bg-muted/30">
+                <TableCell className="py-4 pr-3 pl-4 font-medium sm:pl-3">{shift.title}</TableCell>
+                <TableCell className="px-3 py-4 text-muted-foreground">
+                  {shift.start_time?.slice(0, 5) ?? "–"}
+                </TableCell>
+                <TableCell className="px-3 py-4 text-muted-foreground">{shift.end_time?.slice(0, 5) ?? "–"}</TableCell>
+                <TableCell className="px-3 py-4 text-muted-foreground">{shift.notes ?? "–"}</TableCell>
+                <TableCell className="flex justify-end gap-2 py-4 pr-4 pl-3 sm:pr-3">
+                  <button type="button" onClick={() => onOpenDeleteDialog(shift)}>
+                    <Trash2 className="size-5 text-neutral-500 hover:text-red-700 duration-200 transition-colors cursor-pointer" />
+                  </button>
+                  <Button type="button" variant="secondary" size="sm" onClick={() => onOpenEditDrawer(shift)}>
+                    {t("common.edit")}
+                  </Button>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </section>
 
       <Sheet open={openCreateDrawer} onOpenChange={(value) => !value && setOpenCreateDrawer(false)}>
         <SheetContent side="right" className="sm:max-w-md overflow-y-auto">
           <SheetHeader>
-            <SheetTitle>Bæta við vakt</SheetTitle>
+            <SheetTitle>{t("shifts.addShift")}</SheetTitle>
           </SheetHeader>
           <div className="px-4">
             <CreateShiftForm key={formKey} onCreated={onCreated} />
@@ -164,7 +161,7 @@ export default function ShiftsPage() {
       <Sheet open={openEditDrawer} onOpenChange={(value) => !value && setOpenEditDrawer(false)}>
         <SheetContent side="right" className="sm:max-w-md overflow-y-auto">
           <SheetHeader>
-            <SheetTitle>Breyta vakt</SheetTitle>
+            <SheetTitle>{t("shifts.editShift")}</SheetTitle>
           </SheetHeader>
           <div className="px-4">
             {selectedShift && <EditShiftForm key={formKey} shift={selectedShift} onUpdated={onUpdated} />}
@@ -175,11 +172,9 @@ export default function ShiftsPage() {
       <Dialog open={showDeleteDialog} onOpenChange={(open) => !open && closeDeleteDialog()}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Eyða vakt?</DialogTitle>
+            <DialogTitle>{t("shifts.deleteShift")}</DialogTitle>
             {selectedShift && (
-              <DialogDescription>
-                Ertu viss um að þú viljir eyða vaktinni <strong>{selectedShift.title}</strong>?
-              </DialogDescription>
+              <DialogDescription>{t("shifts.deleteShiftConfirm", { name: selectedShift.title })}</DialogDescription>
             )}
           </DialogHeader>
 
@@ -191,20 +186,18 @@ export default function ShiftsPage() {
             <div className="space-y-4 text-sm">
               {deletionPreview.total_assignments > 0 ? (
                 <p className="text-muted-foreground">
-                  Vaktin er skipulögð í{" "}
+                  {t("shifts.scheduledIn")}{" "}
                   <strong className="text-foreground">
                     {deletionPreview.total_assignments}{" "}
-                    {deletionPreview.total_assignments === 1 ? "skipulagningu" : "skipulagningar"}
+                    {t(deletionPreview.total_assignments === 1 ? "shifts.assignment" : "shifts.assignments")}
                   </strong>{" "}
-                  fyrir{" "}
-                  <strong className="text-foreground">
-                    {deletionPreview.total_employees}{" "}
-                    {deletionPreview.total_employees === 1 ? "starfsmann" : "starfsmenn"}
-                  </strong>
-                  .
+                  {t("shifts.forEmployee", {
+                    count: deletionPreview.total_employees,
+                  })}{" "}
+                  <strong className="text-foreground">{deletionPreview.total_employees}</strong>.
                 </p>
               ) : (
-                <p className="text-muted-foreground">Engar skipulagningar eru tengdar þessari vakt.</p>
+                <p className="text-muted-foreground">{t("shifts.noAssignments")}</p>
               )}
 
               {deletionPreview.future_assignments > 0 ? (
@@ -212,15 +205,19 @@ export default function ShiftsPage() {
                   <p className="text-muted-foreground">
                     <strong className="text-foreground">
                       {deletionPreview.future_assignments}{" "}
-                      {deletionPreview.future_assignments === 1 ? "framtíðarskipulagning" : "framtíðarskipulagningar"}
+                      {t(
+                        deletionPreview.future_assignments === 1
+                          ? "shifts.futureAssignment"
+                          : "shifts.futureAssignments",
+                      )}
                     </strong>{" "}
-                    {replacementShiftId ? "verða færðar yfir á staðgengilsvakt." : "verða fjarlægðar."}
+                    {replacementShiftId ? t("shifts.movedToReplacement") : t("shifts.willBeDeleted")}
                   </p>
 
                   {deletionPreview.replacement_shifts.length > 0 && (
                     <div>
                       <label htmlFor="replacement-shift" className="block text-sm font-medium text-foreground mb-1.5">
-                        Velja staðgengilsvakt (valfrjálst)
+                        {t("shifts.selectReplacementShift")}
                       </label>
                       <select
                         id="replacement-shift"
@@ -228,7 +225,7 @@ export default function ShiftsPage() {
                         onChange={(e) => setReplacementShiftId(e.target.value)}
                         className="w-full rounded-md border border-input bg-background px-3 py-1.5 text-sm shadow-xs focus:outline-none focus:ring-1 focus:ring-ring"
                       >
-                        <option value="">Engin — eyða framtíðarskipulagningum</option>
+                        <option value="">{t("shifts.noReplacementDelete")}</option>
                         {deletionPreview.replacement_shifts.map((s) => (
                           <option key={s.id} value={s.id}>
                             {s.title} ({s.start_time.slice(0, 5)} – {s.end_time.slice(0, 5)})
@@ -239,21 +236,21 @@ export default function ShiftsPage() {
                   )}
                 </>
               ) : deletionPreview.total_assignments > 0 ? (
-                <p className="text-muted-foreground">Engar framtíðarskipulagningar verða fyrir áhrifum.</p>
+                <p className="text-muted-foreground">{t("shifts.noFutureAssignmentsAffected")}</p>
               ) : null}
             </div>
           ) : null}
 
           <DialogFooter>
             <Button variant="outline" onClick={closeDeleteDialog}>
-              Hætta við
+              {t("common.cancel")}
             </Button>
             <Button
               variant="destructive"
               onClick={() => selectedShift && deleteShift(selectedShift)}
               disabled={loadingPreview}
             >
-              Eyða vakt
+              {t("shifts.deleteShift")}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -263,6 +260,7 @@ export default function ShiftsPage() {
 }
 
 function EditShiftForm({ shift, onUpdated }: { shift: Shift; onUpdated: (shift: Shift) => void }) {
+  const t = useTranslations();
   const { register, handleSubmit } = useForm<ShiftForm>({
     resolver: zodResolver(shiftFormSchema),
     defaultValues: {
@@ -284,15 +282,15 @@ function EditShiftForm({ shift, onUpdated }: { shift: Shift; onUpdated: (shift: 
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
       <div>
         <label htmlFor="edit-title" className="block text-base/7 font-semibold text-foreground">
-          Nafn
+          {t("common.name")}
         </label>
         <div className="mt-2">
-          <Input id="edit-title" type="text" placeholder="t.d. Morgunvakt" {...register("title")} />
+          <Input id="edit-title" type="text" placeholder={t("shifts.namePlaceholder")} {...register("title")} />
         </div>
       </div>
       <div>
         <label htmlFor="edit-start" className="block text-base/7 font-semibold text-foreground">
-          Upphafstími
+          {t("shifts.startTime")}
         </label>
         <div className="mt-2">
           <Input id="edit-start" type="time" {...register("start_time")} />
@@ -300,7 +298,7 @@ function EditShiftForm({ shift, onUpdated }: { shift: Shift; onUpdated: (shift: 
       </div>
       <div>
         <label htmlFor="edit-end" className="block text-base/7 font-semibold text-foreground">
-          Lokatími
+          {t("shifts.endTime")}
         </label>
         <div className="mt-2">
           <Input id="edit-end" type="time" {...register("end_time")} />
@@ -308,21 +306,22 @@ function EditShiftForm({ shift, onUpdated }: { shift: Shift; onUpdated: (shift: 
       </div>
       <div>
         <label htmlFor="edit-notes" className="block text-base/7 font-semibold text-foreground">
-          Nótur (valfrjálst)
+          {t("shifts.notesOptional")}
         </label>
         <div className="mt-2">
-          <Input id="edit-notes" type="text" placeholder="Athugasemd" {...register("notes")} />
+          <Input id="edit-notes" type="text" placeholder={t("shifts.notesPlaceholder")} {...register("notes")} />
         </div>
       </div>
 
       <Button type="submit" variant="secondary" size="lg" className="w-full">
-        Uppfæra
+        {t("common.update")}
       </Button>
     </form>
   );
 }
 
 function CreateShiftForm({ onCreated }: { onCreated: (shift: Shift) => void }) {
+  const t = useTranslations();
   const { register, handleSubmit } = useForm<ShiftForm>({
     resolver: zodResolver(shiftFormSchema),
     defaultValues: { title: "", start_time: "", end_time: "", notes: "" },
@@ -339,15 +338,15 @@ function CreateShiftForm({ onCreated }: { onCreated: (shift: Shift) => void }) {
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
       <div>
         <label htmlFor="create-title" className="block text-base/7 font-semibold text-foreground">
-          Nafn
+          {t("common.name")}
         </label>
         <div className="mt-2">
-          <Input id="create-title" type="text" placeholder="t.d. Morgunvakt" {...register("title")} />
+          <Input id="create-title" type="text" placeholder={t("shifts.namePlaceholder")} {...register("title")} />
         </div>
       </div>
       <div>
         <label htmlFor="create-start" className="block text-base/7 font-semibold text-foreground">
-          Upphafstími
+          {t("shifts.startTime")}
         </label>
         <div className="mt-2">
           <Input id="create-start" type="time" {...register("start_time")} />
@@ -355,7 +354,7 @@ function CreateShiftForm({ onCreated }: { onCreated: (shift: Shift) => void }) {
       </div>
       <div>
         <label htmlFor="create-end" className="block text-base/7 font-semibold text-foreground">
-          Lokatími
+          {t("shifts.endTime")}
         </label>
         <div className="mt-2">
           <Input id="create-end" type="time" {...register("end_time")} />
@@ -363,15 +362,15 @@ function CreateShiftForm({ onCreated }: { onCreated: (shift: Shift) => void }) {
       </div>
       <div>
         <label htmlFor="create-notes" className="block text-base/7 font-semibold text-foreground">
-          Nótur (valfrjálst)
+          {t("shifts.notesOptional")}
         </label>
         <div className="mt-2">
-          <Input id="create-notes" type="text" placeholder="Athugasemd" {...register("notes")} />
+          <Input id="create-notes" type="text" placeholder={t("shifts.notesPlaceholder")} {...register("notes")} />
         </div>
       </div>
 
       <Button type="submit" variant="secondary" size="lg" className="w-full">
-        Bæta við vakt
+        {t("shifts.addShift")}
       </Button>
     </form>
   );

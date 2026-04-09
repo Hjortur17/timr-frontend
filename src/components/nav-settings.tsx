@@ -2,6 +2,7 @@
 
 import { Building2Icon, CalendarRangeIcon, CalendarSyncIcon, UsersIcon } from "lucide-react";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 import {
   SidebarGroup,
   SidebarGroupLabel,
@@ -11,30 +12,31 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 
-const navigation = [
-  {
-    title: "Fyrirtækið",
-    url: "/dashboard/settings/company",
-    icon: Building2Icon,
-  },
-  {
-    title: "Vaktir",
-    url: "/dashboard/settings/shifts",
-    icon: CalendarRangeIcon,
-  },
-  {
-    title: "Vaktarplan",
-    url: "/dashboard/settings/shifts-templates",
-    icon: CalendarSyncIcon,
-  },
-];
-
 export function NavSettings() {
   const { isMobile } = useSidebar();
+  const t = useTranslations();
+
+  const navigation = [
+    {
+      title: t("nav.company"),
+      url: "/dashboard/settings/company",
+      icon: Building2Icon,
+    },
+    {
+      title: t("nav.shifts"),
+      url: "/dashboard/settings/shifts",
+      icon: CalendarRangeIcon,
+    },
+    {
+      title: t("nav.shiftTemplates"),
+      url: "/dashboard/settings/shifts-templates",
+      icon: CalendarSyncIcon,
+    },
+  ];
 
   return (
     <SidebarGroup className="group-data-[collapsible=icon]:hidden">
-      <SidebarGroupLabel>Stillingar</SidebarGroupLabel>
+      <SidebarGroupLabel>{t("nav.settings")}</SidebarGroupLabel>
       <SidebarMenu>
         {navigation.map((item) => (
           <SidebarMenuItem key={item.title}>

@@ -5,6 +5,7 @@ import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import isoWeek from "dayjs/plugin/isoWeek";
 import { ChevronLeft, ChevronRight, Clock } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useEffect, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -16,8 +17,6 @@ import { cn } from "@/utils/classname";
 
 dayjs.extend(isoWeek);
 dayjs.extend(customParseFormat);
-
-const DAY_LABELS = ["MÁN", "ÞRI", "MIÐ", "FIM", "FÖS", "LAU", "SUN"];
 
 const SHIFT_COLORS = [
   { bg: "bg-emerald-200", text: "text-emerald-800" },
@@ -80,6 +79,9 @@ function getCalendarDays(month: dayjs.Dayjs, today: dayjs.Dayjs): CalendarDay[] 
 }
 
 export default function EmployeeWeeklyCalendar() {
+  const t = useTranslations();
+  const dayLabels = t.raw("calendar.dayLabels") as string[];
+  const durationLabels = { hours: t("common.hoursAbbr"), minutes: t("common.minutesAbbr") };
   const [currentMonth, setCurrentMonth] = useState(() => dayjs().startOf("month"));
   const [assignments, setAssignments] = useState<ShiftAssignment[]>([]);
   const [loading, setLoading] = useState(true);
@@ -170,25 +172,25 @@ export default function EmployeeWeeklyCalendar() {
 
           <div className="flex items-center ">
             <Button variant="ghost" size="icon-sm" onClick={prevMonth} className="rounded-r-none">
-              <span className="sr-only">Fyrri mánuður</span>
+              <span className="sr-only">{t("calendar.previousMonth")}</span>
               <ChevronLeft className="size-5" />
             </Button>
             <Button variant="ghost" size="icon-sm" onClick={nextMonth} className="rounded-l-none">
-              <span className="sr-only">Næsti mánuður</span>
+              <span className="sr-only">{t("calendar.nextMonth")}</span>
               <ChevronRight className="size-5" />
             </Button>
           </div>
 
           {!isCurrentMonth && (
             <Button variant="ghost" size="sm" onClick={goToday} className="hidden px-3.5 md:block">
-              Í dag
+              {t("common.today")}
             </Button>
           )}
         </div>
         <div className="flex items-center">
           {totalMonthMinutes > 0 && (
             <span className="ml-4 hidden text-sm text-muted-foreground md:block">
-              {formatDuration(totalMonthMinutes, "minutes")}
+              {formatDuration(totalMonthMinutes, "minutes", durationLabels)}
             </span>
           )}
         </div>
@@ -198,7 +200,7 @@ export default function EmployeeWeeklyCalendar() {
       <div className="shadow-sm ring-1 ring-border lg:flex lg:flex-auto lg:flex-col">
         {/* Day-of-week header */}
         <div className="grid grid-cols-7 gap-px border-b border-border bg-muted text-center text-xs/6 font-semibold text-muted-foreground lg:flex-none">
-          {DAY_LABELS.map((label) => (
+          {dayLabels.map((label) => (
             <div key={label} className="flex justify-center bg-background py-2">
               <span>{label.charAt(0)}</span>
               <span className="sr-only sm:not-sr-only">{label.slice(1)}</span>
@@ -251,7 +253,9 @@ export default function EmployeeWeeklyCalendar() {
                         );
                       })}
                       {dayAssignments.length > 2 && (
-                        <li className="text-muted-foreground">+ {dayAssignments.length - 2} í viðbót</li>
+                        <li className="text-muted-foreground">
+                          + {dayAssignments.length - 2} {t("calendar.moreShifts")}
+                        </li>
                       )}
                     </ol>
                   )}
@@ -295,7 +299,9 @@ export default function EmployeeWeeklyCalendar() {
                   >
                     {day.date.date()}
                   </time>
-                  <span className="sr-only">{dayAssignments.length} vaktir</span>
+                  <span className="sr-only">
+                    {dayAssignments.length} {t("calendar.shiftsCount")}
+                  </span>
                   {dayAssignments.length > 0 && (
                     <span className="-mx-0.5 mt-auto flex flex-wrap-reverse">
                       {dayAssignments.map((a) => (
@@ -317,7 +323,7 @@ export default function EmployeeWeeklyCalendar() {
       <div className="relative px-4 py-10 sm:px-6 lg:hidden">
         <ol className="divide-y divide-border overflow-hidden rounded-lg bg-background text-sm shadow-sm ring-1 ring-border">
           {selectedAssignments.length === 0 ? (
-            <li className="p-4 text-center text-muted-foreground">Engar vaktir á þessum degi</li>
+            <li className="p-4 text-center text-muted-foreground">{t("calendar.noShiftsOnDay")}</li>
           ) : (
             selectedAssignments.map((a) => {
               const color = getShiftColor(a.shift.title);

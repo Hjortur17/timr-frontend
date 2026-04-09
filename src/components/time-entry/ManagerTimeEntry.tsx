@@ -5,6 +5,7 @@ import axios from "axios";
 import dayjs from "dayjs";
 import { ArrowRight, Download, MoreHorizontal, X } from "lucide-react";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -32,6 +33,8 @@ interface EmployeeSummary {
 }
 
 export default function ManagerTimeEntry() {
+  const t = useTranslations();
+  const durationLabels = { hours: t("common.hoursAbbr"), minutes: t("common.minutesAbbr") };
   const [data, setData] = useState<EmployeeSummary[]>([]);
   const [loading, setLoading] = useState(true);
   const [from, setFrom] = useState<Date | undefined>(dayjs().startOf("month").toDate());
@@ -89,36 +92,36 @@ export default function ManagerTimeEntry() {
         link.click();
         window.URL.revokeObjectURL(url);
       } catch {
-        toast.error("Villa við að sækja Excel skjal");
+        toast.error(t("timeEntry.exportError"));
       }
     },
-    [from, to],
+    [from, to, t],
   );
 
   const columns: ColumnDef<EmployeeSummary>[] = useMemo(
     () => [
       {
         accessorKey: "employee.name",
-        header: "Starfsmaður",
+        header: t("timeEntry.employee"),
         cell: ({ row }) => <span className="font-medium">{row.original.employee.name}</span>,
       },
       {
         accessorKey: "employee.email",
-        header: "Netfang",
+        header: t("common.email"),
         cell: ({ row }) => row.original.employee.email ?? "–",
       },
       {
         accessorKey: "total_minutes",
-        header: "Heildartímar",
-        cell: ({ row }) => formatDuration(row.original.total_minutes, "minutes"),
+        header: t("timeEntry.totalHours"),
+        cell: ({ row }) => formatDuration(row.original.total_minutes, "minutes", durationLabels),
       },
       {
         accessorKey: "entry_count",
-        header: "Fjöldi færslna",
+        header: t("timeEntry.entryCount"),
       },
       {
         accessorKey: "last_clocked_in_at",
-        header: "Síðasta innstimplun",
+        header: t("timeEntry.lastClockIn"),
         cell: ({ row }) =>
           row.original.last_clocked_in_at ? dayjs(row.original.last_clocked_in_at).format("D. MMM YYYY HH:mm") : "–",
       },
@@ -134,17 +137,17 @@ export default function ManagerTimeEntry() {
                   render={
                     <Button variant="ghost" size="icon-sm">
                       <MoreHorizontal className="size-4" />
-                      <span className="sr-only">Opna valmynd</span>
+                      <span className="sr-only">{t("timeEntry.openMenu")}</span>
                     </Button>
                   }
                 />
                 <DropdownMenuContent align="end" className="min-w-max">
                   <DropdownMenuItem render={<Link href={`/dashboard/time-entry/${employeeId}${filterQuery}`} />}>
-                    Skoða
+                    {t("common.view")}
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => handleExport(employeeId)}>
                     <Download className="size-4" />
-                    Sækja sem Excel
+                    {t("timeEntry.exportExcel")}
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
@@ -159,21 +162,19 @@ export default function ManagerTimeEntry() {
         },
       },
     ],
-    [filterQuery],
+    [filterQuery, t],
   );
 
   return (
     <>
       <div className="flex items-end justify-between">
         <div>
-          <h1 className="text-2xl/9 font-bold tracking-tight">Tímaskráning</h1>
-          <p className="mt-2 text-sm/6 text-muted-foreground">
-            Sjáðu yfirlit yfir hvenær og hvar starfsfólk er að klukka sig inn/út.
-          </p>
+          <h1 className="text-2xl/9 font-bold tracking-tight">{t("timeEntry.title")}</h1>
+          <p className="mt-2 text-sm/6 text-muted-foreground">{t("timeEntry.managerDescription")}</p>
         </div>
         <Button type="button" size="lg" onClick={() => handleExport()}>
           <Download className="mr-0.5" />
-          Sækja sem Excel
+          {t("timeEntry.exportExcel")}
         </Button>
       </div>
 
@@ -187,16 +188,16 @@ export default function ManagerTimeEntry() {
                 setTo(dayjs(date).add(30, "day").toDate());
               }
             }}
-            placeholder="Frá dagsetningu"
+            placeholder={t("timeEntry.fromDate")}
           />
         </div>
         <div className="w-56">
-          <DatePicker value={to} onChange={setTo} placeholder="Til dagsetningar" />
+          <DatePicker value={to} onChange={setTo} placeholder={t("timeEntry.toDate")} />
         </div>
         {filterActive && (
           <Button type="button" variant="ghost" size="sm" onClick={resetFilter}>
             <X className="mr-1 size-4" />
-            Hreinsa
+            {t("common.clear")}
           </Button>
         )}
       </div>

@@ -3,6 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
 import { Trash2 } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -17,6 +18,7 @@ import { employeeFormSchema } from "@/types/forms";
 import { authHeaders } from "@/utils/auth";
 
 export default function EmployeesPage() {
+  const t = useTranslations();
   const [employees, setEmployees] = useState<Employee[]>([]);
 
   const [formKey, setFormKey] = useState(0);
@@ -58,7 +60,7 @@ export default function EmployeesPage() {
     axios
       .post(`/api/manager/employees/${employee.id}/invite`, {}, { headers: authHeaders() })
       .then((res) => toast.success(res.data.message))
-      .catch((err) => toast.error(err.response?.data?.message ?? "Villa við að senda hlekk."))
+      .catch((err) => toast.error(err.response?.data?.message ?? t("employees.sendLinkError")))
       .finally(() =>
         setSendingInvite((prev) => {
           const next = new Set(prev);
@@ -89,12 +91,12 @@ export default function EmployeesPage() {
     <div className="px-4 sm:px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full flex items-end justify-between">
         <div>
-          <h1 className="text-2xl/9 font-bold tracking-tight text-neutral-900">Starfsmenn</h1>
-          <p className="mt-2 text-sm/6 text-neutral-500">Skoðaðu og skipulagðu starfsmenn.</p>
+          <h1 className="text-2xl/9 font-bold tracking-tight text-neutral-900">{t("employees.title")}</h1>
+          <p className="mt-2 text-sm/6 text-neutral-500">{t("employees.description")}</p>
         </div>
 
         <Button type="button" size="lg" onClick={() => setOpenCreateDrawer(true)}>
-          Bæta við starfsmanni
+          {t("employees.addEmployee")}
         </Button>
       </div>
 
@@ -109,19 +111,19 @@ export default function EmployeesPage() {
                       scope="col"
                       className="py-3.5 pr-3 pl-4 text-left text-sm font-semibold text-neutral-900 sm:pl-3"
                     >
-                      Nafn
+                      {t("common.name")}
                     </th>
                     <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-neutral-900">
-                      Kennitala
+                      {t("employees.ssn")}
                     </th>
                     <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-neutral-900">
-                      Netfang
+                      {t("common.email")}
                     </th>
                     <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-neutral-900">
-                      Sími
+                      {t("common.phone")}
                     </th>
                     <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-neutral-900">
-                      Aðgangur
+                      {t("employees.access")}
                     </th>
                     <th scope="col" className="py-3.5 pr-4 pl-3 sm:pr-3">
                       <span className="sr-only">Edit</span>
@@ -144,12 +146,12 @@ export default function EmployeesPage() {
                       <td className="px-3 py-4 text-sm whitespace-nowrap">
                         {employee.has_account ? (
                           <span className="inline-flex items-center rounded-full bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-green-600/20 ring-inset">
-                            Virkur
+                            {t("employees.active")}
                           </span>
                         ) : (
                           <div className="space-x-1">
                             <span className="inline-flex items-center rounded-full bg-neutral-50 px-2 py-1 text-xs font-medium text-neutral-600 ring-1 ring-neutral-500/10 ring-inset">
-                              Óskráður
+                              {t("employees.unregistered")}
                             </span>
 
                             {employee.email && (
@@ -164,7 +166,9 @@ export default function EmployeesPage() {
                                     <Spinner className="size-3" />
                                   </span>
                                 )}
-                                <span className={sendingInvite.has(employee.id) ? "invisible" : ""}>Senda hlekk</span>
+                                <span className={sendingInvite.has(employee.id) ? "invisible" : ""}>
+                                  {t("employees.sendLink")}
+                                </span>
                               </button>
                             )}
                           </div>
@@ -181,7 +185,7 @@ export default function EmployeesPage() {
                           <Trash2 className="size-5 text-neutral-500 hover:text-red-700 duration-200 transition-colors cursor-pointer" />
                         </button>
                         <Button type="button" variant="secondary" size="sm" onClick={() => onOpenEditDrawer(employee)}>
-                          Breyta
+                          {t("common.edit")}
                         </Button>
                       </td>
                     </tr>
@@ -196,7 +200,7 @@ export default function EmployeesPage() {
       <Sheet open={openCreateDrawer} onOpenChange={(value) => !value && setOpenCreateDrawer(false)}>
         <SheetContent side="right" className="sm:max-w-md overflow-y-auto">
           <SheetHeader>
-            <SheetTitle>Bæta við starfsmanni</SheetTitle>
+            <SheetTitle>{t("employees.addEmployee")}</SheetTitle>
           </SheetHeader>
           <div className="px-4">
             <CreateEmployeeForm key={formKey} onCreated={onCreated} />
@@ -207,7 +211,7 @@ export default function EmployeesPage() {
       <Sheet open={openEditDrawer} onOpenChange={(value) => !value && setOpenEditDrawer(false)}>
         <SheetContent side="right" className="sm:max-w-md overflow-y-auto">
           <SheetHeader>
-            <SheetTitle>Breyta starfsmanni</SheetTitle>
+            <SheetTitle>{t("employees.editEmployee")}</SheetTitle>
           </SheetHeader>
           <div className="px-4">
             {selectedEmployee && <EditEmployeeForm key={formKey} employee={selectedEmployee} onUpdated={onUpdated} />}
@@ -222,21 +226,22 @@ export default function EmployeesPage() {
           setSelectedEmployee(null);
         }}
         variant="danger"
-        title="Eyða starfsmanni?"
-        description="Ertu viss um að þú viljir eyða völdnum starfmanni? Ekki er hægt að endurheimta þessa aðgerð."
+        title={t("employees.deleteEmployee")}
+        description={t("employees.deleteEmployeeConfirm")}
         onConfirm={() => selectedEmployee && deleteEmployee(selectedEmployee)}
         onCancel={() => {
           setShowDeleteDialog(false);
           setSelectedEmployee(null);
         }}
-        buttonTextConfirm="Eyða"
-        buttonTextCancel="Hætta við"
+        buttonTextConfirm={t("common.delete")}
+        buttonTextCancel={t("common.cancel")}
       />
     </div>
   );
 }
 
 function EditEmployeeForm({ employee, onUpdated }: { employee: Employee; onUpdated: (employee: Employee) => void }) {
+  const t = useTranslations();
   const { register, handleSubmit, setValue } = useForm<EmployeeForm>({
     resolver: zodResolver(employeeFormSchema),
     defaultValues: {
@@ -257,13 +262,13 @@ function EditEmployeeForm({ employee, onUpdated }: { employee: Employee; onUpdat
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
       <div>
         <label htmlFor="edit-name" className="block text-base/7 font-semibold text-neutral-950">
-          Nafn
+          {t("common.name")}
         </label>
         <div className="mt-2">
           <Input
             id="edit-name"
             type="text"
-            placeholder="Fullt nafn"
+            placeholder={t("employees.fullNamePlaceholder")}
             required
             {...register("name", { required: true })}
           />
@@ -271,7 +276,7 @@ function EditEmployeeForm({ employee, onUpdated }: { employee: Employee; onUpdat
       </div>
       <div>
         <label htmlFor="edit-ssn" className="block text-base/7 font-semibold text-neutral-950">
-          Kennitala (valfrjálst)
+          {t("employees.ssnOptional")}
         </label>
         <div className="mt-2">
           <Input
@@ -287,7 +292,7 @@ function EditEmployeeForm({ employee, onUpdated }: { employee: Employee; onUpdat
       </div>
       <div>
         <label htmlFor="edit-email" className="block text-base/7 font-semibold text-neutral-950">
-          Netfang (valfrjálst)
+          {t("employees.emailOptional")}
         </label>
         <div className="mt-2">
           <Input id="edit-email" type="email" placeholder="netfang@timr.is" {...register("email")} />
@@ -311,13 +316,14 @@ function EditEmployeeForm({ employee, onUpdated }: { employee: Employee; onUpdat
       </div>
 
       <Button type="submit" variant="secondary" size="lg" className="w-full">
-        Uppfæra
+        {t("common.update")}
       </Button>
     </form>
   );
 }
 
 function CreateEmployeeForm({ onCreated }: { onCreated: (employee: Employee) => void }) {
+  const t = useTranslations();
   const { register, handleSubmit, setValue } = useForm<EmployeeForm>({
     resolver: zodResolver(employeeFormSchema),
     defaultValues: { name: "", ssn: "", email: "", phone: "" },
@@ -333,13 +339,13 @@ function CreateEmployeeForm({ onCreated }: { onCreated: (employee: Employee) => 
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
       <div>
         <label htmlFor="create-name" className="block text-base/7 font-semibold text-neutral-950">
-          Nafn
+          {t("common.name")}
         </label>
         <div className="mt-2">
           <Input
             id="create-name"
             type="text"
-            placeholder="Fullt nafn"
+            placeholder={t("employees.fullNamePlaceholder")}
             required
             {...register("name", { required: true })}
           />
@@ -347,7 +353,7 @@ function CreateEmployeeForm({ onCreated }: { onCreated: (employee: Employee) => 
       </div>
       <div>
         <label htmlFor="create-ssn" className="block text-base/7 font-semibold text-neutral-950">
-          Kennitala (valfrjálst)
+          {t("employees.ssnOptional")}
         </label>
         <div className="mt-2">
           <Input
@@ -363,7 +369,7 @@ function CreateEmployeeForm({ onCreated }: { onCreated: (employee: Employee) => 
       </div>
       <div>
         <label htmlFor="create-email" className="block text-base/7 font-semibold text-neutral-950">
-          Netfang (valfrjálst)
+          {t("employees.emailOptional")}
         </label>
         <div className="mt-2">
           <Input id="create-email" type="email" placeholder="netfang@timr.is" {...register("email")} />
@@ -387,7 +393,7 @@ function CreateEmployeeForm({ onCreated }: { onCreated: (employee: Employee) => 
       </div>
 
       <Button type="submit" variant="secondary" size="lg" className="w-full">
-        Bæta við starfsmanni
+        {t("employees.addEmployee")}
       </Button>
     </form>
   );

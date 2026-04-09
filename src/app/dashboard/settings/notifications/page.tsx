@@ -19,6 +19,7 @@ import {
   Users,
   UserX,
 } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
@@ -67,30 +68,9 @@ const ICON_MAP: Record<string, React.ElementType> = {
   unusual_activity_alert: Eye,
 };
 
-const CHANNEL_LABELS: Record<string, string> = {
-  push: "Push",
-  email: "Tölvupóstur",
-  in_app: "Í appi",
-};
-
-const TIMING_LABELS: Record<number, string> = {
-  15: "15 mínútur",
-  30: "30 mínútur",
-  60: "1 klukkustund",
-};
-
-const DAY_LABELS: Record<string, string> = {
-  sunday: "Sunnudagur",
-  monday: "Mánudagur",
-  tuesday: "Þriðjudagur",
-  wednesday: "Miðvikudagur",
-  thursday: "Fimmtudagur",
-  friday: "Föstudagur",
-  saturday: "Laugardagur",
-};
-
 export default function NotificationsPage() {
   const { isManager } = useUser();
+  const t = useTranslations();
   const [preferences, setPreferences] = useState<NotificationPreference[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -103,9 +83,9 @@ export default function NotificationsPage() {
       .then((json) => {
         setPreferences(json.data ?? []);
       })
-      .catch(() => toast.error("Ekki tókst að sækja stillingar."))
+      .catch(() => toast.error(t("notifications.fetchError")))
       .finally(() => setLoading(false));
-  }, []);
+  }, [t]);
 
   function toggleNotification(type: string) {
     setPreferences((prev) =>
@@ -120,7 +100,6 @@ export default function NotificationsPage() {
             channel_in_app: false,
           };
         }
-        // Turn on: restore defaults based on available channels
         return {
           ...p,
           channel_push: p.available_channels.includes("push"),
@@ -174,13 +153,13 @@ export default function NotificationsPage() {
 
       if (!res.ok) {
         const json = await res.json();
-        toast.error(json.message ?? "Villa kom upp.");
+        toast.error(json.message ?? t("common.error"));
         return;
       }
 
-      toast.success("Stillingar uppfærðar.");
+      toast.success(t("notifications.settingsUpdated"));
     } catch {
-      toast.error("Ekki tókst að vista stillingar.");
+      toast.error(t("notifications.settingsSaveError"));
     } finally {
       setSaving(false);
     }
@@ -189,7 +168,7 @@ export default function NotificationsPage() {
   if (loading) {
     return (
       <div className="px-4 sm:px-6 lg:px-8">
-        <p className="text-sm text-muted-foreground">Hleð...</p>
+        <p className="text-sm text-muted-foreground">{t("common.loading")}</p>
       </div>
     );
   }
@@ -204,15 +183,15 @@ export default function NotificationsPage() {
       <div className="mx-auto max-w-2xl space-y-10 lg:mx-0 lg:max-w-none">
         {/* Header */}
         <div>
-          <h2 className="text-base/7 font-semibold text-foreground">Tilkynningar</h2>
-          <p className="mt-1 text-sm/6 text-muted-foreground">Veldu hvaða tilkynningar þú vilt fá og á hvaða rás.</p>
+          <h2 className="text-base/7 font-semibold text-foreground">{t("notifications.title")}</h2>
+          <p className="mt-1 text-sm/6 text-muted-foreground">{t("notifications.description")}</p>
         </div>
 
         {/* Mandatory employee notifications */}
         {employeeMandatory.length > 0 && (
           <NotificationSection
-            title="Nauðsynlegar tilkynningar"
-            description="Ekki er hægt að slökkva á þessum tilkynningum en þú getur valið á hvaða rás þú færð þær."
+            title={t("notifications.mandatoryTitle")}
+            description={t("notifications.mandatoryDescription")}
             preferences={employeeMandatory}
             onToggleNotification={toggleNotification}
             onToggleChannel={toggleChannel}
@@ -223,8 +202,8 @@ export default function NotificationsPage() {
         {/* Configurable employee notifications */}
         {employeeConfigurable.length > 0 && (
           <NotificationSection
-            title="Valfrjálsar tilkynningar"
-            description="Þú getur kveikt eða slökkt á þessum tilkynningum."
+            title={t("notifications.optionalTitle")}
+            description={t("notifications.optionalDescription")}
             preferences={employeeConfigurable}
             onToggleNotification={toggleNotification}
             onToggleChannel={toggleChannel}
@@ -237,8 +216,8 @@ export default function NotificationsPage() {
           <>
             {managerMandatory.length > 0 && (
               <NotificationSection
-                title="Nauðsynlegar stjórnendatilkynningar"
-                description="Þessar tilkynningar eru skylda fyrir stjórnendur."
+                title={t("notifications.mandatoryManagerTitle")}
+                description={t("notifications.mandatoryManagerDescription")}
                 preferences={managerMandatory}
                 onToggleNotification={toggleNotification}
                 onToggleChannel={toggleChannel}
@@ -247,8 +226,8 @@ export default function NotificationsPage() {
             )}
             {managerConfigurable.length > 0 && (
               <NotificationSection
-                title="Valfrjálsar stjórnendatilkynningar"
-                description="Valfrjálsar tilkynningar fyrir stjórnendur."
+                title={t("notifications.optionalManagerTitle")}
+                description={t("notifications.optionalManagerDescription")}
                 preferences={managerConfigurable}
                 onToggleNotification={toggleNotification}
                 onToggleChannel={toggleChannel}
@@ -261,7 +240,7 @@ export default function NotificationsPage() {
         {/* Save button */}
         <div className="border-t border-border pt-6">
           <Button onClick={save} disabled={saving}>
-            {saving ? "Vista..." : "Vista stillingar"}
+            {saving ? `${t("common.save")}...` : t("notifications.saveSettings")}
           </Button>
         </div>
       </div>
@@ -314,8 +293,31 @@ function NotificationRow({
   onToggleChannel: (type: string, channel: string) => void;
   onTimingChange: (type: string, key: string, value: unknown) => void;
 }) {
+  const t = useTranslations("notifications");
   const Icon = ICON_MAP[pref.notification_type] ?? Bell;
   const isEnabled = pref.channel_push || pref.channel_email || pref.channel_in_app;
+
+  const channelLabels: Record<string, string> = {
+    push: t("channelPush"),
+    email: t("channelEmail"),
+    in_app: t("channelInApp"),
+  };
+
+  const timingLabels: Record<number, string> = {
+    15: t("minutes15"),
+    30: t("minutes30"),
+    60: t("minutes60"),
+  };
+
+  const dayLabels: Record<string, string> = {
+    sunday: t("sunday"),
+    monday: t("monday"),
+    tuesday: t("tuesday"),
+    wednesday: t("wednesday"),
+    thursday: t("thursday"),
+    friday: t("friday"),
+    saturday: t("saturday"),
+  };
 
   return (
     <div className={`rounded-lg border border-border p-4 ${!pref.mandatory && !isEnabled ? "opacity-60" : ""}`}>
@@ -324,14 +326,14 @@ function NotificationRow({
         <div className="min-w-0 flex-1">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-x-2">
-              <p className="text-sm/6 font-medium text-foreground">{pref.label}</p>
+              <p className="text-sm/6 font-medium text-foreground">{t(`type.${pref.notification_type}.label`)}</p>
               {pref.mandatory && (
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger>
                       <Lock className="size-3.5 text-muted-foreground" />
                     </TooltipTrigger>
-                    <TooltipContent>Þessi tilkynning er nauðsynleg og ekki er hægt að slökkva á henni.</TooltipContent>
+                    <TooltipContent>{t("mandatoryTooltip")}</TooltipContent>
                   </Tooltip>
                 </TooltipProvider>
               )}
@@ -340,9 +342,9 @@ function NotificationRow({
               <Switch checked={isEnabled} onCheckedChange={() => onToggleNotification(pref.notification_type)} />
             )}
           </div>
-          <p className="text-sm/6 text-muted-foreground">{pref.description}</p>
+          <p className="text-sm/6 text-muted-foreground">{t(`type.${pref.notification_type}.description`)}</p>
 
-          {/* Channel toggles — always shown for mandatory, shown when enabled for configurable */}
+          {/* Channel toggles */}
           {(pref.mandatory || isEnabled) && (
             <div className="mt-3 flex flex-wrap items-center gap-x-5 gap-y-2">
               {pref.available_channels.map((channel) => {
@@ -361,7 +363,7 @@ function NotificationRow({
                       }}
                       disabled={disabled}
                     />
-                    {CHANNEL_LABELS[channel] ?? channel}
+                    {channelLabels[channel] ?? channel}
                   </label>
                 );
               })}
@@ -372,7 +374,7 @@ function NotificationRow({
           {pref.has_timing_config && pref.notification_type === "shift_start_reminder" && pref.timing_options && (
             <div className="mt-3">
               <label htmlFor={`timing-${pref.notification_type}`} className="text-xs text-muted-foreground">
-                Áminning hversu löngu fyrir vakt
+                {t("reminderBefore")}
               </label>
               <select
                 id={`timing-${pref.notification_type}`}
@@ -382,7 +384,7 @@ function NotificationRow({
               >
                 {(pref.timing_options.minutes_before as number[]).map((min) => (
                   <option key={min} value={min}>
-                    {TIMING_LABELS[min] ?? `${min} mín`}
+                    {timingLabels[min] ?? t("minutesFallback", { min })}
                   </option>
                 ))}
               </select>
@@ -393,7 +395,7 @@ function NotificationRow({
             <div className="mt-3 flex items-center gap-x-3">
               <div>
                 <label htmlFor={`timing-day-${pref.notification_type}`} className="text-xs text-muted-foreground">
-                  Dagur
+                  {t("day")}
                 </label>
                 <select
                   id={`timing-day-${pref.notification_type}`}
@@ -403,14 +405,14 @@ function NotificationRow({
                 >
                   {(pref.timing_options.days as string[]).map((day) => (
                     <option key={day} value={day}>
-                      {DAY_LABELS[day] ?? day}
+                      {dayLabels[day] ?? day}
                     </option>
                   ))}
                 </select>
               </div>
               <div className="w-24">
                 <label htmlFor={`timing-time-${pref.notification_type}`} className="text-xs text-muted-foreground">
-                  Tími
+                  {t("time")}
                 </label>
                 <TimeInput
                   id={`timing-time-${pref.notification_type}`}

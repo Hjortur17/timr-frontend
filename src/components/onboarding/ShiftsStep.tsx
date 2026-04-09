@@ -2,6 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
+import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
@@ -12,6 +13,7 @@ import { shiftFormSchema } from "@/types/forms";
 import { authHeaders } from "@/utils/auth";
 
 function ShiftForm({ onCreated }: { onCreated: (shift: Shift) => void }) {
+  const t = useTranslations();
   const { register, handleSubmit } = useForm<ShiftForm>({
     resolver: zodResolver(shiftFormSchema),
     defaultValues: { title: "", start_time: "", end_time: "", notes: "" },
@@ -26,15 +28,15 @@ function ShiftForm({ onCreated }: { onCreated: (shift: Shift) => void }) {
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
       <div>
         <label htmlFor="title" className="block text-base/7 font-semibold text-neutral-950">
-          Heiti vaktar
+          {t("shifts.shiftTitle")}
         </label>
         <div className="mt-2">
-          <Input id="title" type="text" placeholder="t.d. Morgunvakt" {...register("title")} />
+          <Input id="title" type="text" placeholder={t("shifts.namePlaceholder")} {...register("title")} />
         </div>
       </div>
       <div>
         <label htmlFor="start_time" className="block text-base/7 font-semibold text-neutral-950">
-          Upphafstími
+          {t("shifts.startTime")}
         </label>
         <div className="mt-2">
           <TimeInput id="start_time" placeholder="HH:MM" {...register("start_time")} />
@@ -42,7 +44,7 @@ function ShiftForm({ onCreated }: { onCreated: (shift: Shift) => void }) {
       </div>
       <div>
         <label htmlFor="end_time" className="block text-base/7 font-semibold text-neutral-950">
-          Lokatími
+          {t("shifts.endTime")}
         </label>
         <div className="mt-2">
           <TimeInput id="end_time" placeholder="HH:MM" {...register("end_time")} />
@@ -50,20 +52,21 @@ function ShiftForm({ onCreated }: { onCreated: (shift: Shift) => void }) {
       </div>
       <div>
         <label htmlFor="notes" className="block text-base/7 font-semibold text-neutral-950">
-          Athugasemdir
+          {t("onboarding.shiftComments")}
         </label>
         <div className="mt-2">
-          <Input id="notes" type="text" placeholder="Valfrjálst" {...register("notes")} />
+          <Input id="notes" type="text" placeholder={t("onboarding.optionalPlaceholder")} {...register("notes")} />
         </div>
       </div>
       <Button type="submit" size="lg" className="w-full">
-        Bæta við vakt
+        {t("shifts.addShift")}
       </Button>
     </form>
   );
 }
 
 export default function ShiftsStep({ setUser }: { user: User; setUser: (user: User) => void }) {
+  const t = useTranslations();
   const [shifts, setShifts] = useState<Shift[]>([]);
   const [formKey, setFormKey] = useState(0);
 
@@ -80,10 +83,10 @@ export default function ShiftsStep({ setUser }: { user: User; setUser: (user: Us
   return (
     <div className="flex-1">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
-        <h2 className="mt-6 text-center text-2xl/9 font-bold tracking-tight text-neutral-900">Búa til vaktir</h2>
-        <p className="mt-2 text-center text-sm/6 text-neutral-500">
-          Bættu við vöktum sem starfsfólk verður úthlutað á síðar.
-        </p>
+        <h2 className="mt-6 text-center text-2xl/9 font-bold tracking-tight text-neutral-900">
+          {t("onboarding.createShifts")}
+        </h2>
+        <p className="mt-2 text-center text-sm/6 text-neutral-500">{t("onboarding.createShiftsDescription")}</p>
       </div>
 
       <div className="sm:mx-auto sm:w-full sm:max-w-[480px]">
@@ -107,7 +110,7 @@ export default function ShiftsStep({ setUser }: { user: User; setUser: (user: Us
 
           <div className="mt-8">
             <Button type="button" size="lg" className="w-full" onClick={onContinue}>
-              Halda áfram
+              {t("common.continue")}
             </Button>
           </div>
         </div>

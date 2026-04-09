@@ -2,6 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
+import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
@@ -11,6 +12,7 @@ import { employeeFormSchema } from "@/types/forms";
 import { authHeaders } from "@/utils/auth";
 
 function CreateEmployeeForm({ onCreated }: { onCreated: (employee: Employee) => void }) {
+  const t = useTranslations();
   const { register, handleSubmit } = useForm<EmployeeFormData>({
     resolver: zodResolver(employeeFormSchema),
     defaultValues: { name: "", email: "", phone: "" },
@@ -27,15 +29,15 @@ function CreateEmployeeForm({ onCreated }: { onCreated: (employee: Employee) => 
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
       <div>
         <label htmlFor="name" className="block text-base/7 font-semibold text-neutral-950">
-          Nafn
+          {t("common.name")}
         </label>
         <div className="mt-2">
-          <Input id="name" type="text" placeholder="Fullt nafn" {...register("name")} />
+          <Input id="name" type="text" placeholder={t("employees.fullNamePlaceholder")} {...register("name")} />
         </div>
       </div>
       <div>
         <label htmlFor="email" className="block text-base/7 font-semibold text-neutral-950">
-          Netfang (valfrjálst)
+          {t("employees.emailOptional")}
         </label>
         <div className="mt-2">
           <Input id="email" type="email" placeholder="netfang@timr.is" {...register("email")} />
@@ -43,20 +45,21 @@ function CreateEmployeeForm({ onCreated }: { onCreated: (employee: Employee) => 
       </div>
       <div>
         <label htmlFor="phone" className="block text-base/7 font-semibold text-neutral-950">
-          Sími (valfrjálst)
+          {t("employees.phoneOptional")}
         </label>
         <div className="mt-2">
           <Input id="phone" type="tel" placeholder="000 0000" {...register("phone")} />
         </div>
       </div>
       <Button type="submit" size="lg" className="w-full">
-        Bæta við starfsmanni
+        {t("employees.addEmployee")}
       </Button>
     </form>
   );
 }
 
 export default function StaffStep({ setUser }: { user: User; setUser: (user: User) => void }) {
+  const t = useTranslations();
   const [employees, setEmployees] = useState<Employee[]>([]);
   const [formKey, setFormKey] = useState(0);
 
@@ -73,8 +76,10 @@ export default function StaffStep({ setUser }: { user: User; setUser: (user: Use
   return (
     <div className="flex-1">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
-        <h2 className="mt-6 text-center text-2xl/9 font-bold tracking-tight text-neutral-900">Bæta við starfsfólki</h2>
-        <p className="mt-2 text-center text-sm/6 text-neutral-500">Skráðu starfsfólk sem mun vinna í fyrirtækinu.</p>
+        <h2 className="mt-6 text-center text-2xl/9 font-bold tracking-tight text-neutral-900">
+          {t("onboarding.addStaff")}
+        </h2>
+        <p className="mt-2 text-center text-sm/6 text-neutral-500">{t("onboarding.addStaffDescription")}</p>
       </div>
 
       <div className="sm:mx-auto sm:w-full sm:max-w-[480px]">
@@ -96,7 +101,7 @@ export default function StaffStep({ setUser }: { user: User; setUser: (user: Use
 
           <div className="mt-8">
             <Button type="button" size="lg" className="w-full" onClick={onContinue}>
-              Halda áfram
+              {t("common.continue")}
             </Button>
           </div>
         </div>
