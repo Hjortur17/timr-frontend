@@ -1,7 +1,6 @@
 "use client";
 
 import { Globe } from "lucide-react";
-import { useRouter } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import * as React from "react";
 import {
@@ -18,19 +17,28 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
+import { useUser } from "@/context/UserContext";
 import { type Locale, localeNames, locales } from "@/i18n/config";
+import { authHeaders } from "@/utils/auth";
 
 export function NavSecondary({ ...props }: React.ComponentPropsWithoutRef<typeof SidebarGroup>) {
   const locale = useLocale();
   const t = useTranslations("language");
-  const router = useRouter();
+  const { setUser } = useUser();
 
   const switchLocale = async (newLocale: string) => {
-    await fetch("/api/locale", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
+    const res = await fetch("/api/auth/user", {
+      method: "PATCH",
+      headers: { ...authHeaders(), "Content-Type": "application/json" },
       body: JSON.stringify({ locale: newLocale }),
     });
+
+    if (res.ok) {
+      const json = await res.json();
+      setUser(json.data);
+    }
+
+    document.cookie = `NEXT_LOCALE=${newLocale};path=/;max-age=${60 * 60 * 24 * 365};samesite=lax`;
     window.location.reload();
   };
 
