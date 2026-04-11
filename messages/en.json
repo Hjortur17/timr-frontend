@@ -394,7 +394,85 @@
   },
   "landing": {
     "login": "Sign In",
-    "register": "Sign Up"
+    "register": "Sign Up",
+    "nav": {
+      "features": "Features",
+      "pricing": "Pricing",
+      "faq": "FAQ"
+    },
+    "heroTitle": "Secure and convenient shift management",
+    "heroDescription": "Plan shifts, track attendance and give your staff an overview of their own working hours — all in one place. Timr is designed for companies that want to simplify daily tasks and save time.",
+    "startNow": "Get started",
+    "learnMore": "Learn more",
+    "ctaTitle": "Ready to simplify shift scheduling?",
+    "ctaDescription": "Try Timr free for 30 days — no commitment and no credit card required.",
+    "ctaButton": "Start free today",
+    "pricingTitle": "Pricing",
+    "pricingHeading": "Find the right fit",
+    "pricingDescription": "Start today with a 30-day free trial. No commitment.",
+    "monthly": "Monthly",
+    "annually": "Annually",
+    "paymentFrequency": "Payment frequency",
+    "perMonth": "/mo",
+    "mostPopular": "Most popular",
+    "faqTitle": "Frequently asked questions",
+    "features": {
+      "schedules": "Shift schedules",
+      "schedulesDescription": "Create shift schedules far in advance. Use predefined patterns like 2-2-3 or 5-5-4. Or create your own.",
+      "multiLocation": "Multiple locations",
+      "multiLocationDescription": "Running more than one location? You can manage multiple locations and departments in one place.",
+      "digital": "Digital solution",
+      "digitalDescription": "The system is accessible both in browser and app. Available on both iOS and Android.",
+      "alerts": "Alerts",
+      "alertsDescription": "The system notifies employees of upcoming shifts and when a new schedule has been published. It also alerts if the 11-hour rest period is violated.",
+      "laborCost": "Labor cost",
+      "laborCostDescription": "Track labor costs for your workplace. View regular pay, overtime, and holiday pay.",
+      "icelandicLaw": "Icelandic law",
+      "icelandicLawDescription": "The system is designed for Icelandic workplaces, taking into account Icelandic collective agreements and laws."
+    },
+    "tiers": {
+      "nettur": "Tidy",
+      "nettorDescription": "For small businesses setting up their shift scheduling.",
+      "thettur": "Compact",
+      "thettorDescription": "For growing businesses that need more managers and better oversight.",
+      "allurPakkinn": "Full package",
+      "allurPakkinnDescription": "For larger operations with multiple locations and complex needs.",
+      "nettorFeatures": [
+        "Up to 15 employees",
+        "Shift planning & publishing",
+        "Employee app (iOS & Android)",
+        "Calendar sync",
+        "Excel export"
+      ],
+      "thettorFeatures": [
+        "Up to 40 employees",
+        "Multiple managers",
+        "Shift swaps & open shifts",
+        "Payroll export",
+        "Payroll system sync"
+      ],
+      "allurPakkinnFeatures": [
+        "Up to 100 employees",
+        "Multiple locations",
+        "Payroll export",
+        "Detailed reporting",
+        "Priority support"
+      ]
+    },
+    "faqs": {
+      "freeTrial": "Can I try the system for free?",
+      "freeTrialAnswer": "Yes, you can try Timr for 30 days without providing credit card information. No commitment and you can cancel at any time.",
+      "employeeLimit": "How many employees can I register?",
+      "employeeLimitAnswer": "It depends on the plan you choose. Tidy supports up to 15 employees, Compact up to 40, and Full package up to 100. Contact us if you need more.",
+      "employeeApp": "Is there an app for employees?",
+      "employeeAppAnswer": "Yes, the employee app is available for both iOS and Android. Employees can view their shifts, clock in and out, and receive notifications about schedule changes.",
+      "icelandicAgreements": "Does the system account for Icelandic collective agreements?",
+      "icelandicAgreementsAnswer": "Yes, Timr is specifically designed for Icelandic workplaces. The system automatically calculates regular pay, overtime, and holiday pay in accordance with Icelandic collective agreements.",
+      "changePlan": "Can I change plans later?",
+      "changePlanAnswer": "Yes, you can upgrade or downgrade at any time. The change takes effect immediately and the price is prorated based on the remaining billing period.",
+      "gps": "How does GPS clock-in work?",
+      "gpsAnswer": "When an employee clocks in, the system verifies they are within a defined GPS radius of the workplace. The manager sets the location and allowed radius in settings. If the employee is outside the radius, the clock-in is rejected."
+    }
   },
   "actions": {
     "edit": "Edit",

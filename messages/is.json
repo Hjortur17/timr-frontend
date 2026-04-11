@@ -385,7 +385,86 @@
   },
   "landing": {
     "login": "Innskrá",
-    "register": "Nýskrá"
+    "register": "Nýskrá",
+    "nav": {
+      "features": "Eiginleikar",
+      "pricing": "Verðskrá",
+      "faq": "Algengar spurningar"
+    },
+    "heroTitle": "Öruggt og þægilegt vaktakerfi",
+    "heroDescription": "Skipuleggðu vaktir, fylgstu með mætingu og gefðu starfsfólki þínu yfirsýn yfir eigin vinnutíma — allt á einum stað. Timr er hannað fyrir fyrirtæki sem vilja einfalda dagleg verkefni og spara tíma.",
+    "startNow": "Byrja núna",
+    "learnMore": "Skoða meira",
+    "ctaTitle": "Tilbúin/n að einfalda vaktaskipulagið?",
+    "ctaDescription": "Prófaðu Timr í 30 daga frítt — engin skuldbinding og engar greiðslukortaupplýsingar.",
+    "ctaButton": "Byrja frítt í dag",
+    "pricingTitle": "Verðskrá",
+    "pricingHeading": "Finndu það sem hentar þér",
+    "pricingDescription": "Byrjaðu í dag með 30 daga prufu tímabili. Engin skuldbinding.",
+    "monthly": "Mánaðarlegt",
+    "annually": "Árlegt",
+    "paymentFrequency": "Greiðslutíðni",
+    "perMonth": "/mán",
+    "mostPopular": "Vinsælastur",
+    "faqTitle": "Algengar spurningar",
+    "features": {
+      "schedules": "Vaktarplön",
+      "schedulesDescription": "Búði til vaktarplön langt fram í tímann. Notastu við fyrirfram skilgreindar reglur eins og 2-2-3 eða 5-5-4. Eða gerðu þitt eigið.",
+      "multiLocation": "Margir sölustaðir",
+      "multiLocationDescription": "Ert þú að reka fleiri en einn stað? Það er hægt að stjórna mörgum stöðum og deildum á sama stað.",
+      "digital": "Stafræn lausn",
+      "digitalDescription": "Kerfið er aðgengilegt bæði í vafra eða í appi. Aðgengilegt á bæði IOS eða Android.",
+      "alerts": "Viðvaranir",
+      "alertsDescription": "Kerfið lætur starfsmenn vita af næstu vakt og þegar nýtt vaktarplan hefur verið birt. Einnig lætur kerfið vita ef 11 tíma hvíldartími er brotinn.",
+      "laborCost": "Launkostnaður",
+      "laborCostDescription": "Fylgstu með Launkostnaðanum fyrir þinn vinnustað. Hægt að sjá dagvinnu-, yfirvinnu- og stórhátíðarkaup.",
+      "icelandicLaw": "Íslensk lög",
+      "icelandicLawDescription": "Kerfið er hannað fyrir íslenska vinnustaði, tekið er tillits til íslenska kjarasamninga og laga"
+    },
+    "tiers": {
+      "nettur": "Nettur",
+      "nettorDescription": "Fyrir lítið fyrirtæki sem er að koma sér upp skipulagi á vaktaskipulagi.",
+      "thettur": "Þéttur",
+      "thettorDescription": "Fyrir fyrirtæki í vexti sem þarfnast fleiri stjórnenda og betri yfirsýnar.",
+      "allurPakkinn": "Allur pakkinn",
+      "allurPakkinnDescription": "Fyrir stærri rekstur með margar starfsstöðvar og flóknari þarfir.",
+      "nettorFeatures": [
+        "Allt að 15 starfsmenn",
+        "Vaktaáætlun & birting vakta",
+        "Starfsmannaapp (iOS & Android)",
+        "Samstilling við tækjadagbók",
+        "Excel útflutningur"
+      ],
+      "thettorFeatures": [
+        "Allt að 40 starfsmenn",
+        "Margir stjórnendur",
+        "Vaktaskipti & opnar vaktir",
+        "Launaútflutningur",
+        "Samstilling við launakerfi",
+        "Orlofskerif"
+      ],
+      "allurPakkinnFeatures": [
+        "Allt að 100 starfsmenn",
+        "Margar starfsstöðvar",
+        "Launaútflutningur",
+        "Ítarleg skýrslugerð",
+        "Forgangsstuðningur"
+      ]
+    },
+    "faqs": {
+      "freeTrial": "Er hægt að prófa kerfið frítt?",
+      "freeTrialAnswer": "Já, þú getur prófað Timr í 30 daga án þess að gefa upp greiðslukortaupplýsingar. Engin skuldbinding og hægt að hætta hvenær sem er.",
+      "employeeLimit": "Hversu marga starfsmenn get ég skráð?",
+      "employeeLimitAnswer": "Það fer eftir pakkanum sem þú velur. Nettur pakki styður allt að 15 starfsmenn, Þéttur allt að 40, og Allur pakkinn allt að 100. Hafðu samband ef þú þarft fleiri.",
+      "employeeApp": "Er til app fyrir starfsmenn?",
+      "employeeAppAnswer": "Já, starfsmannaappið er í boði bæði fyrir iOS og Android. Starfsmenn geta séð vaktir sínar, skráð sig inn og út og fengið tilkynningar um breytingar á vaktarplani.",
+      "icelandicAgreements": "Tekur kerfið tillit til íslenskra kjarasamninga?",
+      "icelandicAgreementsAnswer": "Já, Timr er hannað sérstaklega fyrir íslenska vinnustaði. Kerfið reiknar sjálfkrafa dagvinnu, yfirvinnu og stórhátíðarkaup í samræmi við íslenska kjarasamninga.",
+      "changePlan": "Get ég skipt um pakka síðar?",
+      "changePlanAnswer": "Já, þú getur uppfært eða lækkað pakka hvenær sem er. Breytingin tekur gildi strax og verðið er hlutfallslegt miðað við það sem eftir er af greiðslutímabilinu.",
+      "gps": "Hvernig virkar GPS innstimplun?",
+      "gpsAnswer": "Þegar starfsmaður stempur sig inn staðfestir kerfið að hann sé innan ákveðins GPS-sviðs frá vinnustaðnum. Stjórnandi stillir staðsetningu og leyfilegt svið í stillingum. Ef starfsmaður er utan sviðs er innstimplunin hafnað."
+    }
   },
   "actions": {
     "edit": "Breyta",
