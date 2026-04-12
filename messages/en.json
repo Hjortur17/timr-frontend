@@ -472,6 +472,38 @@
       "changePlanAnswer": "Yes, you can upgrade or downgrade at any time. The change takes effect immediately and the price is prorated based on the remaining billing period.",
       "gps": "How does GPS clock-in work?",
       "gpsAnswer": "When an employee clocks in, the system verifies they are within a defined GPS radius of the workplace. The manager sets the location and allowed radius in settings. If the employee is outside the radius, the clock-in is rejected."
+    },
+    "detailedFeaturesTitle": "What can Timr do for you?",
+    "detailedFeaturesDescription": "Timr is designed to simplify shift scheduling and time tracking — for both managers and employees.",
+    "forManagers": "For managers",
+    "forEmployees": "For employees",
+    "managerFeatures": {
+      "shiftPlans": "Shift plans",
+      "shiftPlansDescription": "Flexible shift patterns like 2-2-3, 5-5-4 or custom. Multiple plans running simultaneously.",
+      "timeClock": "Time clock & time tracking",
+      "timeClockDescription": "Overview of all employee time entries. Edit entries or add them manually.",
+      "vacationSystem": "Vacation & time-off system",
+      "vacationSystemDescription": "View time-off requests and approve or reject. Shift plans automatically account for days off.",
+      "gpsVerification": "GPS verification",
+      "gpsVerificationDescription": "Ensure employees clock in at the right location with geofencing.",
+      "notifications": "Notifications & alerts",
+      "notificationsDescription": "Shift reminders, overtime alerts, missed clock-outs and more.",
+      "dataExport": "Data export",
+      "dataExportDescription": "Export time entries and payroll data to Excel.",
+      "shiftPublishing": "Shift publishing",
+      "shiftPublishingDescription": "Create shifts as drafts and publish when ready. Employees only see published shifts."
+    },
+    "employeeFeatures": {
+      "shiftOverview": "Shift overview",
+      "shiftOverviewDescription": "See all your shifts and a countdown to your next one.",
+      "punchClock": "Punch clock",
+      "punchClockDescription": "Clock in and out with ease.",
+      "calendarSync": "Calendar sync",
+      "calendarSyncDescription": "Connect your shifts to Google Calendar or Apple Calendar.",
+      "employeeNotifications": "Notifications",
+      "employeeNotificationsDescription": "Get push and email notifications for schedule changes and shift reminders.",
+      "vacationOverview": "Time-off overview",
+      "vacationOverviewDescription": "Overview of your days off and request status."
     }
   },
   "actions": {

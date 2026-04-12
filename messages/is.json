@@ -409,14 +409,14 @@
     "faqTitle": "Algengar spurningar",
     "features": {
       "schedules": "Vaktarplön",
-      "schedulesDescription": "Búði til vaktarplön langt fram í tímann. Notastu við fyrirfram skilgreindar reglur eins og 2-2-3 eða 5-5-4. Eða gerðu þitt eigið.",
+      "schedulesDescription": "Búðu til vaktarplön langt fram í tímann. Notastu við fyrirfram skilgreindar reglur eins og 2-2-3 eða 5-5-4. Eða gerðu þitt eigið.",
       "multiLocation": "Margir sölustaðir",
       "multiLocationDescription": "Ert þú að reka fleiri en einn stað? Það er hægt að stjórna mörgum stöðum og deildum á sama stað.",
       "digital": "Stafræn lausn",
       "digitalDescription": "Kerfið er aðgengilegt bæði í vafra eða í appi. Aðgengilegt á bæði IOS eða Android.",
       "alerts": "Viðvaranir",
       "alertsDescription": "Kerfið lætur starfsmenn vita af næstu vakt og þegar nýtt vaktarplan hefur verið birt. Einnig lætur kerfið vita ef 11 tíma hvíldartími er brotinn.",
-      "laborCost": "Launkostnaður",
+      "laborCost": "Launakostnaður",
       "laborCostDescription": "Fylgstu með Launkostnaðanum fyrir þinn vinnustað. Hægt að sjá dagvinnu-, yfirvinnu- og stórhátíðarkaup.",
       "icelandicLaw": "Íslensk lög",
       "icelandicLawDescription": "Kerfið er hannað fyrir íslenska vinnustaði, tekið er tillits til íslenska kjarasamninga og laga"
@@ -432,16 +432,15 @@
         "Allt að 15 starfsmenn",
         "Vaktaáætlun & birting vakta",
         "Starfsmannaapp (iOS & Android)",
-        "Samstilling við tækjadagbók",
+        "Margir stjórendur",
         "Excel útflutningur"
       ],
       "thettorFeatures": [
         "Allt að 40 starfsmenn",
-        "Margir stjórnendur",
         "Vaktaskipti & opnar vaktir",
         "Launaútflutningur",
         "Samstilling við launakerfi",
-        "Orlofskerif"
+        "Orlofskerfi"
       ],
       "allurPakkinnFeatures": [
         "Allt að 100 starfsmenn",
@@ -464,6 +463,39 @@
       "changePlanAnswer": "Já, þú getur uppfært eða lækkað pakka hvenær sem er. Breytingin tekur gildi strax og verðið er hlutfallslegt miðað við það sem eftir er af greiðslutímabilinu.",
       "gps": "Hvernig virkar GPS innstimplun?",
       "gpsAnswer": "Þegar starfsmaður stempur sig inn staðfestir kerfið að hann sé innan ákveðins GPS-sviðs frá vinnustaðnum. Stjórnandi stillir staðsetningu og leyfilegt svið í stillingum. Ef starfsmaður er utan sviðs er innstimplunin hafnað."
+    },
+    "detailedFeaturesPreTitle": "Eiginleikar",
+    "detailedFeaturesTitle": "Afhverju Timr?",
+    "detailedFeaturesDescription": "Timr er hannað til að einfalda vaktaskipulag og vinnutímaskráningu, bæði fyrir stjórnendur og starfsfólk.",
+    "forManagers": "Fyrir stjórnendur",
+    "forEmployees": "Fyrir starfsfólk",
+    "managerFeatures": {
+      "shiftPlans": "Vaktarplön",
+      "shiftPlansDescription": "Sveigjanleg vaktarsnið eins og 2-2-3, 5-5-4 eða sérsniðið. Mörg plön í gangi samtímis.",
+      "timeClock": "Stimpilklukka og tímaskráning",
+      "timeClockDescription": "Yfirsýn yfir alla tímaskráningu starfsfólks. Breyta færslum eða bæta við handvirkt.",
+      "vacationSystem": "Orlofs- og frídagakerfi",
+      "vacationSystemDescription": "Sjá frídagabeiðnir og samþykkja eða hafna. Vaktarplanið tekur sjálfkrafa tillit til fríðaga.",
+      "gpsVerification": "GPS staðfesting",
+      "gpsVerificationDescription": "Tryggðu að starfsfólk stimplast inn á réttum stað með geofencing.",
+      "notifications": "Tilkynningar og viðvaranir",
+      "notificationsDescription": "Minningar á vaktir, yfirvinnuviðvaranir, gleymd stimplun og fleira.",
+      "dataExport": "Útflutningur gagna",
+      "dataExportDescription": "Flytja út tímaskráningar og launagögn í Excel.",
+      "shiftPublishing": "Vaktabirting",
+      "shiftPublishingDescription": "Búðu til vaktir sem drög og birtu þegar tilbúið. Starfsfólk sér aðeins birtar vaktir."
+    },
+    "employeeFeatures": {
+      "shiftOverview": "Yfirlit yfir vaktir",
+      "shiftOverviewDescription": "Sjáðu allar vaktir þínar og niðurtalningu í næstu vakt.",
+      "punchClock": "Stimpilklukka",
+      "punchClockDescription": "Stimplastu inn og út á einfaldan hátt.",
+      "calendarSync": "Dagatal samstilling",
+      "calendarSyncDescription": "Tengdu vaktir þínar við Google Calendar eða Apple Calendar.",
+      "employeeNotifications": "Tilkynningar",
+      "employeeNotificationsDescription": "Fáðu push- og tölvupósttilkynningar um vaktabreytingar og minningu á vakt.",
+      "vacationOverview": "Frídagayfirlit",
+      "vacationOverviewDescription": "Yfirsýn yfir frídaga þína og stöðu beiðna."
     }
   },
   "actions": {

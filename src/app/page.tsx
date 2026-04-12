@@ -1,12 +1,23 @@
+import type { LucideIcon } from "lucide-react";
 import {
+  Bell,
+  BellRing,
   Building,
+  CalendarCheck,
+  CalendarDays,
   CalendarSync,
   CheckCircle2,
+  Clock,
   ClockAlert,
+  Download,
+  Eye,
   HandCoins,
   Lock,
+  MapPin,
   MonitorSmartphone,
+  Palmtree,
   Scale,
+  Timer,
 } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
@@ -15,10 +26,30 @@ import AnimateOnScroll from "@/components/animate-on-scroll";
 import Footer from "@/components/footer";
 import Navigation from "@/components/navigation";
 import { Button } from "@/components/ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { cn } from "@/utils/classname";
 
 const featureIcons = [CalendarSync, Building, MonitorSmartphone, ClockAlert, HandCoins, Scale];
 
 const featureKeys = ["schedules", "multiLocation", "digital", "alerts", "laborCost", "icelandicLaw"] as const;
+
+const managerFeatureItems: { key: string; icon: LucideIcon }[] = [
+  { key: "shiftPlans", icon: CalendarDays },
+  { key: "timeClock", icon: Clock },
+  { key: "vacationSystem", icon: Palmtree },
+  { key: "gpsVerification", icon: MapPin },
+  { key: "notifications", icon: Bell },
+  { key: "dataExport", icon: Download },
+  { key: "shiftPublishing", icon: Eye },
+];
+
+const employeeFeatureItems: { key: string; icon: LucideIcon }[] = [
+  { key: "shiftOverview", icon: CalendarCheck },
+  { key: "punchClock", icon: Timer },
+  { key: "calendarSync", icon: CalendarSync },
+  { key: "employeeNotifications", icon: BellRing },
+  { key: "vacationOverview", icon: Palmtree },
+];
 
 const tierConfigs = [
   {
@@ -154,7 +185,9 @@ export default async function Home() {
         </div>
         <div className="relative overflow-hidden pt-16 lg:pt-24" id="features">
           <div className="mx-auto max-w-7xl px-6 lg:px-8 min-h-[500px]">
-            <BrowserMockup />
+            <AnimateOnScroll className="fade-in slide-in-from-bottom-8 duration-700 delay-300">
+              <BrowserMockup />
+            </AnimateOnScroll>
             <div aria-hidden="true" className="relative">
               <div className="absolute -inset-x-20 bottom-0 bg-linear-to-t from-background pt-[7%]" />
             </div>
@@ -165,13 +198,19 @@ export default async function Home() {
             {featureKeys.map((key, index) => {
               const Icon = featureIcons[index];
               return (
-                <div key={key} className="relative pl-9">
-                  <dt className="inline font-semibold text-foreground">
-                    <Icon aria-hidden="true" className="absolute top-1 left-1 size-5 text-primary" />
-                    {t(`features.${key}`)}
-                  </dt>{" "}
-                  <dd className="inline">{t(`features.${key}Description`)}</dd>
-                </div>
+                <AnimateOnScroll
+                  key={key}
+                  className="fade-in slide-in-from-bottom-4 duration-500"
+                  delay={`delay-${index * 100}`}
+                >
+                  <div className="relative pl-9">
+                    <dt className="inline font-semibold text-foreground">
+                      <Icon aria-hidden="true" className="absolute top-1 left-1 size-5 text-primary" />
+                      {t(`features.${key}`)}
+                    </dt>{" "}
+                    <dd className="inline">{t(`features.${key}Description`)}</dd>
+                  </div>
+                </AnimateOnScroll>
               );
             })}
           </dl>
@@ -180,52 +219,113 @@ export default async function Home() {
 
       <div className="bg-background">
         <div className="mx-auto max-w-[1880px] py-24 sm:px-6 sm:py-32 lg:px-8">
-          <div className="relative isolate overflow-hidden bg-foreground-light text-[#2e5046] px-6 py-24 text-left sm:rounded-3xl sm:px-16">
-            <div className="flex mx-auto max-w-6xl px-6 lg:px-8 flex-col items-start justify-start">
-              <h2 className="text-4xl font-semibold tracking-tight text-balance sm:text-5xl">{t("ctaTitle")}</h2>
-              <figure className="relative isolate pt-6">
-                <blockquote className="text-lg/8 text-pretty space-y-4">
-                  <p>
-                    Ástæðan afhverju ég lagði af stað í þess vegferð að búa til mitt eigið vaktaskipulagskerfi er
-                    einfaldlega vegna þess að ég hef verið bæði verið starfsmaður og yfirmaður sem unnið hef með Excel
-                    sem vaktarskipulag. Þegar ég fór að skoða önnur kerfi sem gætu mögulega leyst Excel af hólmi fann ég
-                    ekki rétta forritið. Annað hvort voru þau of dýr, buðu ekki upp á það sem okkur vantaði eða
-                    einfaldalega virkuðu ekki.
-                  </p>
-                  <p>
-                    Þess vegna bjó ég til Timr. Forrit með einfalda verðskrá, eiginleika sem nýtist öllum fyrirtækjum
-                    (bæði stórrum og smáum) og einfalt viðmót bæði fyrir stjórnendur sem og starfsfólk.
-                  </p>
-                  <p>
-                    <strong className="font-semibold">Sem stjórnandi</strong>, getur þú búið til ykkar eigið vaktarplan,
-                    hvort sem það er 2-2-3, 5-5-4 eða það sem hentar ykkur. Bætt því starfsfóki sem tilheyra því
-                    vaktarplani, hægt er að hafa mörg mismunnadi vaktarplön í gangi á sama tíma. Haft yfirsýn yfir
-                    orlofsdaga starfsmanna með því að nota orlofskerfið, þá er hægt að sjá óskir um frí og þá
-                    samþykkja/hafna frídögum. Þá þegar kerfið býr til vaktarplan að þá er tekið tillit til starfsfólks
-                    sem er í fríi og getur ekki unnið þá daga.
-                  </p>
-                  <p>
-                    <strong className="font-semibold">Sem starfsmaður</strong>, hefur þú aðgang að starfsmanna appi sem
-                    veitir þér yfirsýn á vöktunum þínum, stimpilklukku, áætluðum launum og yfirlit um frídaga.
-                  </p>
-                </blockquote>
-                <figcaption className="mt-8 text-right">
-                  <div className="font-semibold before:content-['—'] before:mr-2">Hjörtur Freyr</div>
-                </figcaption>
-              </figure>
+          <AnimateOnScroll className="fade-in slide-in-from-bottom-6 duration-700">
+            <div className="relative isolate overflow-hidden bg-foreground-light text-[#2e5046] px-6 py-24 text-left sm:rounded-3xl sm:px-16">
+              <div className="flex mx-auto max-w-6xl px-6 lg:px-8 flex-col items-start justify-start">
+                <h2 className="text-4xl font-semibold tracking-tight text-balance sm:text-5xl">{t("ctaTitle")}</h2>
+                <figure className="relative isolate pt-6">
+                  <blockquote className="text-lg/8 text-pretty space-y-4">
+                    <p>
+                      Ástæðan af hverju ég lagði af stað í þessa vegferð er einföld, ég hef bæði verið starfsmaður og
+                      yfirmaður sem hef unnið með Excel sem vaktaskipulag. Þegar ég fór að skoða önnur kerfi sem gætu
+                      leyst Excel af hólmi fann ég ekki rétta lausnina. Annað hvort voru sambærileg kerfi of dýr, buðu
+                      ekki upp á það sem okkur vantaði eða einfaldlega virkuðu ekki.
+                    </p>
+                    <p>
+                      Þess vegna bjó ég til Timr. Forrit með einfalda verðskrá, eiginleika sem nýtast öllum fyrirtækjum,
+                      bæði stórum og smáum, og einfalt viðmót fyrir stjórnendur sem og starfsfólk.
+                    </p>
+                  </blockquote>
+                  <figcaption className="mt-8 text-right">
+                    <div className="font-semibold before:content-['—'] before:mr-2">Hjörtur Freyr</div>
+                  </figcaption>
+                </figure>
+              </div>
             </div>
-          </div>
+          </AnimateOnScroll>
         </div>
       </div>
+
+      <section className="bg-background py-24 sm:py-32">
+        <div className="mx-auto max-w-8xl px-6 lg:px-8">
+          <AnimateOnScroll className="fade-in slide-in-from-bottom-4 duration-500">
+            <div className="mx-auto max-w-4xl sm:text-center">
+              <p className="text-base/7 font-semibold text-primary">{t("detailedFeaturesPreTitle")}</p>
+              <h2 className="mt-2 text-4xl font-semibold tracking-tight text-pretty text-foreground sm:text-5xl sm:text-balance">
+                {t("detailedFeaturesTitle")}
+              </h2>
+              <p className="mt-6 text-lg/8 text-muted-foreground">{t("detailedFeaturesDescription")}</p>
+            </div>
+          </AnimateOnScroll>
+          <div className="mx-auto mt-16 max-w-4xl">
+            <Tabs defaultValue={0}>
+              <TabsList className="mx-auto w-full max-w-md">
+                <TabsTrigger value={0} className="flex-1">
+                  {t("forManagers")}
+                </TabsTrigger>
+                <TabsTrigger value={1} className="flex-1">
+                  {t("forEmployees")}
+                </TabsTrigger>
+              </TabsList>
+              <TabsContent value={0} className="mt-10">
+                <dl className="grid grid-cols-1 gap-x-8 gap-y-10 sm:grid-cols-2">
+                  {managerFeatureItems.map(({ key, icon: Icon }, index) => (
+                    <AnimateOnScroll
+                      key={key}
+                      className="fade-in slide-in-from-bottom-4 duration-500"
+                      delay={`delay-${index * 100}`}
+                    >
+                      <div className="relative pl-12">
+                        <dt className="text-base font-semibold text-foreground">
+                          <div className="absolute top-0 left-0 flex size-9 items-center justify-center rounded-lg bg-primary">
+                            <Icon aria-hidden="true" className="size-5 text-primary-foreground" />
+                          </div>
+                          {t(`managerFeatures.${key}`)}
+                        </dt>
+                        <dd className="mt-2 text-base/7 text-muted-foreground">
+                          {t(`managerFeatures.${key}Description`)}
+                        </dd>
+                      </div>
+                    </AnimateOnScroll>
+                  ))}
+                </dl>
+              </TabsContent>
+              <TabsContent value={1} className="mt-10">
+                <dl className="grid grid-cols-1 gap-x-8 gap-y-10 sm:grid-cols-2">
+                  {employeeFeatureItems.map(({ key, icon: Icon }, index) => (
+                    <AnimateOnScroll
+                      key={key}
+                      className="fade-in slide-in-from-bottom-4 duration-500"
+                      delay={`delay-${index * 100}`}
+                    >
+                      <div className="relative pl-12">
+                        <dt className="text-base font-semibold text-foreground">
+                          <div className="absolute top-0 left-0 flex size-9 items-center justify-center rounded-lg bg-primary">
+                            <Icon aria-hidden="true" className="size-5 text-primary-foreground" />
+                          </div>
+                          {t(`employeeFeatures.${key}`)}
+                        </dt>
+                        <dd className="mt-2 text-base/7 text-muted-foreground">
+                          {t(`employeeFeatures.${key}Description`)}
+                        </dd>
+                      </div>
+                    </AnimateOnScroll>
+                  ))}
+                </dl>
+              </TabsContent>
+            </Tabs>
+          </div>
+        </div>
+      </section>
 
       <section className="bg-background py-24 sm:py-32" id="pricing">
         <div className="mx-auto max-w-8xl px-6 lg:px-8">
           <AnimateOnScroll className="fade-in slide-in-from-bottom-4 duration-500">
             <div className="mx-auto max-w-4xl sm:text-center">
-              <h2 className="text-base/7 font-semibold text-primary">{t("pricingTitle")}</h2>
-              <p className="mt-2 text-4xl font-semibold tracking-tight text-pretty text-foreground sm:text-5xl sm:text-balance">
+              <p className="text-base/7 font-semibold text-primary">{t("pricingTitle")}</p>
+              <h2 className="mt-2 text-4xl font-semibold tracking-tight text-pretty text-foreground sm:text-5xl sm:text-balance">
                 {t("pricingHeading")}
-              </p>
+              </h2>
             </div>
             <p className="mx-auto mt-6 max-w-2xl text-lg font-medium text-pretty text-muted-foreground sm:text-center sm:text-xl/8">
               {t("pricingDescription")}
@@ -316,15 +416,23 @@ export default async function Home() {
       </section>
 
       <div className="mx-auto max-w-2xl px-6 pb-8 sm:pt-12 sm:pb-24 lg:max-w-8xl lg:px-8 lg:pb-32" id="faq">
-        <h2 className="text-4xl font-semibold tracking-tight text-foreground sm:text-5xl">{t("faqTitle")}</h2>
+        <AnimateOnScroll className="fade-in slide-in-from-bottom-4 duration-500">
+          <h2 className="text-4xl font-semibold tracking-tight text-foreground sm:text-5xl">{t("faqTitle")}</h2>
+        </AnimateOnScroll>
         <dl className="mt-20 divide-y divide-border">
-          {faqKeys.map((faq) => (
-            <div key={faq.q} className="py-8 first:pt-0 last:pb-0 lg:grid lg:grid-cols-12 lg:gap-8">
-              <dt className="text-base/7 font-semibold text-foreground lg:col-span-5">{t(`faqs.${faq.q}`)}</dt>
-              <dd className="mt-4 lg:col-span-7 lg:mt-0">
-                <p className="text-base/7 text-muted-foreground">{t(`faqs.${faq.a}`)}</p>
-              </dd>
-            </div>
+          {faqKeys.map((faq, index) => (
+            <AnimateOnScroll
+              key={faq.q}
+              className="fade-in slide-in-from-bottom-3 duration-500"
+              delay={`delay-${index * 100}`}
+            >
+              <div className={cn("py-8 lg:grid lg:grid-cols-12 lg:gap-8", index === 0 && "pt-0", index === faqKeys.length - 1 && "pb-0")}>
+                <dt className="text-base/7 font-semibold text-foreground lg:col-span-5">{t(`faqs.${faq.q}`)}</dt>
+                <dd className="mt-4 lg:col-span-7 lg:mt-0">
+                  <p className="text-base/7 text-muted-foreground">{t(`faqs.${faq.a}`)}</p>
+                </dd>
+              </div>
+            </AnimateOnScroll>
           ))}
         </dl>
       </div>

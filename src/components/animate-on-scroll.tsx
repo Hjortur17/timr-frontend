@@ -16,7 +16,7 @@ export default function AnimateOnScroll({
   children,
   className = "",
   delay,
-  threshold = 0.1,
+  threshold = 0.15,
   once = true,
   as: Tag = "div",
 }: AnimateOnScrollProps) {
@@ -34,7 +34,7 @@ export default function AnimateOnScroll({
           if (once) observer.disconnect();
         }
       },
-      { threshold },
+      { threshold, rootMargin: "0px 0px -80px 0px" },
     );
 
     observer.observe(el);
