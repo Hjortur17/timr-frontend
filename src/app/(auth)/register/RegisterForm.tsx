@@ -1,5 +1,6 @@
 "use client";
 
+import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -9,7 +10,7 @@ import { useForm } from "react-hook-form";
 import { SocialLoginButtons } from "@/components/SocialLoginButtons";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import type { RegisterForm } from "@/types/forms";
+import { type RegisterForm as RegisterFormType, registerFormSchema } from "@/types/forms";
 import { setToken } from "@/utils/auth";
 
 export default function RegisterForm() {
@@ -27,7 +28,8 @@ export default function RegisterForm() {
     setValue,
     setError,
     formState: { errors },
-  } = useForm<RegisterForm>({
+  } = useForm<RegisterFormType>({
+    resolver: zodResolver(registerFormSchema),
     defaultValues: {
       name: "",
       email: inviteEmail,
@@ -42,7 +44,7 @@ export default function RegisterForm() {
     if (inviteToken) setValue("invite_token", inviteToken);
   }, [inviteEmail, inviteToken, setValue]);
 
-  const onSubmit = async (data: RegisterForm) => {
+  const onSubmit = async (data: RegisterFormType) => {
     try {
       const response = await axios.post("/api/forms/register", data);
       setToken(response.data.token);

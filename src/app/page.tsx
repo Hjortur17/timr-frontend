@@ -426,7 +426,13 @@ export default async function Home() {
               className="fade-in slide-in-from-bottom-3 duration-500"
               delay={`delay-${index * 100}`}
             >
-              <div className={cn("py-8 lg:grid lg:grid-cols-12 lg:gap-8", index === 0 && "pt-0", index === faqKeys.length - 1 && "pb-0")}>
+              <div
+                className={cn(
+                  "py-8 lg:grid lg:grid-cols-12 lg:gap-8",
+                  index === 0 && "pt-0",
+                  index === faqKeys.length - 1 && "pb-0",
+                )}
+              >
                 <dt className="text-base/7 font-semibold text-foreground lg:col-span-5">{t(`faqs.${faq.q}`)}</dt>
                 <dd className="mt-4 lg:col-span-7 lg:mt-0">
                   <p className="text-base/7 text-muted-foreground">{t(`faqs.${faq.a}`)}</p>
